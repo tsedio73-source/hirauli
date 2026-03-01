@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hirauli Gallery - Social Feed</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { --p:  #061188; --txt: #1a1a1a; --gray: #65676b; }
+        body { font-family: 'Segoe UI', sans-serif; background: #fafafa; margin: 0; padding-bottom: 50px; }
+
+        .header { background: white; padding: 15px; text-align: center; border-bottom: 1px solid #dbdbdb; position: sticky; top:0; z-index: 100; }
+        .header h1 { margin:0; font-size: 1.2rem; color: var(--p); }
+
+        /* Grid Layout */
+        #gallery-container {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
+            max-width: 800px; margin: auto; padding: 2px;
+        }
+
+        .photo-item { position: relative; aspect-ratio: 1/1; overflow: hidden; background: #eee; cursor: pointer; }
+        .photo-item img { width: 100%; height: 100%; object-fit: cover; }
+        
+        /* Stats Overlay on Grid */
+        .stats-overlay {
+            position: absolute; top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.3); color: white; display: flex;
+            justify-content: center; align-items: center; gap: 10px;
+            opacity: 0; transition: 0.3s; font-size: 0.8rem;
+        }
+        .photo-item:hover .stats-overlay { opacity: 1; }
+
+        /* Full View Modal (Instagram Style) */
+        .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:2000; overflow-y: auto; }
+        .modal-header { padding: 12px; display: flex; align-items: center; border-bottom: 1px solid #efefef; }
+        .user-link { font-weight: 700; color: var(--txt); text-decoration: none; display: flex; align-items: center; gap: 8px; cursor: pointer; }
+        .u-avatar { width: 30px; height: 30px; background: var(--p); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+
+        .modal-img-wrap img { width: 100%; display: block; background: #000; }
+        
+        .modal-actions { display: flex; padding: 12px; gap: 20px; font-size: 1.4rem; }
+        .modal-actions i { cursor: pointer; }
+        .fa-heart.active { color: #ed4956; }
+
+        .like-info { padding: 0 12px 10px; font-weight: 700; font-size: 0.9rem; }
+
+        /* Profile Sheet (Filter User Posts) */
+        .profile-sheet { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:3000; padding-top: 50px; }
+        .profile-nav { position:fixed; top:0; width:100%; background:white; padding: 15px; border-bottom: 1px solid #ddd; display: flex; align-items: center; gap: 15px; }
+
+        .skeleton { aspect-ratio: 1/1; background: #eee; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Village's Images</h1>
+</div>
+
+<div id="gallery-container">
+    <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+</div>
+
+<div id="photo-modal" class="modal">
+    <div class="modal-header">
+        <i class="fas fa-arrow-left" onclick="closeModal()" style="margin-right:15px; cursor:pointer;"></i>
+        <div class="user-link" id="modal-user-link">
+            <div class="u-avatar" id="modal-avatar">?</div>
+            <span id="modal-username">User Name</span>
+        </div>
+    </div>
+    <div class="modal-img-wrap">
+        <img id="modal-img" src="">
+    </div>
+    <div class="modal-actions">
+        <i class="far fa-heart" id="like-icon"></i>
+        <i class="far fa-comment" id="cmt-icon"></i>
+        <i class="far fa-paper-plane" id="share-icon"></i>
+    </div>
+    <div class="like-info" id="modal-likes-count">0 likes</div>
+</div>
+
+<div id="profile-view" class="profile-sheet">
+    <div class="profile-nav">
+        <i class="fas fa-times" onclick="closeProfile()" style="font-size: 1.2rem;"></i>
+        <b id="profile-title">User's Posts</b>
+    </div>
+    <div id="profile-gallery" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;"></div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, onValue, query, orderByChild, equalTo, get, set, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+    const config = { 
+        apiKey: "AIzaSyArtybAAgMFeLv1K9b_0GhSh66oYWuDLco",
+        databaseURL: "https://news-82329-default-rtdb.firebaseio.com"
+    };
+    const app = initializeApp(config);
+    const db = getDatabase(app);
+    const auth = getAuth(app);
+
+    let loggedUser = null;
+    let allPhotos = {};
+
+    onAuthStateChanged(auth, (user) => { loggedUser = user; loadGallery(); });
+
+    function loadGallery() {
+        onValue(query(ref(db, 'photos'), orderByChild('timestamp')), (snap) => {
+            const container = document.getElementById('gallery-container');
+            container.innerHTML = '';
+            if(!snap.exists()) return;
+            
+            allPhotos = snap.val();
+            Object.keys(allPhotos).reverse().forEach(key => {
+                const p = allPhotos[key];
+                const div = document.createElement('div');
+                div.className = 'photo-item';
+                div.onclick = () => openModal(key);
+                div.innerHTML = `
+                    <img src="${p.mediaUrl}">
+                    <div class="stats-overlay">
+                        <i class="fas fa-heart"></i> ${p.likesCount || 0}
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        });
+    }
+
+    // Modal Logic
+    window.openModal = (id) => {
+        const p = allPhotos[id];
+        const modal = document.getElementById('photo-modal');
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+
+        document.getElementById('modal-img').src = p.mediaUrl;
+        document.getElementById('modal-username').innerText = p.userName || "Hirauli Admin";
+        document.getElementById('modal-avatar').innerText = (p.userName || "H").charAt(0);
+        document.getElementById('modal-likes-count').innerText = `${p.likesCount || 0} likes`;
+
+        // Profile Click Logic
+        document.getElementById('modal-user-link').onclick = () => openUserProfile(p.userName);
+
+        // Like Button Logic
+        const likeIcon = document.getElementById('like-icon');
+        const isLiked = loggedUser && p.likes && p.likes[loggedUser.uid];
+        likeIcon.className = isLiked ? 'fas fa-heart active' : 'far fa-heart';
+        likeIcon.onclick = () => handleLike(id);
+        
+        // Share
+        document.getElementById('share-icon').onclick = () => navigator.share({url: p.mediaUrl});
+    };
+
+    window.closeModal = () => {
+        document.getElementById('photo-modal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    };
+
+    // USER PROFILE FILTER (Key Feature)
+    window.openUserProfile = async (username) => {
+        const profileView = document.getElementById('profile-view');
+        const grid = document.getElementById('profile-gallery');
+        document.getElementById('profile-title').innerText = `${username} की तस्वीरें`;
+        grid.innerHTML = '<p style="padding:20px;">खोज रहे हैं...</p>';
+        profileView.style.display = 'block';
+
+        // Filter Photos by Name
+        const photoQuery = query(ref(db, 'photos'), orderByChild('userName'), equalTo(username));
+        const snap = await get(photoQuery);
+        
+        grid.innerHTML = '';
+        if(snap.exists()){
+            Object.values(snap.val()).reverse().forEach(p => {
+                grid.innerHTML += `<div class="photo-item"><img src="${p.mediaUrl}"></div>`;
+            });
+        } else {
+            grid.innerHTML = "<p style='padding:20px;'>कोई पोस्ट नहीं मिली।</p>";
+        }
+    };
+
+    window.closeProfile = () => document.getElementById('profile-view').style.display = 'none';
+
+    window.handleLike = async (id) => {
+        if(!loggedUser) return alert("Login to like!");
+        const lRef = ref(db, `photos/${id}/likes/${loggedUser.uid}`);
+        const cRef = ref(db, `photos/${id}/likesCount`);
+        const snap = await get(lRef);
+        const count = (await get(cRef)).val() || 0;
+
+        if(snap.exists()){
+            await remove(lRef); await set(cRef, Math.max(0, count - 1));
+        } else {
+            await set(lRef, loggedUser.displayName); await set(cRef, count + 1);
+        }
+    };
+
+</script>
+</body>
+</html>

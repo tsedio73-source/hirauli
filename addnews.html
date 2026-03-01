@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin: News Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;700&family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #4A90E2;
+            --secondary: #6A77FF;
+            --bg: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        body { 
+            font-family: 'Poppins', 'Noto Sans Devanagari', sans-serif; 
+            background: var(--bg);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* User Info Bar */
+        .user-bar {
+            background: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: fit-content;
+        }
+
+        .user-bar img { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--secondary); }
+        .user-bar span { font-weight: 600; font-size: 0.9rem; color: #333; }
+
+        .admin-container {
+            background: #fff;
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        h3 { text-align: center; color: var(--secondary); margin-bottom: 25px; }
+
+        label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.85rem; color: #666; }
+
+        input[type="text"], textarea { 
+            width: 100%; padding: 12px; margin-bottom: 15px; 
+            border: 2px solid #eee; border-radius: 12px; outline: none; transition: 0.3s;
+        }
+
+        input:focus, textarea:focus { border-color: var(--primary); }
+
+        .file-input-wrapper {
+            background: #f8f9fa; border: 2px dashed #ccc;
+            padding: 15px; border-radius: 12px; text-align: center; margin-bottom: 20px;
+        }
+
+        button { 
+            background: linear-gradient(to right, #6A77FF, #4A90E2);
+            color: white; padding: 15px; border: none; border-radius: 12px;
+            cursor: pointer; width: 100%; font-size: 1.1rem; font-weight: 600;
+        }
+
+        #message { margin-top: 20px; padding: 12px; border-radius: 10px; text-align: center; display: none; }
+        .status-success { background: #d4edda; color: #155724; display: block !important; }
+        .status-error { background: #f8d7da; color: #721c24; display: block !important; }
+        .status-loading { background: #e2e3e5; display: block !important; }
+    </style>
+</head>
+<body>
+
+    <div class="user-bar" id="user-display" style="display: none;">
+        <img src="" id="user-icon" alt="User">
+        <span id="user-name-text">Loading...</span>
+    </div>
+
+    <div class="admin-container">
+        <h3><i class="fas fa-edit"></i>Add News</h3>
+
+        <form id="news-form">
+            <label>Title</label>
+            <input type="text" id="title" placeholder="Enter Title" required>
+
+            <label>Main Content</label>
+            <textarea id="content" rows="6" placeholder="Enter today news" required></textarea>
+
+            <label>Photo or Video</label>
+            <div class="file-input-wrapper">
+                <input type="file" id="media-file" accept="image/*,video/*">
+            </div>
+
+            <button type="submit" id="submit-btn">Publish</button>
+        </form>
+
+        <div id="message"></div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyArtybAAgMFeLv1K9b_0GhSh66oYWuDLco",
+            authDomain: "news-82329.firebaseapp.com",
+            databaseURL: "https://news-82329-default-rtdb.firebaseio.com",
+            projectId: "news-82329",
+            storageBucket: "news-82329.firebasestorage.app",
+            messagingSenderId: "29851688400",
+            appId: "1:29851688400:web:7a9c17b2bf758ca76aadd5"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const auth = getAuth(app);
+        
+        let currentUserData = null;
+
+        // AUTH CHECK: Page par aate hi check karein
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUserData = user;
+                document.getElementById('user-display').style.display = 'flex';
+                document.getElementById('user-icon').src = user.photoURL;
+                document.getElementById('user-name-text').innerText = "By: " + user.displayName;
+            } else {
+                alert("Please Login");
+                window.location.href = "login.html"; // Aapne login page ka jo bhi naam rakha ho
+            }
+        });
+
+        // CLOUDINARY CONFIG
+        const CLOUD_NAME = "dnrtx7xgp";
+        const UPLOAD_PRESET = "news_upload"; 
+        const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`;
+
+        const newsForm = document.getElementById('news-form');
+        const messageDiv = document.getElementById('message');
+        const submitBtn = document.getElementById('submit-btn');
+
+        newsForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!currentUserData) {
+                alert("Login Error!");
+                return;
+            }
+
+            messageDiv.textContent = 'Publishing...';
+            messageDiv.className = 'status-loading';
+            submitBtn.disabled = true;
+
+            const title = document.getElementById('title').value;
+            const content = document.getElementById('content').value;
+            const mediaFile = document.getElementById('media-file').files[0];
+            let mediaUrl = ''; 
+
+            try {
+                // Upload to Cloudinary if file exists
+                if (mediaFile) {
+                    const formData = new FormData();
+                    formData.append('file', mediaFile);
+                    formData.append('upload_preset', UPLOAD_PRESET);
+                    
+                    const response = await fetch(CLOUDINARY_URL, { method: 'POST', body: formData });
+                    const result = await response.json();
+                    mediaUrl = result.secure_url; 
+                }
+
+                // Push to Firebase with Author Identity
+                await push(ref(db, 'news'), { 
+                    title: title,
+                    content: content,
+                    mediaUrl: mediaUrl, 
+                    timestamp: Date.now(),
+                    authorName: currentUserData.displayName,
+                    authorEmail: currentUserData.email,
+                    authorPhoto: currentUserData.photoURL,
+                    likes: 0
+                });
+
+                messageDiv.textContent = '✅ Published';
+                messageDiv.className = 'status-success';
+                newsForm.reset();
+                
+            } catch (error) {
+                messageDiv.textContent = 'Error ' + error.message;
+                messageDiv.className = 'status-error';
+            } finally {
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

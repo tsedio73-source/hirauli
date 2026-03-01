@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>हिरौली क़ुतुब नगर - डिजिटल पंचायत</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #061188;
+            --dark: #333;
+            --glass: rgba(255, 255, 255, 0.2);
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f4f4f4 url("https://i.ibb.co/CsH1WRmm/Untitled3-20251214153640.jpg") no-repeat fixed center;
+            background-size: cover;
+        }
+
+        /* Top Bar */
+        .top-nav {
+          height: 60px;
+          
+           background:#061188;
+           background-repeat: no-repeat;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            position: sticky;
+            top: 0;
+            z-index: 1001;
+        }
+
+        .Menu-icon {
+            cursor: pointer;
+            width: 30px;
+        }
+
+        .Menu-icon div {
+            height: 3px;
+            background: white;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+
+        /* Header Section */
+        header {
+            background: var(--primary);
+            color: #ff7;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        header h2 { margin: 0; font-family: cursive; font-size: 22px; }
+        header p { margin: 5px 0 0; font-family: cursive; font-size: 16px; }
+
+        /* Auth UI in Sidebar */
+        #user-profile {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        #user-img { width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; display: none; margin: 0 auto 10px; }
+        #login-btn-sidebar { 
+            background: white; color:  #061188; border: none; padding: 10px 15px; 
+            border-radius: 5px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px; margin: 0 auto;
+        }
+
+        /* Sidebar Navigation */
+        #navMenu {
+            height: 100vh;
+            width: 260px;
+            background: rgba(44, 62, 80, 0.95);
+            backdrop-filter: blur(10px);
+            color: #fff;
+            position: fixed;
+            left: -260px;
+            top: 0;
+            transition: 0.3s;
+            z-index: 1002;
+            padding-top: 20px;
+        }
+
+        #navMenu ul { list-style: none; padding: 0; }
+        #navMenu ul li { padding: 15px 25px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        #navMenu ul li a { color: white; text-decoration: none; font-size: 18px; display: block; }
+
+        /* Main Grid Container */
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            padding: 20px;
+            margin-top: 50px;
+        }
+
+        .menu-item {
+            background: #061188;
+            height: 110px;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: 0.3s;
+            border: 1px solid rgba(255,255,255,0.2);
+            cursor: pointer;
+        }
+
+        .menu-item:hover { transform: scale(1.05); background:  #061188 #061188; }
+        .menu-item img { height: 45px; margin-bottom: 8px; }
+        .menu-item span { color: white; font-size: 14px; font-weight: bold; }
+
+        /* Images and Marquee */
+        .banner-img { width: 100%; display: block; border-radius: 10px; margin: 20px 0; }
+        .notice { background: white; color: red; padding: 10px; font-weight: bold; }
+
+        /* Footer */
+        .main-footer { background: #222; color: #ccc; padding: 40px 20px; }
+        .footer-column h3 { color: #fff; margin-bottom: 15px; }
+        .social-icons a { color: white; font-size: 22px; margin-right: 15px; }
+
+        /* Responsive Overlay */
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        #headb{
+        position: relative;
+        height: 100px;
+        top: -5px;
+        }
+        #main{
+        border-image-source: url("billing.png");
+        border-image-slice: ;
+            
+        position: absolute;
+        height: 55px;
+        border-radius: 50%;
+        left: 50%;
+        top: 2px;
+        transform: translate(-50%,0%);
+        }
+
+     .slider {
+  width: 100%;
+  max-width: 1000px; /* Aap apne hisaab se set karein */
+  margin: auto;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.slides {
+  display: flex;
+  width: 100%; /* Agar 3 images hain toh 300%, 4 hain toh 400% */
+  transition: transform 0.5s ease-in-out;
+}
+
+.slides img {
+  width: 100%;
+  display: block;
+}
+   
+    </style>
+</head>
+<body>
+    <div id="overlay" onclick="toggleMenu()"></div>
+    
+    <div class="top-nav">
+   
+   <div class="Menu-icon" onclick="toggleMenu()">
+            <div></div><div></div><div></div>
+      <img id="main" >
+    
+      
+        </div>
+     </div>
+  
+   
+    <header>
+        <h2>ग्राम हिरौली क़ुतुब नगर पंचायत</h2>
+        <p>विकास की ओर अग्रसर, हमारी पहचान।</p>
+    </header>
+
+    <div class="notice">
+        <marquee>यह वेबसाइट सिर्फ एजुकेशन पर्पस के लिए है। किसी भी आधिकारिक कार्य के लिए सरकारी पोर्टल का उपयोग करें।</marquee>
+    </div>
+   <div class="slider">
+    <div class="slides" id="slideContainer">
+        <img id="new1" alt="">
+        <img id="new2" alt="">
+        <img id="new3" alt="">
+        <img id="new4" alt="">
+        <img id="new5" alt="">
+        <img id="new1" alt="">
+
+    </div>
+   </div>
+    <div class="container">
+        <div class="menu-item" onclick="protectedRoute('addNews.html')">
+            <img src="https://i.ibb.co/ZPtTY5F/add.png">
+            <span>Add News</span>
+        </div>
+        <div class="menu-item" onclick="protectedRoute('addPhoto.html')">
+            <img src="https://i.ibb.co/WWFW2vZP/add-image.png">
+            <span>Add Photo</span>
+        </div>
+        <div class="menu-item" onclick="location.href='news.html'">
+            <img src="https://i.ibb.co/XZcGLnn2/newspaper.png">
+            <span>News</span>
+        </div>
+        <div class="menu-item" onclick="location.href='Photo.html'">
+            <img src="https://i.ibb.co/G3bxwryD/pictures.png">
+            <span>Gallery</span>
+        </div>
+        <div class="menu-item" onclick="location.href='Hirauli-His.html'">
+            <img src="https://i.ibb.co/cc5kPsN5/theory.png">
+            <span>Information</span>
+        </div>
+        <div class="menu-item" onclick="location.href='https://www.google.com/maps?q=Hirauli+Kutubnagar'">
+            <img src="https://i.ibb.co/Ndtv4jg5/location.png">
+            <span>Location</span>
+        </div>
+    </div>
+
+    <img id="footb" class="banner-img" >
+    <!--<a href="https://ibb.co/4ZFTB6gx"><img src="" alt="Screenshot-2025-12-30-211600" border="0"></a>-->
+
+    <div id="navMenu">
+        <div id="user-profile">
+            <img id="user-img" src="">
+            <p id="user-name" style="margin: 0; font-weight: bold;"></p>
+            <button id="login-btn-sidebar" onclick="login()">
+               <img height="30px" src="https://i.ibb.co/Ld1dCzkT/google-web-reputation-2022-1-1024x1024.png" alt="google web reputation 2022 1 1024x1024" border="0">Google Login
+            </button>
+            <button id="logout-btn" onclick="logout()" style="display:none; background:none; border:1px solid #ff4444; color:#ff4444; padding:5px 10px; margin-top:10px; border-radius:5px; cursor:pointer;">Logout</button>
+        </div>
+        <ul>
+            <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="About me.html"><i class="fas fa-user"></i> About me</a></li>
+            <li><a href="mailto:ashish7376529017@gmail.com?subject=From hirauli web&body=
+                I want to know about your service."><i class="fas fa-envelope"></i> Contact Us</a></li>
+            <li><a href="Help.html"><i class="fas fa-question-circle"></i> Help</a></li>
+        </ul>
+    </div>
+
+<script>
+    const slides = document.getElementById('slideContainer');
+const images = document.querySelectorAll('.slides img');
+let index = 0;
+const totalImages = images.length;
+
+function showNextSlide() {
+    index++;
+    
+    // Smooth transition on rakhein
+    slides.style.transition = "transform 0.5s ease-in-out";
+    slides.style.transform = `translateX(${-index * 100}%)`;
+
+    // Jab aakhri (copy) image khatam ho jaye
+    if (index === totalImages - 1) {
+        setTimeout(() => {
+            // Animation band karke turant index 0 par jayein
+            slides.style.transition = "none";
+            index = 0;
+            slides.style.transform = `translateX(0%)`;
+        }, 500); // 500ms transition time ke baad reset hoga
+    }
+}
+
+setInterval(showNextSlide, 3000);
+
+
+</script>
+
+    <footer class="main-footer">
+        <div class="footer-column">
+             <h3>Source</h3>
+             <a href="about me.html">About me</a> <br>
+             <a href="hirauli-his.html">Information</a>
+            <h3>Contact us</h3>
+            <p>Address: Hirauli Kutubnagar, Shahabad Hardoi</p>
+            <p>Email: info@hirauliwebsite.com</p>
+        </div>
+     <div class="footer-column">
+      <h3>Connect</h3>
+            <div class="social-icons">
+                <a href="https://www.facebook.com/share/188s4tq2FZ/"><i class="fab fa-facebook"></i></a>
+                <a href="https://www.instagram.com/5itsedio?igsh=MWF6bng1azl3amdhZA=="><i class="fab fa-instagram"></i></a>
+                <a href="https://x.com/AshishR29942459"><i class="fab fa-twitter"></i></a>
+            </div>
+        </div>
+        <div style="text-align:center; padding-top:20px; border-top:1px solid #444;">
+ <p>&reg; <script>document.write(new Date().getFullYear()) </script> Powered by Tsedio</p>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyArtybAAgMFeLv1K9b_0GhSh66oYWuDLco",
+            authDomain: "news-82329.firebaseapp.com",
+            projectId: "news-82329",
+            storageBucket: "news-82329.firebasestorage.app",
+            messagingSenderId: "29851688400",
+            appId: "1:29851688400:web:7a9c17b2bf758ca76aadd5"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        // Global functions
+        window.login = async () => {
+            try { await signInWithPopup(auth, provider); } 
+            catch (error) { alert("Login failed: " + error.message); }
+        };
+
+        window.logout = () => signOut(auth);
+
+        window.protectedRoute = (path) => {
+            if (auth.currentUser) { location.href = path; } 
+            else { alert("कृपया 'Add' फीचर इस्तेमाल करने के लिए पहले Google Login करें!"); toggleMenu(); }
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            const loginBtn = document.getElementById('login-btn-sidebar');
+            const logoutBtn = document.getElementById('logout-btn');
+            const userImg = document.getElementById('user-img');
+            const userName = document.getElementById('user-name');
+
+            if (user) {
+                loginBtn.style.display = 'none';
+                logoutBtn.style.display = 'block';
+                userImg.src = user.photoURL;
+                userImg.style.display = 'block';
+                userName.innerText = user.displayName;
+            } else {
+                loginBtn.style.display = 'flex';
+                logoutBtn.style.display = 'none';
+                userImg.style.display = 'none';
+                userName.innerText = '';
+            }
+        });
+    </script>
+
+    <script>
+        function toggleMenu() {
+            const nav = document.getElementById("navMenu");
+            const overlay = document.getElementById("overlay");
+            if (nav.style.left === "0px") {
+                nav.style.left = "-260px";
+                overlay.style.display = "none";
+            } else {
+                nav.style.left = "0px";
+                overlay.style.display = "block";
+            }
+        }
+    </script>
+   <script type="module">
+
+import { initializeApp } from 
+'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+
+import { getDatabase, ref, onValue } from 
+'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
+
+
+const firebaseConfig = {
+    apiKey: "AIzaSyD2eitt5iTwBaTx8CWeuuPeyD7nTa58XD8",
+    authDomain: "freefollowers-d31af.firebaseapp.com",
+    databaseURL: "https://freefollowers-d31af-default-rtdb.firebaseio.com",
+    projectId: "freefollowers-d31af",
+    storageBucket: "freefollowers-d31af.firebasestorage.app",
+    messagingSenderId: "807949104285",
+    appId: "1:807949104285:web:134fe5eef8304ec4279074"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const bannersRef = ref(db, 'banners');
+
+onValue(bannersRef, (snapshot) => {
+
+    const data = snapshot.val();
+    if (!data) return;
+
+    const placeholder =
+    "https://via.placeholder.com/400x200/ddd?text=No+Image";
+
+    /* ======================
+       NEW SECTION (5 banners)
+    ====================== */
+
+    for(let i = 1; i <= 5; i++) {
+
+        const img = document.getElementById(`new${i}`);
+
+        if(img){
+            img.src =
+            data[`banner${i}`]?.image || placeholder;
+        }
+    }
+
+    /* ===== MAIN ===== */
+    const main = document.getElementById('main');
+    if(main){
+        main.src = data.banner6?.image || placeholder;
+    }
+
+    /* ===== FOOTER ===== */
+    const foot = document.getElementById('footb');
+    if(foot){
+        foot.src = data.banner7?.image || placeholder;
+    }
+
+});
+
+</script>
+</body>
+</html>

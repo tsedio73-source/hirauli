@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Send Feedback</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 400px;
+      margin: auto;
+      background-color: #f4f4f4;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    textarea {
+      font-family: Arial, sans-serif;
+      width: 100%;
+      min-height: 150px;
+      padding: 10px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      resize: vertical; /* केवल वर्टिकल रीसाइज़ की अनुमति */
+      margin-bottom: 15px;
+    }
+    button {
+      height: 40px;
+      width: 100%;
+      border-radius: 10px;
+      background: #6A77FF;
+      color: white;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background:  #061188;
+    }
+    #status-message {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 5px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  
+  <h2>Feedbacks</h2>
+  
+  <form id="feedback-form">
+    <textarea id="feed" placeholder="Type your feedback here..." required></textarea>
+    <button type="submit">Send Feedback</button>
+  </form>
+
+  <div id="status-message"></div>
+  
+  <script type="module">
+    // Firebase Modular Imports
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    // === आपके Firebase कॉन्फ़िगरेशन डिटेल्स ===
+    const firebaseConfig = {
+        apiKey: "AIzaSyArtybAAgMFeLv1K9b_0GhSh66oYWuDLco",
+        databaseURL: "https://news-82329-default-rtdb.firebaseio.com",
+        projectId: "news-82329",
+        //... बाकी सेटिंग्स
+    };
+
+    // Firebase Initialization
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    
+    // नया Firebase Reference: /feedbacks
+    const feedbacksRef = ref(db, 'feedbacks'); 
+
+    const feedbackForm = document.getElementById('feedback-form');
+    const feedbackTextarea = document.getElementById('feed');
+    const statusDiv = document.getElementById('status-message');
+
+
+    // फ़ॉर्म सबमिशन को हैंडल करें
+    feedbackForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const feedbackContent = feedbackTextarea.value.trim();
+      
+      if (feedbackContent === '') {
+        statusDiv.textContent = 'Please write some feedback before sending.';
+        statusDiv.style.backgroundColor = '#ffdddd';
+        return;
+      }
+      
+      statusDiv.textContent = 'Sending feedback...';
+      statusDiv.style.backgroundColor = '#ffffcc';
+
+      try {
+        // Firebase Realtime Database में डेटा पुश करें
+        await push(feedbacksRef, {
+          feedback: feedbackContent,
+          timestamp: Date.now()
+        });
+        
+        // सफलता पर
+        statusDiv.textContent = '✅ Feedback sent.';
+        statusDiv.style.backgroundColor = '#ccffcc';
+        feedbackTextarea.value = ''; // टेक्स्ट एरिया साफ करें
+        
+      } catch (error) {
+        // विफलता पर
+        console.error("Firebase write error:", error);
+        statusDiv.textContent = '❌ Failed to send feedback. Please try again.';
+        statusDiv.style.backgroundColor = '#ffdddd';
+      }
+    });
+
+    // पुराना 'got' फ़ंक्शन, अब फॉर्म सबमिशन लॉजिक में शामिल है
+    function got() {
+        // यह फ़ंक्शन अब आवश्यक नहीं है क्योंकि सबमिशन लॉजिक डेटा भेजने के बाद टेक्स्ट एरिया को साफ कर रहा है
+    }
+  </script>
+</body>
+</html>
