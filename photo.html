@@ -6,7 +6,7 @@
     <title>Hirauli Gallery - Social Feed</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --p:  #061188; --txt: #1a1a1a; --gray: #65676b; }
+        :root { --p:  #061188; --txt: #1a1a1a; --gray: #65676b; --red: #ed4956; }
         body { font-family: 'Segoe UI', sans-serif; background: #fafafa; margin: 0; padding-bottom: 50px; }
 
         .header { background: white; padding: 15px; text-align: center; border-bottom: 1px solid #dbdbdb; position: sticky; top:0; z-index: 100; }
@@ -20,8 +20,7 @@
 
         .photo-item { position: relative; aspect-ratio: 1/1; overflow: hidden; background: #eee; cursor: pointer; }
         .photo-item img { width: 100%; height: 100%; object-fit: cover; }
-        
-        /* Stats Overlay on Grid */
+
         .stats-overlay {
             position: absolute; top:0; left:0; width:100%; height:100%;
             background: rgba(0,0,0,0.3); color: white; display: flex;
@@ -30,26 +29,40 @@
         }
         .photo-item:hover .stats-overlay { opacity: 1; }
 
-        /* Full View Modal (Instagram Style) */
+        /* Full View Modal */
         .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:2000; overflow-y: auto; }
-        .modal-header { padding: 12px; display: flex; align-items: center; border-bottom: 1px solid #efefef; }
+        .modal-header { padding: 12px; display: flex; align-items: center; border-bottom: 1px solid #efefef; position: sticky; top: 0; background: white; z-index: 10; }
         .user-link { font-weight: 700; color: var(--txt); text-decoration: none; display: flex; align-items: center; gap: 8px; cursor: pointer; }
-        .u-avatar { width: 30px; height: 30px; background: var(--p); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+        .u-avatar { width: 32px; height: 32px; background: var(--p); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; }
 
-        .modal-img-wrap img { width: 100%; display: block; background: #000; }
+        .modal-img-wrap img { width: 100%; display: block; background: #000; max-height: 70vh; object-fit: contain; }
+
+        .modal-actions { display: flex; padding: 12px; gap: 20px; font-size: 1.5rem; }
+        .modal-actions i { cursor: pointer; transition: transform 0.1s; }
+        .modal-actions i:active { transform: scale(1.2); }
+        .fa-heart.active { color: var(--red); }
+
+        .like-info { padding: 0 12px 5px; font-weight: 700; font-size: 0.9rem; cursor: pointer; color: var(--txt); }
         
-        .modal-actions { display: flex; padding: 12px; gap: 20px; font-size: 1.4rem; }
-        .modal-actions i { cursor: pointer; }
-        .fa-heart.active { color: #ed4956; }
+        /* Smart Comments */
+        .comment-section { padding: 5px 12px; max-height: 200px; overflow-y: auto; border-top: 1px solid #f0f0f0; }
+        .cmt-item { font-size: 0.85rem; margin-bottom: 6px; line-height: 1.4; }
+        .cmt-user { font-weight: 700; margin-right: 6px; }
+        .cmt-input-area { display: flex; padding: 10px 12px; border-top: 1px solid #eee; background: #fff; position: sticky; bottom: 0; }
+        .cmt-input { flex: 1; border: none; outline: none; font-size: 0.9rem; padding: 5px; }
+        .cmt-btn { color: var(--p); font-weight: 700; cursor: pointer; background:none; border:none; opacity: 0.6; }
+        .cmt-btn.active { opacity: 1; }
 
-        .like-info { padding: 0 12px 10px; font-weight: 700; font-size: 0.9rem; }
+        /* Popups */
+        .overlay-bg { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:3500; }
+        .liked-by-modal { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:85%; max-width:320px; background:white; border-radius:15px; z-index:4000; padding:15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .liked-user-item { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid #eee; }
 
-        /* Profile Sheet (Filter User Posts) */
-        .profile-sheet { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:3000; padding-top: 50px; }
-        .profile-nav { position:fixed; top:0; width:100%; background:white; padding: 15px; border-bottom: 1px solid #ddd; display: flex; align-items: center; gap: 15px; }
+        .profile-sheet { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:3000; padding-top: 60px; }
+        .profile-nav { position:fixed; top:0; width:100%; background:white; padding: 15px; border-bottom: 1px solid #ddd; display: flex; align-items: center; gap: 15px; z-index: 3001; }
 
         .skeleton { aspect-ratio: 1/1; background: #eee; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
     </style>
 </head>
 <body>
@@ -67,31 +80,47 @@
         <i class="fas fa-arrow-left" onclick="closeModal()" style="margin-right:15px; cursor:pointer;"></i>
         <div class="user-link" id="modal-user-link">
             <div class="u-avatar" id="modal-avatar">?</div>
-            <span id="modal-username">User Name</span>
+            <span id="modal-username">Loading...</span>
         </div>
     </div>
     <div class="modal-img-wrap">
-        <img id="modal-img" src="">
+        <img id="modal-img" src="" data-id="">
     </div>
     <div class="modal-actions">
         <i class="far fa-heart" id="like-icon"></i>
-        <i class="far fa-comment" id="cmt-icon"></i>
+        <i class="far fa-comment" onclick="document.getElementById('cmt-input-field').focus()"></i>
         <i class="far fa-paper-plane" id="share-icon"></i>
     </div>
     <div class="like-info" id="modal-likes-count">0 likes</div>
+    
+    <div class="comment-section" id="comment-list"></div>
+    
+    <div class="cmt-input-area">
+        <input type="text" id="cmt-input-field" class="cmt-input" placeholder="Add a comment...">
+        <button class="cmt-btn" id="send-cmt-btn">Post</button>
+    </div>
+</div>
+
+<div id="liked-by-overlay" class="overlay-bg" onclick="closeLikedBy()"></div>
+<div id="liked-by-modal" class="liked-by-modal">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <h3 style="margin:0; font-size:1.1rem;">Likes</h3>
+        <i class="fas fa-times" onclick="closeLikedBy()" style="cursor:pointer;"></i>
+    </div>
+    <div id="liked-users-list" style="max-height:300px; overflow-y:auto;"></div>
 </div>
 
 <div id="profile-view" class="profile-sheet">
     <div class="profile-nav">
-        <i class="fas fa-times" onclick="closeProfile()" style="font-size: 1.2rem;"></i>
+        <i class="fas fa-times" onclick="closeProfile()" style="font-size: 1.2rem; cursor:pointer;"></i>
         <b id="profile-title">User's Posts</b>
     </div>
-    <div id="profile-gallery" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;"></div>
+    <div id="profile-gallery" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; padding: 2px;"></div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getDatabase, ref, onValue, query, orderByChild, equalTo, get, set, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { getDatabase, ref, onValue, query, orderByChild, equalTo, get, set, remove, push, runTransaction } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
     const config = { 
@@ -105,14 +134,18 @@
     let loggedUser = null;
     let allPhotos = {};
 
-    onAuthStateChanged(auth, (user) => { loggedUser = user; loadGallery(); });
+    onAuthStateChanged(auth, (user) => { 
+        loggedUser = user; 
+        loadGallery(); 
+    });
 
+    // Load Main Gallery
     function loadGallery() {
         onValue(query(ref(db, 'photos'), orderByChild('timestamp')), (snap) => {
             const container = document.getElementById('gallery-container');
             container.innerHTML = '';
             if(!snap.exists()) return;
-            
+
             allPhotos = snap.val();
             Object.keys(allPhotos).reverse().forEach(key => {
                 const p = allPhotos[key];
@@ -134,25 +167,31 @@
     window.openModal = (id) => {
         const p = allPhotos[id];
         const modal = document.getElementById('photo-modal');
+        const modalImg = document.getElementById('modal-img');
+        
+        modalImg.src = p.mediaUrl;
+        modalImg.dataset.id = id;
+        document.getElementById('modal-username').innerText = p.userName || "Hirauli Admin";
+        document.getElementById('modal-avatar').innerText = (p.userName || "H").charAt(0).toUpperCase();
+        document.getElementById('modal-likes-count').innerText = `${p.likesCount || 0} likes`;
+
         modal.style.display = 'block';
         document.body.style.overflow = 'hidden';
 
-        document.getElementById('modal-img').src = p.mediaUrl;
-        document.getElementById('modal-username').innerText = p.userName || "Hirauli Admin";
-        document.getElementById('modal-avatar').innerText = (p.userName || "H").charAt(0);
-        document.getElementById('modal-likes-count').innerText = `${p.likesCount || 0} likes`;
-
-        // Profile Click Logic
-        document.getElementById('modal-user-link').onclick = () => openUserProfile(p.userName);
-
-        // Like Button Logic
+        // Check Like Status
         const likeIcon = document.getElementById('like-icon');
         const isLiked = loggedUser && p.likes && p.likes[loggedUser.uid];
         likeIcon.className = isLiked ? 'fas fa-heart active' : 'far fa-heart';
-        likeIcon.onclick = () => handleLike(id);
         
-        // Share
-        document.getElementById('share-icon').onclick = () => navigator.share({url: p.mediaUrl});
+        // Listen for real-time comments
+        loadComments(id);
+
+        // Bind Actions
+        document.getElementById('modal-user-link').onclick = () => openUserProfile(p.userName);
+        likeIcon.onclick = () => handleLike(id);
+        document.getElementById('share-icon').onclick = () => {
+            if(navigator.share) navigator.share({title: 'Hirauli Gallery', url: p.mediaUrl});
+        };
     };
 
     window.closeModal = () => {
@@ -160,43 +199,103 @@
         document.body.style.overflow = 'auto';
     };
 
-    // USER PROFILE FILTER (Key Feature)
+    // Like Handling with Transactions
+    window.handleLike = async (id) => {
+        if(!loggedUser) return alert("Please Login to like!");
+        
+        const likeRef = ref(db, `photos/${id}/likes/${loggedUser.uid}`);
+        const countRef = ref(db, `photos/${id}/likesCount`);
+        
+        const snap = await get(likeRef);
+        if(snap.exists()){
+            await remove(likeRef);
+            runTransaction(countRef, (c) => (c || 1) - 1);
+        } else {
+            await set(likeRef, loggedUser.displayName || "Anonymous");
+            runTransaction(countRef, (c) => (c || 0) + 1);
+        }
+    };
+
+    // "Liked By" List Logic
+    document.getElementById('modal-likes-count').onclick = async () => {
+        const id = document.getElementById('modal-img').dataset.id;
+        const snap = await get(ref(db, `photos/${id}/likes`));
+        const listDiv = document.getElementById('liked-users-list');
+        listDiv.innerHTML = '';
+
+        if(snap.exists()){
+            Object.values(snap.val()).forEach(name => {
+                listDiv.innerHTML += `
+                    <div class="liked-user-item">
+                        <div class="u-avatar" style="width:25px; height:25px; font-size:10px;">${name.charAt(0)}</div>
+                        <span>${name}</span>
+                    </div>`;
+            });
+            document.getElementById('liked-by-overlay').style.display = 'block';
+            document.getElementById('liked-by-modal').style.display = 'block';
+        }
+    };
+
+    window.closeLikedBy = () => {
+        document.getElementById('liked-by-overlay').style.display = 'none';
+        document.getElementById('liked-by-modal').style.display = 'none';
+    };
+
+    // Smart Comments Logic
+    function loadComments(postId) {
+        const cmtRef = ref(db, `photos/${postId}/comments`);
+        onValue(cmtRef, (snap) => {
+            const list = document.getElementById('comment-list');
+            list.innerHTML = '';
+            if(snap.exists()){
+                Object.values(snap.val()).forEach(c => {
+                    const div = document.createElement('div');
+                    div.className = 'cmt-item';
+                    div.innerHTML = `<span class="cmt-user">${c.userName}</span>${c.text}`;
+                    list.appendChild(div);
+                });
+                list.scrollTop = list.scrollHeight;
+            }
+        });
+    }
+
+    document.getElementById('send-cmt-btn').onclick = async () => {
+        const input = document.getElementById('cmt-input-field');
+        const id = document.getElementById('modal-img').dataset.id;
+        if(!loggedUser) return alert("Login to comment");
+        if(!input.value.trim()) return;
+
+        const newCmtRef = push(ref(db, `photos/${id}/comments`));
+        await set(newCmtRef, {
+            userName: loggedUser.displayName || "User",
+            text: input.value.trim(),
+            timestamp: Date.now()
+        });
+        input.value = '';
+    };
+
+    // User Profile Filter
     window.openUserProfile = async (username) => {
         const profileView = document.getElementById('profile-view');
         const grid = document.getElementById('profile-gallery');
         document.getElementById('profile-title').innerText = `${username} की तस्वीरें`;
-        grid.innerHTML = '<p style="padding:20px;">खोज रहे हैं...</p>';
+        grid.innerHTML = '<p style="padding:20px;">Loading...</p>';
         profileView.style.display = 'block';
 
-        // Filter Photos by Name
-        const photoQuery = query(ref(db, 'photos'), orderByChild('userName'), equalTo(username));
-        const snap = await get(photoQuery);
-        
+        const q = query(ref(db, 'photos'), orderByChild('userName'), equalTo(username));
+        const snap = await get(q);
         grid.innerHTML = '';
         if(snap.exists()){
-            Object.values(snap.val()).reverse().forEach(p => {
-                grid.innerHTML += `<div class="photo-item"><img src="${p.mediaUrl}"></div>`;
+            Object.keys(snap.val()).reverse().forEach(key => {
+                const p = snap.val()[key];
+                grid.innerHTML += `<div class="photo-item" onclick="openModal('${key}')"><img src="${p.mediaUrl}"></div>`;
             });
         } else {
-            grid.innerHTML = "<p style='padding:20px;'>कोई पोस्ट नहीं मिली।</p>";
+            grid.innerHTML = "<p style='padding:20px;'>No posts found.</p>";
         }
     };
 
     window.closeProfile = () => document.getElementById('profile-view').style.display = 'none';
-
-    window.handleLike = async (id) => {
-        if(!loggedUser) return alert("Login to like!");
-        const lRef = ref(db, `photos/${id}/likes/${loggedUser.uid}`);
-        const cRef = ref(db, `photos/${id}/likesCount`);
-        const snap = await get(lRef);
-        const count = (await get(cRef)).val() || 0;
-
-        if(snap.exists()){
-            await remove(lRef); await set(cRef, Math.max(0, count - 1));
-        } else {
-            await set(lRef, loggedUser.displayName); await set(cRef, count + 1);
-        }
-    };
 
 </script>
 </body>
