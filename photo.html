@@ -220,7 +220,7 @@ transition:0.3s;
 <body>
 
 <div class="header">
-<h2>🏡 Hirauli Gallery</h2>
+<h2>Gallery</h2>
 <button style="font-size:20px;" class="upload-btn" onclick="openUpload()">+</button>
 </div>
 
@@ -229,8 +229,8 @@ transition:0.3s;
 <div id="feedModal" class="feed-modal">
 
 <div class="feed-header">
-<button class="upload-btn" onclick="closeFeed()" style="background:#eee;margin-right:15px;"><</button>
-<h3>All Posts</h3>
+<button class="upload-btn" onclick="closeFeed()" style="background:;margin-right:15px;font-size:25px"><</button>
+<h3>Posts</h3>
 </div>
 
 <div id="feedContainer"></div>
@@ -243,9 +243,9 @@ transition:0.3s;
 
 <h3>New Upload</h3>
 
-<input type="text" id="titleInput" placeholder="Caption" style="width:94%;padding:10px;margin-bottom:10px;">
+<input type="text" id="titleInput" placeholder="Caption" style="width:94%;padding:10px;margin-bottom:10px;borfer-radius:10px">
 
-<input type="file" id="fileInput" accept="image/*,video/*">
+<input type="file" id="fileInput" accept="image/*,video/*"  style="width:94%;padding:10px;margin-bottom:10px;borfer-radius:10px">
 
 <div id="preview" style="margin-top:10px;text-align:center;"></div>
 
@@ -256,7 +256,7 @@ transition:0.3s;
 <p id="progressText" style="font-size:12px;text-align:center;color:#666;"></p>
 
 <div style="margin-top:20px;display:flex;gap:10px;">
-<button onclick="handleUpload()" id="upBtn" style="flex:1;padding:12px;background:#061188;color:white;border:none;border-radius:5px;font-weight:bold;">Upload Now</button>
+<button onclick="handleUpload()" id="upBtn" style="flex:1;padding:12px;background:#061188;color:white;border:none;border-radius:5px;font-weight:bold;">Share</button>
 <button onclick="closeUpload()" style="flex:1;padding:12px;background:#ddd;border:none;border-radius:5px;">Cancel</button>
 </div>
 
