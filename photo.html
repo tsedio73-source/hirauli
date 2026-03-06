@@ -508,7 +508,12 @@ const list=document.getElementById("comments_"+postId);
 const div=document.createElement("div");
 div.className="comment";
 
-div.innerHTML="<b>"+currentUser.displayName+"</b> "+text;
+div.innerHTML=`
+<b>${currentUser.displayName}</b>
+<span style="color:#777;font-size:12px;"> just now</span>
+<br>
+${text}
+`;
 
 list.appendChild(div);
 
@@ -526,13 +531,15 @@ document.body.removeChild(a);
 
 };
 
-window.shareMedia=(url,title)=>{
+window.shareMedia = (url, title) => {
+
+const shareText = title || "Hirauli Gallery Post";
 
 if(navigator.share){
 
 navigator.share({
 title:"Hirauli Gallery",
-text:title,
+text:shareText,
 url:url
 });
 
@@ -544,6 +551,28 @@ alert("Link copied");
 }
 
 };
+
+function timeAgo(timestamp){
+
+const seconds = Math.floor((Date.now() - timestamp) / 1000);
+
+let interval = Math.floor(seconds / 31536000);
+if(interval >= 1) return interval + "y ago";
+
+interval = Math.floor(seconds / 2592000);
+if(interval >= 1) return interval + "mo ago";
+
+interval = Math.floor(seconds / 86400);
+if(interval >= 1) return interval + "d ago";
+
+interval = Math.floor(seconds / 3600);
+if(interval >= 1) return interval + "h ago";
+
+interval = Math.floor(seconds / 60);
+if(interval >= 1) return interval + "m ago";
+
+return "just now";
+}
 
 window.handleUpload=()=>{
 
