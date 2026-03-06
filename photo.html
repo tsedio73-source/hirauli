@@ -309,8 +309,20 @@ const UPLOAD_PRESET="News_upload";
 let currentUser=null;
 let allPosts={};
 
+onAuthStateChanged(auth,user=>{
+
+if(!user){
+
 signInAnonymously(auth);
 
+}else{
+
+currentUser=user;
+loadGallery();
+
+}
+
+});
 onAuthStateChanged(auth,user=>{
 currentUser=user;
 loadGallery();
@@ -430,9 +442,17 @@ onclick="downloadMedia('${p.mediaUrl}')"></i>
 <div class="comments-list" id="comments_${pid}">
 
 ${p.comments?Object.values(p.comments).map(c=>
-`<div class="comment"><b>${c.user}</b> ${c.text}</div>`
-).join(""):""}
+`<div class="comment">
 
+<b>${c.user}</b>
+<span style="color:#777;font-size:12px;">
+${timeAgo(c.time)}
+</span>
+<br>
+${c.text}
+
+</div>`
+).join(""):""}
 </div>
 
 <div class="comment-input-group">
@@ -494,15 +514,15 @@ alert("Please login with Gmail to comment");
 return;
 }
 
-const input=document.getElementById("input_"+postId);
-const text=input.value.trim();
+const input = document.getElementById("input_"+postId);
+const text = input.value.trim();
 
 if(!text) return;
 
 await push(ref(db,"photos/"+postId+"/comments"),{
 
 text:text,
-user:currentUser.displayName,
+user:currentUser.displayName || "User",
 time:Date.now()
 
 });
@@ -510,23 +530,7 @@ time:Date.now()
 input.value="";
 
 };
-const list=document.getElementById("comments_"+postId);
 
-const div=document.createElement("div");
-div.className="comment";
-
-div.innerHTML=`
-<b>${currentUser.displayName}</b>
-<span style="color:#777;font-size:12px;"> just now</span>
-<br>
-${text}
-`;
-
-list.appendChild(div);
-
-input.value="";
-
-};
 window.downloadMedia=(url)=>{
 
 const a=document.createElement("a");
