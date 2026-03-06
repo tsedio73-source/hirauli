@@ -385,10 +385,17 @@ post.id="feed_"+pid;
 
 post.innerHTML=`
 
-<div style="padding:12px;font-weight:bold;">
-<i class="fas fa-user-circle"></i> ${p.userName}
-</div>
+<div style="padding:12px;font-weight:bold;display:flex;justify-content:space-between;align-items:center;">
 
+<span>
+<i class="fas fa-user-circle"></i> ${p.userName}
+</span>
+
+<span style="font-size:12px;color:#777;">
+${timeAgo(p.timestamp)}
+</span>
+
+</div>
 <div class="media-wrapper">
 
 ${p.title?`<div class="post-title">${p.title}</div>`:""}
@@ -562,6 +569,9 @@ if(interval >= 1) return interval + "y ago";
 interval = Math.floor(seconds / 2592000);
 if(interval >= 1) return interval + "mo ago";
 
+interval = Math.floor(seconds / 604800);
+if(interval >= 1) return interval + "w ago";
+
 interval = Math.floor(seconds / 86400);
 if(interval >= 1) return interval + "d ago";
 
@@ -573,18 +583,6 @@ if(interval >= 1) return interval + "m ago";
 
 return "just now";
 }
-
-window.handleUpload=()=>{
-
-if(!currentUser){
-alert("Login required");
-return;
-}
-
-uploadToCloudinary();
-
-};
-
 async function uploadToCloudinary(){
 
 const file=document.getElementById("fileInput").files[0];
