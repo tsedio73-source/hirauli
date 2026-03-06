@@ -1,249 +1,589 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hirauli Gallery - Fixed</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        html { scroll-behavior: smooth; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2ff; margin: 0; padding-bottom: 80px; }
-        
-        .header { background: #061188; color: white; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
-        .upload-btn { background: white; color: #061188; border: none; padding: 8px 18px; border-radius: 20px; cursor: pointer; font-weight: bold; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hirauli Gallery</title>
 
-        /* Grid UI */
-        #gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; max-width: 800px; margin: auto; padding: 3px; }
-        .photo { aspect-ratio: 1/1; overflow: hidden; position: relative; cursor: pointer; background: #000; }
-        .photo img, .photo video { width: 100%; height: 100%; object-fit: cover; }
-        
-        /* Fixed Video Thumbnail */
-        video { background: #000; }
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-        /* Modals */
-        .feed-modal { position: fixed; inset: 0; background: white; z-index: 5000; display: none; overflow-y: auto; }
-        .feed-modal.open { display: block; }
-        .feed-header { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #eee; position: sticky; top: 0; background: white; z-index: 10; }
-        
-        /* Post Styling */
-        .feed-post { max-width: 600px; margin: 0 auto 20px; border-bottom: 1px solid #eee; background: #fff; }
-        .media-container { background: black; width: 100%; min-height: 300px; display: flex; align-items: center; }
-        .media-container img, .media-container video { width: 100%; max-height: 80vh; object-fit: contain; }
+<style>
 
-        /* Actions - Share & Download Icons */
-        .feed-actions { padding: 12px 15px; display: flex; gap: 20px; font-size: 24px; color: #333; }
-        .feed-actions i { cursor: pointer; transition: 0.2s; }
-        .feed-actions i:hover { color: #061188; }
-        .heart.liked { color: #e74c3c; }
+html{scroll-behavior:smooth;}
 
-        /* Comment Section */
-        .comment-area { padding: 10px 15px; border-top: 1px solid #f9f9f9; }
-        .comment-input-group { display: flex; gap: 10px; margin-top: 10px; }
-        .comment-input-group input { flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 5px; outline: none; }
-        .comment-input-group button { background: #061188; color: white; border: none; padding: 5px 15px; border-radius: 5px; }
+body{
+font-family:'Segoe UI',Arial;
+background:#f0f2ff;
+margin:0;
+padding-bottom:80px;
+}
 
-        /* Upload Modal */
-        .uploadModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 6000; align-items: center; justify-content: center; }
-        .uploadModal.open { display: flex; }
-        .sheet { background: white; padding: 20px; border-radius: 12px; width: 90%; max-width: 400px; }
-        
-        #progBox { width: 100%; height: 8px; background: #eee; border-radius: 10px; margin: 15px 0; display: none; overflow: hidden; }
-        #progressBar { height: 100%; width: 0%; background: #061188; transition: 0.3s; }
-    </style>
+.header{
+background:#061188;
+color:white;
+padding:14px 20px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+position:sticky;
+top:0;
+z-index:1000;
+}
+
+.upload-btn{
+background:white;
+color:#061188;
+border:none;
+padding:8px 18px;
+border-radius:20px;
+cursor:pointer;
+font-weight:bold;
+}
+
+#gallery{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:3px;
+max-width:800px;
+margin:auto;
+padding:3px;
+}
+
+.photo{
+aspect-ratio:1/1;
+overflow:hidden;
+position:relative;
+cursor:pointer;
+background:#000;
+}
+
+.photo img,
+.photo video{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+.feed-modal{
+position:fixed;
+inset:0;
+background:white;
+z-index:5000;
+display:none;
+overflow-y:auto;
+}
+
+.feed-modal.open{display:block;}
+
+.feed-header{
+display:flex;
+align-items:center;
+padding:15px;
+border-bottom:1px solid #eee;
+position:sticky;
+top:0;
+background:white;
+z-index:10;
+}
+
+.feed-post{
+max-width:600px;
+margin:0 auto 20px;
+border-bottom:1px solid #eee;
+background:#fff;
+}
+
+.media-wrapper{position:relative;}
+
+.post-title{
+position:absolute;
+top:0;
+left:0;
+right:0;
+padding:10px;
+background:linear-gradient(to bottom,rgba(0,0,0,0.7),transparent);
+color:white;
+font-weight:bold;
+font-size:15px;
+z-index:5;
+}
+
+.media-container{
+background:black;
+width:100%;
+min-height:300px;
+display:flex;
+align-items:center;
+}
+
+.media-container img,
+.media-container video{
+width:100%;
+max-height:80vh;
+object-fit:contain;
+}
+
+.feed-actions{
+padding:12px 15px;
+display:flex;
+gap:20px;
+font-size:24px;
+color:#333;
+}
+
+.feed-actions i{
+cursor:pointer;
+transition:0.2s;
+}
+
+.feed-actions i:hover{color:#061188;}
+
+.heart.liked{color:#e74c3c;}
+
+.comment-area{
+padding:10px 15px;
+border-top:1px solid #f9f9f9;
+}
+
+.comments-list{
+font-size:14px;
+margin-top:8px;
+}
+
+.comment{
+padding:4px 0;
+border-bottom:1px solid #eee;
+}
+
+.comment-input-group{
+display:flex;
+gap:10px;
+margin-top:10px;
+}
+
+.comment-input-group input{
+flex:1;
+padding:8px;
+border:1px solid #ddd;
+border-radius:5px;
+outline:none;
+}
+
+.comment-input-group button{
+background:#061188;
+color:white;
+border:none;
+padding:5px 15px;
+border-radius:5px;
+}
+
+.uploadModal{
+display:none;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,0.8);
+z-index:6000;
+align-items:center;
+justify-content:center;
+}
+
+.uploadModal.open{display:flex;}
+
+.sheet{
+background:white;
+padding:20px;
+border-radius:12px;
+width:90%;
+max-width:400px;
+}
+
+#progBox{
+width:100%;
+height:8px;
+background:#eee;
+border-radius:10px;
+margin:15px 0;
+display:none;
+overflow:hidden;
+}
+
+#progressBar{
+height:100%;
+width:0%;
+background:#061188;
+transition:0.3s;
+}
+
+</style>
 </head>
+
 <body>
 
-    <div class="header">
-        <h2>🏡 Hirauli Gallery</h2>
-        <button class="upload-btn" onclick="openUpload()">Upload</button>
-    </div>
+<div class="header">
+<h2>🏡 Hirauli Gallery</h2>
+<button class="upload-btn" onclick="openUpload()">Upload</button>
+</div>
 
-    <div id="gallery"></div>
+<div id="gallery"></div>
 
-    <div id="feedModal" class="feed-modal">
-        <div class="feed-header">
-            <button class="upload-btn" onclick="closeFeed()" style="background:#eee; margin-right:15px;">← Back</button>
-            <h3>All Posts</h3>
-        </div>
-        <div id="feedContainer"></div>
-    </div>
+<div id="feedModal" class="feed-modal">
 
-    <div class="uploadModal" id="uploadModal">
-        <div class="sheet">
-            <h3>New Upload</h3>
-            <input type="text" id="titleInput" placeholder="Caption likho..." style="width:94%; padding:10px; margin-bottom:10px;">
-            <input type="file" id="fileInput" accept="image/*,video/*">
-            <div id="preview" style="margin-top:10px; text-align:center;"></div>
-            
-            <div id="progBox"><div id="progressBar"></div></div>
-            <p id="progressText" style="font-size:12px; text-align:center; color:#666;"></p>
+<div class="feed-header">
+<button class="upload-btn" onclick="closeFeed()" style="background:#eee;margin-right:15px;">← Back</button>
+<h3>All Posts</h3>
+</div>
 
-            <div style="margin-top:20px; display:flex; gap:10px;">
-                <button onclick="handleUpload()" id="upBtn" style="flex:1; padding:12px; background:#061188; color:white; border:none; border-radius:5px; font-weight:bold;">Upload Now</button>
-                <button onclick="closeUpload()" style="flex:1; padding:12px; background:#ddd; border:none; border-radius:5px;">Cancel</button>
-            </div>
-        </div>
-    </div>
+<div id="feedContainer"></div>
 
-    <script type="module">
-        // Firebase Config (Same as your previous one)
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, onValue, push, set, query, orderByChild } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-        import { getAuth, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+</div>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyArtybAAgMFeLv1K9b_0GhSh66oYWuDLco",
-            authDomain: "news-82329.firebaseapp.com",
-            databaseURL: "https://news-82329-default-rtdb.firebaseio.com",
-            projectId: "news-82329",
-            storageBucket: "news-82329.appspot.com",
-        };
+<div class="uploadModal" id="uploadModal">
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        const auth = getAuth(app);
-        const CLOUD_NAME = "dnrtx7xgp";
-        const UPLOAD_PRESET = "News_upload";
+<div class="sheet">
 
-        let currentUser = null;
-        let allPosts = {};
+<h3>New Upload</h3>
 
-        onAuthStateChanged(auth, user => { currentUser = user; loadGallery(); });
+<input type="text" id="titleInput" placeholder="Caption likho..." style="width:94%;padding:10px;margin-bottom:10px;">
 
-        // 1. Load Gallery with Video Thumbnails
-        function loadGallery() {
-            onValue(query(ref(db, "photos"), orderByChild("timestamp")), (snap) => {
-                const g = document.getElementById("gallery");
-                g.innerHTML = "";
-                if (!snap.exists()) return;
-                allPosts = snap.val();
-                Object.keys(allPosts).reverse().forEach(id => {
-                    const p = allPosts[id];
-                    const div = document.createElement("div");
-                    div.className = "photo";
-                    // #t=0.5 makes sure the video thumbnail is visible
-                    div.innerHTML = p.mediaType === "video" 
-                        ? `<video src="${p.mediaUrl}#t=0.5" preload="metadata"></video>` 
-                        : `<img src="${p.mediaUrl}" loading="lazy">`;
-                    div.onclick = () => openFeed(id);
-                    g.appendChild(div);
-                });
-            });
-        }
+<input type="file" id="fileInput" accept="image/*,video/*">
 
-        // 2. Open Feed with Share & Download
-        window.openFeed = (id) => {
-            const modal = document.getElementById("feedModal");
-            const container = document.getElementById("feedContainer");
-            container.innerHTML = "";
-            modal.classList.add("open");
+<div id="preview" style="margin-top:10px;text-align:center;"></div>
 
-            Object.keys(allPosts).reverse().forEach(pid => {
-                const p = allPosts[pid];
-                const post = document.createElement("div");
-                post.className = "feed-post";
-                post.id = "feed_" + pid;
-                post.innerHTML = `
-                    <div style="padding:12px; font-weight:bold;"><i class="fas fa-user-circle"></i> ${p.userName}</div>
-                    <div class="media-container">
-                        ${p.mediaType === 'video' ? `<video src="${p.mediaUrl}" controls></video>` : `<img src="${p.mediaUrl}">`}
-                    </div>
-                    <div class="feed-actions">
-                        <i class="far fa-heart" title="Like"></i>
-                        <i class="fas fa-share-alt" onclick="window.shareMedia('${p.mediaUrl}', '${p.title}')" title="Share"></i>
-                        <i class="fas fa-download" onclick="window.downloadMedia('${p.mediaUrl}')" title="Download"></i>
-                    </div>
-                    <div class="comment-area">
-                        <p><b>${p.likesCount || 0} likes</b></p>
-                        <p>${p.title || ''}</p>
-                        <div class="comment-input-group">
-                            <input type="text" placeholder="Add a comment...">
-                            <button>Post</button>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(post);
-            });
-            setTimeout(() => document.getElementById("feed_" + id).scrollIntoView(), 200);
-        };
+<div id="progBox">
+<div id="progressBar"></div>
+</div>
 
-        // 3. Fixed Download Function
-        window.downloadMedia = async (url) => {
-            try {
-                const response = await fetch(url);
-                const blob = await response.blob();
-                const blobUrl = window.URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                a.href = blobUrl;
-                a.download = "Hirauli_Gallery_" + Date.now();
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-            } catch (err) {
-                alert("Download failed. Try opening link in browser.");
-            }
-        };
+<p id="progressText" style="font-size:12px;text-align:center;color:#666;"></p>
 
-        // 4. Fixed Share Function
-        window.shareMedia = (url, title) => {
-            if (navigator.share) {
-                navigator.share({ title: 'Hirauli Gallery', text: title, url: url });
-            } else {
-                navigator.clipboard.writeText(url);
-                alert("Link copied to clipboard!");
-            }
-        };
+<div style="margin-top:20px;display:flex;gap:10px;">
+<button onclick="handleUpload()" id="upBtn" style="flex:1;padding:12px;background:#061188;color:white;border:none;border-radius:5px;font-weight:bold;">Upload Now</button>
+<button onclick="closeUpload()" style="flex:1;padding:12px;background:#ddd;border:none;border-radius:5px;">Cancel</button>
+</div>
 
-        // 5. Auth Guard for Upload
-        window.handleUpload = () => {
-            if (!currentUser) {
-                alert("Please login first to upload media!");
-                // Yahan aap apna login function trigger kar sakte hain
-                return;
-            }
-            uploadToCloudinary();
-        };
+</div>
 
-        async function uploadToCloudinary() {
-            const file = document.getElementById("fileInput").files[0];
-            if (!file) return alert("Select file");
+</div>
 
-            const progBox = document.getElementById("progBox");
-            const progBar = document.getElementById("progressBar");
-            progBox.style.display = "block";
+<script type="module">
 
-            const fd = new FormData();
-            fd.append("file", file);
-            fd.append("upload_preset", UPLOAD_PRESET);
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 
-            const xhr = new XMLHttpRequest();
-            const type = file.type.startsWith("video") ? "video" : "image";
-            xhr.open("POST", `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/${type}/upload`);
+import {
+getDatabase,
+ref,
+onValue,
+push,
+set,
+update,
+get,
+query,
+orderByChild
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-            xhr.upload.onprogress = (e) => {
-                const p = Math.round((e.loaded / e.total) * 100);
-                progBar.style.width = p + "%";
-                document.getElementById("progressText").innerText = p + "% Uploaded";
-            };
+import {
+getAuth,
+onAuthStateChanged,
+signInAnonymously
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-            xhr.onload = async () => {
-                const res = JSON.parse(xhr.responseText);
-                await push(ref(db, "photos"), {
-                    title: document.getElementById("titleInput").value,
-                    mediaUrl: res.secure_url,
-                    mediaType: type,
-                    userName: currentUser.displayName || "User",
-                    timestamp: Date.now(),
-                    likesCount: 0
-                });
-                closeUpload();
-            };
-            xhr.send(fd);
-        }
+const firebaseConfig={
+apiKey:"AIzaSyArtybAAgMFeLv1K9b_0GhSh66oYWuDLco",
+authDomain:"news-82329.firebaseapp.com",
+databaseURL:"https://news-82329-default-rtdb.firebaseio.com",
+projectId:"news-82329",
+storageBucket:"news-82329.appspot.com",
+};
 
-        window.closeFeed = () => document.getElementById("feedModal").classList.remove("open");
-        window.openUpload = () => document.getElementById("uploadModal").classList.add("open");
-        window.closeUpload = () => document.getElementById("uploadModal").classList.remove("open");
-    </script>
+const app=initializeApp(firebaseConfig);
+const db=getDatabase(app);
+const auth=getAuth(app);
+
+const CLOUD_NAME="dnrtx7xgp";
+const UPLOAD_PRESET="News_upload";
+
+let currentUser=null;
+let allPosts={};
+
+signInAnonymously(auth);
+
+onAuthStateChanged(auth,user=>{
+currentUser=user;
+loadGallery();
+});
+
+function loadGallery(){
+
+onValue(query(ref(db,"photos"),orderByChild("timestamp")),(snap)=>{
+
+const g=document.getElementById("gallery");
+g.innerHTML="";
+
+if(!snap.exists())return;
+
+allPosts=snap.val();
+
+Object.keys(allPosts).reverse().forEach(id=>{
+
+const p=allPosts[id];
+
+const div=document.createElement("div");
+div.className="photo";
+
+div.innerHTML=p.mediaType==="video"
+?`<video src="${p.mediaUrl}#t=0.5" preload="metadata"></video>`
+:`<img src="${p.mediaUrl}" loading="lazy">`;
+
+div.onclick=()=>openFeed(id);
+
+g.appendChild(div);
+
+});
+
+});
+
+}
+
+window.openFeed=(id)=>{
+
+const modal=document.getElementById("feedModal");
+const container=document.getElementById("feedContainer");
+
+container.innerHTML="";
+
+modal.classList.add("open");
+
+Object.keys(allPosts).reverse().forEach(pid=>{
+
+const p=allPosts[pid];
+
+const post=document.createElement("div");
+post.className="feed-post";
+post.id="feed_"+pid;
+
+post.innerHTML=`
+
+<div style="padding:12px;font-weight:bold;">
+<i class="fas fa-user-circle"></i> ${p.userName}
+</div>
+
+<div class="media-wrapper">
+
+${p.title?`<div class="post-title">${p.title}</div>`:""}
+
+<div class="media-container">
+
+${p.mediaType==="video"
+?`<video src="${p.mediaUrl}" controls></video>`
+:`<img src="${p.mediaUrl}">`}
+
+</div>
+
+</div>
+
+<div class="feed-actions">
+
+<i class="far fa-heart heart ${p.likedBy&&p.likedBy[currentUser?.uid]?"liked":""}"
+onclick="likePost('${pid}',this)"></i>
+
+<i class="fas fa-share-alt"
+onclick="shareMedia('${p.mediaUrl}','${p.title}')"></i>
+
+<i class="fas fa-download"
+onclick="downloadMedia('${p.mediaUrl}')"></i>
+
+</div>
+
+<div class="comment-area">
+
+<p><b id="likes_${pid}">${p.likesCount||0} likes</b></p>
+
+<div class="comments-list" id="comments_${pid}">
+
+${p.comments?Object.values(p.comments).map(c=>
+`<div class="comment"><b>${c.user}</b> ${c.text}</div>`
+).join(""):""}
+
+</div>
+
+<div class="comment-input-group">
+<input type="text" id="input_${pid}" placeholder="Add a comment...">
+<button onclick="postComment('${pid}')">Post</button>
+</div>
+
+</div>
+
+`;
+
+container.appendChild(post);
+
+});
+
+setTimeout(()=>document.getElementById("feed_"+id).scrollIntoView(),200);
+
+};
+
+window.likePost=async(postId,el)=>{
+
+if(!currentUser)return;
+
+const postRef=ref(db,"photos/"+postId);
+
+const snap=await get(postRef);
+
+let data=snap.val();
+
+if(!data.likedBy)data.likedBy={};
+
+if(data.likedBy[currentUser.uid]){
+
+delete data.likedBy[currentUser.uid];
+data.likesCount=(data.likesCount||1)-1;
+el.classList.remove("liked");
+
+}else{
+
+data.likedBy[currentUser.uid]=true;
+data.likesCount=(data.likesCount||0)+1;
+el.classList.add("liked");
+
+}
+
+await update(postRef,{
+likesCount:data.likesCount,
+likedBy:data.likedBy
+});
+
+document.getElementById("likes_"+postId).innerText=data.likesCount+" likes";
+
+};
+
+window.postComment=async(postId)=>{
+
+const input=document.getElementById("input_"+postId);
+const text=input.value.trim();
+
+if(!text)return;
+
+await push(ref(db,"photos/"+postId+"/comments"),{
+text:text,
+user:currentUser?.displayName||"User",
+time:Date.now()
+});
+
+const list=document.getElementById("comments_"+postId);
+
+const div=document.createElement("div");
+div.className="comment";
+div.innerHTML="<b>User</b> "+text;
+
+list.appendChild(div);
+
+input.value="";
+
+};
+
+window.downloadMedia=(url)=>{
+
+const a=document.createElement("a");
+a.href=url;
+a.download="Hirauli_"+Date.now();
+document.body.appendChild(a);
+a.click();
+document.body.removeChild(a);
+
+};
+
+window.shareMedia=(url,title)=>{
+
+if(navigator.share){
+
+navigator.share({
+title:"Hirauli Gallery",
+text:title,
+url:url
+});
+
+}else{
+
+navigator.clipboard.writeText(url);
+alert("Link copied");
+
+}
+
+};
+
+window.handleUpload=()=>{
+
+if(!currentUser){
+alert("Login required");
+return;
+}
+
+uploadToCloudinary();
+
+};
+
+async function uploadToCloudinary(){
+
+const file=document.getElementById("fileInput").files[0];
+
+if(!file)return alert("Select file");
+
+const progBox=document.getElementById("progBox");
+const progBar=document.getElementById("progressBar");
+
+progBox.style.display="block";
+
+const fd=new FormData();
+fd.append("file",file);
+fd.append("upload_preset",UPLOAD_PRESET);
+
+const xhr=new XMLHttpRequest();
+
+const type=file.type.startsWith("video")?"video":"image";
+
+xhr.open("POST",`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/${type}/upload`);
+
+xhr.upload.onprogress=(e)=>{
+
+const p=Math.round((e.loaded/e.total)*100);
+
+progBar.style.width=p+"%";
+
+document.getElementById("progressText").innerText=p+"% Uploaded";
+
+};
+
+xhr.onload=async()=>{
+
+const res=JSON.parse(xhr.responseText);
+
+await push(ref(db,"photos"),{
+
+title:document.getElementById("titleInput").value,
+mediaUrl:res.secure_url,
+mediaType:type,
+userName:currentUser.displayName||"User",
+timestamp:Date.now(),
+likesCount:0
+
+});
+
+closeUpload();
+
+};
+
+xhr.send(fd);
+
+}
+
+window.closeFeed=()=>document.getElementById("feedModal").classList.remove("open");
+
+window.openUpload=()=>document.getElementById("uploadModal").classList.add("open");
+
+window.closeUpload=()=>document.getElementById("uploadModal").classList.remove("open");
+
+</script>
+
 </body>
 </html>
