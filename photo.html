@@ -490,11 +490,8 @@ document.getElementById("likes_"+postId).innerText=data.likesCount+" likes";
 window.postComment = async (postId)=>{
 
 if(!currentUser){
-
 alert("Please login with Gmail to comment");
-
 return;
-
 }
 
 const input=document.getElementById("input_"+postId);
@@ -510,6 +507,9 @@ time:Date.now()
 
 });
 
+input.value="";
+
+};
 const list=document.getElementById("comments_"+postId);
 
 const div=document.createElement("div");
