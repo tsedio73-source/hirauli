@@ -364,10 +364,11 @@ const p=allPosts[id];
 const div=document.createElement("div");
 div.className="photo";
 
-div.innerHTML = p.mediaType==="video"
- ? `<video src="${p.mediaUrl}#t=0.5" preload="metadata" muted playsinline></video>`
- : `<img src="${p.mediaUrl}" loading="lazy">`;
+const isVideo = p.mediaUrl.match(/\.(mp4|webm|ogg|mov)/i);
 
+div.innerHTML = isVideo
+ ? `<video src="${p.mediaUrl}" muted playsinline preload="metadata"></video>`
+ : `<img src="${p.mediaUrl}" loading="lazy">`;
 div.onclick=()=>openFeed(id);
 
 g.appendChild(div);
@@ -414,10 +415,9 @@ ${p.title?`<div class="post-title">${p.title}</div>`:""}
 
 <div class="media-container">
 
-${p.mediaType==="video"
-?`<video src="${p.mediaUrl}" controls></video>`
-:`<img src="${p.mediaUrl}">`}
-
+${p.mediaUrl.match(/\.(mp4|webm|ogg|mov)/i)
+ ? `<video src="${p.mediaUrl}" controls></video>`
+ : `<img src="${p.mediaUrl}">`}
 </div>
 
 </div>
