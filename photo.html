@@ -269,84 +269,38 @@ Share
 
 <script type="module">
 
-  import {
-GoogleAuthProvider,
-signInWithPopup
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-
-import {
-getDatabase,
-ref,
-onValue,
-push,
-set,
-update,
-get,
-query,
-orderByChild
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-import {
-getAuth,
-onAuthStateChanged,
-signInAnonymously
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getDatabase, ref, onValue, push, update, get, query, orderByChild } 
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getAuth, onAuthStateChanged, signInAnonymously } 
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig={
 apiKey:"AIzaSyArtybAAgMFeLv1K9b_0GhSh66oYWuDLco",
 authDomain:"news-82329.firebaseapp.com",
 databaseURL:"https://news-82329-default-rtdb.firebaseio.com",
 projectId:"news-82329",
-storageBucket:"news-82329.appspot.com",
+storageBucket:"news-82329.appspot.com"
 };
-const provider = new GoogleAuthProvider();
+
 const app=initializeApp(firebaseConfig);
 const db=getDatabase(app);
 const auth=getAuth(app);
 
 const CLOUD_NAME="dnrtx7xgp";
 const UPLOAD_PRESET="news_upload";
+
 let currentUser=null;
 let allPosts={};
 
 onAuthStateChanged(auth,user=>{
-
 if(!user){
-
 signInAnonymously(auth);
-
 }else{
-
 currentUser=user;
 loadGallery();
-
 }
-
 });
-onAuthStateChanged(auth,user=>{
-currentUser=user;
-loadGallery();
-});
-
-window.googleLogin = async () => {
-
-try{
-
-const result = await signInWithPopup(auth, provider);
-
-currentUser = result.user;
-
-alert("Login successful: " + currentUser.displayName);
-
-}catch(err){
-
-alert("Login failed");
-
-}
-
-};
 
 function loadGallery(){
 
@@ -355,7 +309,7 @@ onValue(query(ref(db,"photos"),orderByChild("timestamp")),(snap)=>{
 const g=document.getElementById("gallery");
 g.innerHTML="";
 
-if(!snap.exists())return;
+if(!snap.exists()) return;
 
 allPosts=snap.val();
 
@@ -366,11 +320,12 @@ const p=allPosts[id];
 const div=document.createElement("div");
 div.className="photo";
 
-const isVideo = p.mediaUrl.match(/\.(mp4|webm|ogg|mov)/i);
+const isVideo=p.mediaUrl.match(/\.(mp4|webm|ogg|mov)/i);
 
-div.innerHTML = isVideo
- ? `<video src="${p.mediaUrl}" muted playsinline preload="metadata"></video>`
- : `<img src="${p.mediaUrl}" loading="lazy">`;
+div.innerHTML=isVideo
+? `<video src="${p.mediaUrl}" muted playsinline preload="metadata"></video>`
+: `<img src="${p.mediaUrl}" loading="lazy">`;
+
 div.onclick=()=>openFeed(id);
 
 g.appendChild(div);
@@ -387,7 +342,6 @@ const modal=document.getElementById("feedModal");
 const container=document.getElementById("feedContainer");
 
 container.innerHTML="";
-
 modal.classList.add("open");
 
 Object.keys(allPosts).reverse().forEach(pid=>{
@@ -400,17 +354,11 @@ post.id="feed_"+pid;
 
 post.innerHTML=`
 
-<div style="padding:12px;font-weight:bold;display:flex;justify-content:space-between;align-items:center;">
-
-<span>
-<i class="fas fa-user-circle"></i> ${p.userName}
-</span>
-
-<span style="font-size:12px;color:#777;">
-${timeAgo(p.timestamp)}
-</span>
-
+<div style="padding:12px;font-weight:bold;display:flex;justify-content:space-between">
+<span><i class="fas fa-user-circle"></i> ${p.userName}</span>
+<span style="font-size:12px;color:#777">${timeAgo(p.timestamp)}</span>
 </div>
+
 <div class="media-wrapper">
 
 ${p.title?`<div class="post-title">${p.title}</div>`:""}
@@ -418,10 +366,10 @@ ${p.title?`<div class="post-title">${p.title}</div>`:""}
 <div class="media-container">
 
 ${p.mediaUrl.match(/\.(mp4|webm|ogg|mov)/i)
- ? `<video src="${p.mediaUrl}" controls></video>`
- : `<img src="${p.mediaUrl}">`}
-</div>
+? `<video src="${p.mediaUrl}" controls></video>`
+: `<img src="${p.mediaUrl}">`}
 
+</div>
 </div>
 
 <div class="feed-actions">
@@ -443,27 +391,24 @@ onclick="downloadMedia('${p.mediaUrl}')"></i>
 
 <div class="comments-list" id="comments_${pid}">
 
-${p.comments?Object.values(p.comments).map(c=>
-`<div class="comment">
+${p.comments?Object.values(p.comments).map(c=>`
 
+<div class="comment">
 <b>${c.user}</b>
-<span style="color:#777;font-size:12px;">
-${timeAgo(c.time)}
-</span>
-<br>
+<span style="color:#777;font-size:12px">${timeAgo(c.time)}</span><br>
 ${c.text}
+</div>
 
-</div>`
-).join(""):""}
+`).join(""):""}
+
 </div>
 
 <div class="comment-input-group">
-<input type="text" id="input_${pid}" placeholder="Add a comment...">
+<input type="text" id="input_${pid}" placeholder="Add comment">
 <button onclick="postComment('${pid}')">Post</button>
 </div>
 
 </div>
-
 `;
 
 container.appendChild(post);
@@ -479,9 +424,7 @@ window.likePost=async(postId,el)=>{
 if(!currentUser)return;
 
 const postRef=ref(db,"photos/"+postId);
-
 const snap=await get(postRef);
-
 let data=snap.val();
 
 if(!data.likedBy)data.likedBy={};
@@ -489,13 +432,15 @@ if(!data.likedBy)data.likedBy={};
 if(data.likedBy[currentUser.uid]){
 
 delete data.likedBy[currentUser.uid];
-data.likesCount=(data.likesCount||1)-1;
+data.likesCount--;
+
 el.classList.remove("liked");
 
 }else{
 
 data.likedBy[currentUser.uid]=true;
-data.likesCount=(data.likesCount||0)+1;
+data.likesCount++;
+
 el.classList.add("liked");
 
 }
@@ -509,22 +454,19 @@ document.getElementById("likes_"+postId).innerText=data.likesCount+" likes";
 
 };
 
-window.postComment = async (postId)=>{
+window.postComment=async(postId)=>{
 
-if(!currentUser){
-alert("Please login with Gmail to comment");
-return;
-}
+if(!currentUser) return alert("Login required");
 
-const input = document.getElementById("input_"+postId);
-const text = input.value.trim();
+const input=document.getElementById("input_"+postId);
+const text=input.value.trim();
 
 if(!text) return;
 
 await push(ref(db,"photos/"+postId+"/comments"),{
 
 text:text,
-user:currentUser.displayName || "User",
+user:currentUser.displayName||"User",
 time:Date.now()
 
 });
@@ -540,19 +482,17 @@ a.href=url;
 a.download="Hirauli_"+Date.now();
 document.body.appendChild(a);
 a.click();
-document.body.removeChild(a);
+a.remove();
 
 };
 
-window.shareMedia = (url, title) => {
-
-const shareText = title || "Hirauli Gallery Post";
+window.shareMedia=(url,title)=>{
 
 if(navigator.share){
 
 navigator.share({
 title:"Hirauli Gallery",
-text:shareText,
+text:title||"",
 url:url
 });
 
@@ -567,29 +507,29 @@ alert("Link copied");
 
 function timeAgo(timestamp){
 
-const seconds = Math.floor((Date.now() - timestamp) / 1000);
+const seconds=Math.floor((Date.now()-timestamp)/1000);
 
-let interval = Math.floor(seconds / 31536000);
-if(interval >= 1) return interval + "y ago";
+const intervals={
+y:31536000,
+mo:2592000,
+w:604800,
+d:86400,
+h:3600,
+m:60
+};
 
-interval = Math.floor(seconds / 2592000);
-if(interval >= 1) return interval + "mo ago";
+for(const k in intervals){
 
-interval = Math.floor(seconds / 604800);
-if(interval >= 1) return interval + "w ago";
+const v=Math.floor(seconds/intervals[k]);
+if(v>=1) return v+k+" ago";
 
-interval = Math.floor(seconds / 86400);
-if(interval >= 1) return interval + "d ago";
-
-interval = Math.floor(seconds / 3600);
-if(interval >= 1) return interval + "h ago";
-
-interval = Math.floor(seconds / 60);
-if(interval >= 1) return interval + "m ago";
+}
 
 return "just now";
+
 }
-window.uploadToCloudinary = async function(){
+
+window.uploadToCloudinary=async function(){
 
 const file=document.getElementById("fileInput").files[0];
 
@@ -611,7 +551,7 @@ const xhr=new XMLHttpRequest();
 
 xhr.open("POST",`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`);
 
-xhr.upload.onprogress=(e)=>{
+xhr.upload.onprogress=e=>{
 
 const p=Math.round((e.loaded/e.total)*100);
 progBar.style.width=p+"%";
@@ -643,41 +583,8 @@ xhr.send(fd);
 
 };
 
-xhr.onload=async()=>{
-
-const res=JSON.parse(xhr.responseText);
-
-await push(ref(db,"photos"),{
-
-title:document.getElementById("titleInput").value,
-mediaUrl:res.secure_url,
-mediaType:file.type.startsWith("video")?"video":"image",
-userName:currentUser.displayName||"User",
-timestamp:Date.now(),
-likesCount:0
-
-});
-
-closeUpload();
-
-};
-
-xhr.send(fd);
-
-};
-
-closeUpload();
-
-};
-
-xhr.send(fd);
-
-}
-
 window.closeFeed=()=>document.getElementById("feedModal").classList.remove("open");
-
 window.openUpload=()=>document.getElementById("uploadModal").classList.add("open");
-
 window.closeUpload=()=>document.getElementById("uploadModal").classList.remove("open");
 
 </script>
