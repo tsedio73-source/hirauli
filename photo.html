@@ -364,9 +364,9 @@ const p=allPosts[id];
 const div=document.createElement("div");
 div.className="photo";
 
-div.innerHTML=p.mediaType==="video"
-?`<video src="${p.mediaUrl}#t=0.5" preload="metadata"></video>`
-:`<img src="${p.mediaUrl}" loading="lazy">`;
+div.innerHTML = p.mediaType==="video"
+ ? `<video src="${p.mediaUrl}#t=0.5" preload="metadata" muted playsinline></video>`
+ : `<img src="${p.mediaUrl}" loading="lazy">`;
 
 div.onclick=()=>openFeed(id);
 
