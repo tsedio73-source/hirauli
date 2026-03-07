@@ -1,112 +1,259 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload Photo - Hirauli</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        body{
-        background-image: linear-gradient(45deg, #566789,#648737);
-       font-size: 30px;
-    }
-        :root { --primary:  #061188; --bg: #f8fafc; }
-        body { font-family: 'Poppins', sans-serif; margin: 0; padding: 20px; }
-        .card { background-image: linear-gradient(45deg, #8c99b5,#7d965c); width: 100%; max-width: 450px; padding: 25px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); text-align: center; margin: 0 auto; }
-        .u-info { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; background: #f1f5ff; padding: 10px; border-radius: 12px; }
-        .u-avatar { width: 40px; height: 40px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
-        .upload-area { border: 2px dashed #cbd5e1; padding: 30px; border-radius: 15px; cursor: pointer; margin-bottom: 20px; }
-        #preview-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
-        .preview-box { width: 100%; aspect-ratio: 1/1; border-radius: 8px; object-fit: cover; }
-        button { background: var(--primary); color: white; border: none; width: 100%; padding: 15px; border-radius: 12px; font-weight: 600; cursor: pointer; }
-        button:disabled { background: #94a3b8; }
-        #status { margin-top: 15px; font-size: 14px; display: none; padding: 10px; border-radius: 8px; }
-        .success { background: #dcfce7; color: #166534; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Upload Media - Hirauli</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+
+body{
+background-image: linear-gradient(45deg,#566789,#648737);
+font-family:'Poppins',sans-serif;
+margin:0;
+padding:20px;
+}
+
+:root{
+--primary:#061188;
+}
+
+.card{
+background-image: linear-gradient(45deg,#8c99b5,#7d965c);
+width:100%;
+max-width:450px;
+padding:25px;
+border-radius:20px;
+box-shadow:0 10px 20px rgba(0,0,0,0.05);
+text-align:center;
+margin:auto;
+}
+
+.u-info{
+display:flex;
+align-items:center;
+gap:10px;
+margin-bottom:20px;
+background:#f1f5ff;
+padding:10px;
+border-radius:12px;
+}
+
+.u-avatar{
+width:40px;
+height:40px;
+background:var(--primary);
+color:white;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:bold;
+}
+
+.upload-area{
+border:2px dashed #cbd5e1;
+padding:30px;
+border-radius:15px;
+cursor:pointer;
+margin-bottom:20px;
+}
+
+#preview-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:10px;
+margin-bottom:20px;
+}
+
+.preview-box{
+width:100%;
+aspect-ratio:1/1;
+border-radius:8px;
+object-fit:cover;
+}
+
+button{
+background:var(--primary);
+color:white;
+border:none;
+width:100%;
+padding:15px;
+border-radius:12px;
+font-weight:600;
+cursor:pointer;
+}
+
+button:disabled{
+background:#94a3b8;
+}
+
+#status{
+margin-top:15px;
+font-size:14px;
+display:none;
+padding:10px;
+border-radius:8px;
+}
+
+.success{
+background:#dcfce7;
+color:#166534;
+}
+
+</style>
 </head>
+
 <body>
 
 <div class="card">
-    <div class="u-info">
-        <div class="u-avatar" id="u-init">?</div>
-        <div style="font-weight:600;" id="u-name">Loading...</div>
-    </div>
-    <h3>Share Media</h3>
-    <div class="upload-area" onclick="document.getElementById('media-file').click()">
-        <i class="fas fa-image" style="font-size: 30px; color: var(--primary);"></i>
-        <p>Choose Photo or Video</p>
-    </div>
-    <input type="file" id="media-file" accept="image/*, video/*" multiple style="display: none;">
-    <div id="preview-grid"></div>
-    <button id="upload-btn">Publish</button>
-    <div id="status"></div>
+
+<div class="u-info">
+<div class="u-avatar" id="u-init">?</div>
+<div style="font-weight:600;" id="u-name">Loading...</div>
+</div>
+
+<h3>Share Media</h3>
+
+<div class="upload-area" onclick="document.getElementById('media-file').click()">
+<i class="fas fa-image" style="font-size:30px;color:#061188"></i>
+<p>Choose Photo or Video</p>
+</div>
+
+<input type="file" id="media-file" accept="image/*,video/*" multiple style="display:none">
+
+<div id="preview-grid"></div>
+
+<button id="upload-btn">Publish</button>
+
+<div id="status"></div>
+
 </div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-    const config = { apiKey: "AIzaSyArtybAAgMFeLv1K9b_0GhSh66oYWuDLco", databaseURL: "https://news-82329-default-rtdb.firebaseio.com" };
-    const app = initializeApp(config);
-    const db = getDatabase(app);
-    const auth = getAuth(app);
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-    let loggedUser = null;
-    let selectedFiles = [];
-
-    onAuthStateChanged(auth, (user) => {
-        if (user) { 
-            loggedUser = user; 
-            document.getElementById('u-name').innerText = user.displayName;
-            document.getElementById('u-init').innerText = user.displayName.charAt(0);
-        }
-    });
-
-    document.getElementById('media-file').addEventListener('change', function() {
-        selectedFiles = Array.from(this.files);
-        const grid = document.getElementById('preview-grid');
-        grid.innerHTML = '';
-        selectedFiles.forEach(file => {
-            const reader = new FileReader();
-            reader.onload = (e) => if(file.type.startsWith("video")){
-grid.innerHTML += `<video src="${e.target.result}" class="preview-box" muted></video>`;
-}else{
-grid.innerHTML += `<img src="${e.target.result}" class="preview-box">`;
+const config={
+apiKey:"AIzaSyArtybAAgMFeLv1K9b_0GhSh66oYWuDLco",
+databaseURL:"https://news-82329-default-rtdb.firebaseio.com"
 };
-            reader.readAsDataURL(file);
-        });
-    });
 
-    document.getElementById('upload-btn').addEventListener('click', async () => {
-        if (!selectedFiles.length || !loggedUser) return alert("Photo select karein aur login rahein!");
-        const btn = document.getElementById('upload-btn');
-        const status = document.getElementById('status');
-        btn.disabled = true;
-        status.style.display = 'block';
-        status.innerText = "Uploading...";
+const app=initializeApp(config);
+const db=getDatabase(app);
+const auth=getAuth(app);
 
-        for (let file of selectedFiles) {
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('upload_preset', "news_upload");
-            const res = await fetch(`https://api.cloudinary.com/v1_1/dnrtx7xgp/auto/upload`, { method: 'POST', body: formData });
-            const data = await res.json();
-            if (data.secure_url) {
-                await push(ref(db, 'photos'), {
-                    mediaUrl: data.secure_url,
-                    userName: loggedUser.displayName,
-                    timestamp: Date.now(),
-                    likesCount: 0
-                });
-            }
-        }
-        status.className = 'success';
-        status.innerText = "✅ Upload Successful!";
-        btn.disabled = false;
-        setTimeout(() => location.reload(), 2000);
-    });
+let loggedUser=null;
+let selectedFiles=[];
+
+onAuthStateChanged(auth,(user)=>{
+if(user){
+
+loggedUser=user;
+
+document.getElementById("u-name").innerText=user.displayName || "User";
+document.getElementById("u-init").innerText=(user.displayName || "U").charAt(0);
+
+}
+});
+
+document.getElementById("media-file").addEventListener("change",function(){
+
+selectedFiles=Array.from(this.files);
+
+const grid=document.getElementById("preview-grid");
+grid.innerHTML="";
+
+selectedFiles.forEach(file=>{
+
+const reader=new FileReader();
+
+reader.onload=(e)=>{
+
+if(file.type.startsWith("video")){
+
+grid.innerHTML+=`
+<video src="${e.target.result}" class="preview-box" muted></video>
+`;
+
+}else{
+
+grid.innerHTML+=`
+<img src="${e.target.result}" class="preview-box">
+`;
+
+}
+
+};
+
+reader.readAsDataURL(file);
+
+});
+
+});
+
+document.getElementById("upload-btn").addEventListener("click",async()=>{
+
+if(!selectedFiles.length || !loggedUser){
+
+alert("Photo select karein aur login rahein!");
+return;
+
+}
+
+const btn=document.getElementById("upload-btn");
+const status=document.getElementById("status");
+
+btn.disabled=true;
+status.style.display="block";
+status.innerText="Uploading...";
+
+for(let file of selectedFiles){
+
+const formData=new FormData();
+formData.append("file",file);
+formData.append("upload_preset","news_upload");
+
+const res=await fetch("https://api.cloudinary.com/v1_1/dnrtx7xgp/auto/upload",{
+method:"POST",
+body:formData
+});
+
+const data=await res.json();
+
+if(data.secure_url){
+
+await push(ref(db,"photos"),{
+
+mediaUrl:data.secure_url,
+mediaType:file.type.startsWith("video") ? "video" : "image",
+userName:loggedUser.displayName || "User",
+timestamp:Date.now(),
+likesCount:0
+
+});
+
+}
+
+}
+
+status.className="success";
+status.innerText="✅ Upload Successful!";
+
+btn.disabled=false;
+
+setTimeout(()=>{
+location.reload();
+},2000);
+
+});
+
 </script>
+
 </body>
 </html>
