@@ -70,7 +70,11 @@
         grid.innerHTML = '';
         selectedFiles.forEach(file => {
             const reader = new FileReader();
-            reader.onload = (e) => grid.innerHTML += `<img src="${e.target.result}" class="preview-box">`;
+            reader.onload = (e) => if(file.type.startsWith("video")){
+grid.innerHTML += `<video src="${e.target.result}" class="preview-box" muted></video>`;
+}else{
+grid.innerHTML += `<img src="${e.target.result}" class="preview-box">`;
+};
             reader.readAsDataURL(file);
         });
     });
@@ -87,7 +91,7 @@
             const formData = new FormData();
             formData.append('file', file);
             formData.append('upload_preset', "news_upload");
-            const res = await fetch(`https://api.cloudinary.com/v1_1/dnrtx7xgp/image/upload`, { method: 'POST', body: formData });
+            const res = await fetch(`https://api.cloudinary.com/v1_1/dnrtx7xgp/auto/upload`, { method: 'POST', body: formData });
             const data = await res.json();
             if (data.secure_url) {
                 await push(ref(db, 'photos'), {
