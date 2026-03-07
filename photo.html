@@ -307,8 +307,7 @@ const db=getDatabase(app);
 const auth=getAuth(app);
 
 const CLOUD_NAME="dnrtx7xgp";
-const UPLOAD_PRESET="News_upload";
-
+const UPLOAD_PRESET="news_upload";
 let currentUser=null;
 let allPosts={};
 
@@ -615,7 +614,6 @@ xhr.open("POST",`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`);
 xhr.upload.onprogress=(e)=>{
 
 const p=Math.round((e.loaded/e.total)*100);
-
 progBar.style.width=p+"%";
 
 document.getElementById("progressText").innerText=p+"% Uploaded";
@@ -644,6 +642,7 @@ closeUpload();
 xhr.send(fd);
 
 };
+
 xhr.onload=async()=>{
 
 const res=JSON.parse(xhr.responseText);
@@ -652,12 +651,20 @@ await push(ref(db,"photos"),{
 
 title:document.getElementById("titleInput").value,
 mediaUrl:res.secure_url,
-mediaType:type,
+mediaType:file.type.startsWith("video")?"video":"image",
 userName:currentUser.displayName||"User",
 timestamp:Date.now(),
 likesCount:0
 
 });
+
+closeUpload();
+
+};
+
+xhr.send(fd);
+
+};
 
 closeUpload();
 
