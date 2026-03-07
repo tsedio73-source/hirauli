@@ -590,11 +590,14 @@ if(interval >= 1) return interval + "m ago";
 
 return "just now";
 }
-async function uploadToCloudinary(){
+window.uploadToCloudinary = async function(){
 
 const file=document.getElementById("fileInput").files[0];
 
-if(!file)return alert("Select file");
+if(!file){
+alert("Select file");
+return;
+}
 
 const progBox=document.getElementById("progBox");
 const progBar=document.getElementById("progressBar");
@@ -607,9 +610,7 @@ fd.append("upload_preset",UPLOAD_PRESET);
 
 const xhr=new XMLHttpRequest();
 
-const type=file.type.startsWith("video")?"video":"image";
-
-xhr.open("POST",`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/${type}/upload`);
+xhr.open("POST",`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`);
 
 xhr.upload.onprogress=(e)=>{
 
@@ -621,6 +622,28 @@ document.getElementById("progressText").innerText=p+"% Uploaded";
 
 };
 
+xhr.onload=async()=>{
+
+const res=JSON.parse(xhr.responseText);
+
+await push(ref(db,"photos"),{
+
+title:document.getElementById("titleInput").value,
+mediaUrl:res.secure_url,
+mediaType:file.type.startsWith("video")?"video":"image",
+userName:currentUser.displayName||"User",
+timestamp:Date.now(),
+likesCount:0
+
+});
+
+closeUpload();
+
+};
+
+xhr.send(fd);
+
+};
 xhr.onload=async()=>{
 
 const res=JSON.parse(xhr.responseText);
