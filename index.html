@@ -196,7 +196,7 @@
 
 
     <div class="notice">
-<marquee style="color:#F4B01C;"  behaviour="scroll" direction="right" >.things more connect to unable will you otherwise account gmail the by login please First</marquee>
+<marquee id="adv" style="color:#F4B01C;"  behaviour="scroll" direction="right" >.things more connect to unable will you otherwise account gmail the by login please First</marquee>
         <marquee>This website is for educational purposes only. For any official work, use the government portal.</marquee>
     </div>
    <div class="slider">
@@ -347,7 +347,7 @@ setInterval(showNextSlide, 3000);
 
         window.protectedRoute = (path) => {
             if (auth.currentUser) { location.href = path; } 
-            else { alert("कृपया 'Add' फीचर इस्तेमाल करने के लिए पहले Google Login करें!"); toggleMenu(); }
+            else { alert("First Please Login before use of Add feature!"); toggleMenu(); }
         };
 
         onAuthStateChanged(auth, (user) => {
@@ -355,9 +355,12 @@ setInterval(showNextSlide, 3000);
             const logoutBtn = document.getElementById('logout-btn');
             const userImg = document.getElementById('user-img');
             const userName = document.getElementById('user-name');
+            const marquee = document.getElementById("adv");
 
             if (user) {
+                marquee.style.display = "none";
                 loginBtn.style.display = 'none';
+
                 logoutBtn.style.display = 'block';
                 userImg.src = user.photoURL;
                 userImg.style.display = 'block';
