@@ -222,6 +222,7 @@ transition:0.3s;
 <div class="header">
 <h2>Gallery</h2>
 <!--<button style="font-size:20px;" class="upload-btn" onclick="openUpload()">+</button>-->
+<span id="userName" style="font-weight: 500">As</span>
 </div>
 
 <div id="gallery"></div>
@@ -290,15 +291,18 @@ const auth=getAuth(app);
 const CLOUD_NAME="dnrtx7xgp";
 const UPLOAD_PRESET="news_upload";
 
-let currentUser=null;
+let   currentUser=null;
 let allPosts={};
+let userId = document.getElementById('userName');
 
 onAuthStateChanged(auth,user=>{
 if(!user){
 signInAnonymously(auth);
+loadGallery();
 }else{
 currentUser=user;
 loadGallery();
+userId.innerHTML = 'Hi,'+ currentUser;
 }
 });
 
