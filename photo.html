@@ -2,596 +2,1229 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Hirauli Gallery</title>
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
 
-html{scroll-behavior:smooth;}
-
-body{
-font-family:'Segoe UI',Arial;
-background:#f0f2ff;
-margin:0;
-padding-bottom:80px;
+:root {
+  --brand: #061188;
+  --brand-light: #1a2fd4;
+  --accent: #f04e30;
+  --bg: #f0f2ff;
+  --card: #ffffff;
+  --text: #111;
+  --muted: #777;
+  --border: #e8e8f0;
+  --radius: 14px;
 }
 
-.header{
-background:#061188;
-color:white;
-padding:14px 20px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-position:sticky;
-top:0;
-z-index:1000;
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: var(--bg);
+  min-height: 100vh;
+  padding-bottom: 80px;
+  overscroll-behavior-y: contain;
 }
 
-.upload-btn{
-background:white;
-color:#061188;
-border:none;
-padding:8px 18px;
-border-radius:20px;
-cursor:pointer;
-font-weight:bold;
+/* ─── HEADER ─── */
+.header {
+  background: var(--brand);
+  color: white;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 900;
+  box-shadow: 0 2px 12px rgba(6,17,136,.35);
 }
 
-#gallery{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:3px;
-max-width:800px;
-margin:auto;
-padding:3px;
+.header-left h2 {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: .5px;
 }
 
-.photo{
-aspect-ratio:1/1;
-overflow:hidden;
-position:relative;
-cursor:pointer;
-background:#000;
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.user-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,.15);
+  border-radius: 30px;
+  padding: 5px 12px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.user-badge .post-count {
+  background: white;
+  color: var(--brand);
+  border-radius: 20px;
+  padding: 1px 8px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.upload-icon-btn {
+  background: white;
+  color: var(--brand);
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  transition: transform .15s, box-shadow .15s;
+  box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+
+.upload-icon-btn:active { transform: scale(.92); }
+
+/* ─── PULL TO REFRESH ─── */
+#ptr-indicator {
+  text-align: center;
+  padding: 14px;
+  font-size: 13px;
+  color: var(--brand);
+  font-weight: 600;
+  display: none;
+  transition: all .3s;
+}
+
+#ptr-indicator i { margin-right: 6px; }
+
+/* ─── SELECT BAR ─── */
+#selectBar {
+  display: none;
+  background: var(--brand);
+  color: white;
+  padding: 10px 16px;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 56px;
+  z-index: 800;
+}
+
+#selectBar.visible { display: flex; }
+
+#selectBar span { font-weight: 600; font-size: 14px; }
+
+.select-actions { display: flex; gap: 10px; }
+
+.select-actions button {
+  background: rgba(255,255,255,.2);
+  border: none;
+  color: white;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.select-actions button:hover { background: rgba(255,255,255,.35); }
+
+/* ─── GALLERY GRID ─── */
+#gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2px;
+}
+
+.photo {
+  aspect-ratio: 1/1;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  background: #111;
 }
 
 .photo img,
-.photo video{
-width:100%;
-height:100%;
-object-fit:cover;
+.photo video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .3s;
 }
 
-.feed-modal{
-position:fixed;
-inset:0;
-background:white;
-z-index:5000;
-display:none;
-overflow-y:auto;
+.photo:hover img,
+.photo:hover video { transform: scale(1.05); }
+
+.photo .video-badge {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  background: rgba(0,0,0,.6);
+  color: white;
+  border-radius: 4px;
+  padding: 2px 5px;
+  font-size: 11px;
 }
 
-.feed-modal.open{display:block;}
-
-.feed-header{
-display:flex;
-align-items:center;
-padding:15px;
-border-bottom:1px solid #eee;
-position:sticky;
-top:0;
-background:white;
-z-index:10;
+.photo.selected::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(6,17,136,.45);
+  pointer-events: none;
 }
 
-.feed-post{
-max-width:600px;
-margin:0 auto 20px;
-border-bottom:1px solid #eee;
-background:#fff;
+.photo .check-icon {
+  display: none;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: var(--brand);
+  color: white;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  z-index: 5;
 }
 
-.media-wrapper{position:relative;}
+.photo.selected .check-icon { display: flex; }
 
-.post-title{
-position:absolute;
-top:0;
-left:0;
-right:0;
-padding:10px;
-background:linear-gradient(to bottom,rgba(0,0,0,0.7),transparent);
-color:white;
-font-weight:bold;
-font-size:15px;
-z-index:5;
+/* skeleton */
+.skeleton {
+  background: linear-gradient(90deg, #e0e0e8 25%, #f0f0f8 50%, #e0e0e8 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
 }
 
-.media-container{
-background:black;
-width:100%;
-min-height:300px;
-display:flex;
-align-items:center;
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ─── LOAD MORE ─── */
+#loadMoreBtn {
+  display: block;
+  margin: 18px auto;
+  background: var(--brand);
+  color: white;
+  border: none;
+  padding: 10px 28px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: .4px;
+}
+
+#loadMoreBtn:disabled {
+  background: #bbb;
+  cursor: default;
+}
+
+/* ─── FEED MODAL ─── */
+.feed-modal {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  z-index: 5000;
+  display: none;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.feed-modal.open { display: block; }
+
+.feed-header {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: var(--brand);
+  z-index: 10;
+  gap: 14px;
+  color: white;
+}
+
+.feed-header button {
+  background: rgba(255,255,255,.2);
+  border: none;
+  color: white;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-size: 17px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.feed-header h3 { font-size: 17px; font-weight: 700; }
+
+.feed-post {
+  max-width: 600px;
+  margin: 0 auto 6px;
+  border-bottom: 6px solid var(--bg);
+  background: var(--card);
+}
+
+.post-user-row {
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.post-user-row .uname {
+  font-weight: 700;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.post-user-row .uname i { color: var(--brand); }
+.post-user-row .tago { font-size: 12px; color: var(--muted); }
+
+.media-wrapper { position: relative; user-select: none; }
+
+.post-title-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  padding: 10px 12px;
+  background: linear-gradient(to bottom, rgba(0,0,0,.65), transparent);
+  color: white;
+  font-weight: 700;
+  font-size: 14px;
+  z-index: 3;
+}
+
+.media-container {
+  background: #000;
+  width: 100%;
+  min-height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }
 
 .media-container img,
-.media-container video{
-width:100%;
-max-height:80vh;
-object-fit:contain;
+.media-container video {
+  width: 100%;
+  max-height: 82vh;
+  object-fit: contain;
 }
 
-.feed-actions{
-padding:12px 15px;
-display:flex;
-gap:20px;
-font-size:24px;
-color:#333;
+/* double tap heart flash */
+.like-flash {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%) scale(0);
+  font-size: 80px;
+  color: white;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0;
+  transition: none;
 }
 
-.feed-actions i{
-cursor:pointer;
-transition:0.2s;
+.like-flash.show {
+  animation: heartPop .7s ease forwards;
 }
 
-.feed-actions i:hover{color:#061188;}
-
-.heart.liked{color:#e74c3c;}
-
-.comment-area{
-padding:10px 15px;
-border-top:1px solid #f9f9f9;
+@keyframes heartPop {
+  0%   { transform: translate(-50%,-50%) scale(0); opacity: 1; }
+  40%  { transform: translate(-50%,-50%) scale(1.3); opacity: 1; }
+  70%  { transform: translate(-50%,-50%) scale(1);   opacity: 1; }
+  100% { transform: translate(-50%,-50%) scale(1.1); opacity: 0; }
 }
 
-.comments-list{
-font-size:14px;
-margin-top:8px;
+.feed-actions {
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
 }
 
-.comment{
-padding:4px 0;
-border-bottom:1px solid #eee;
+.feed-actions .action-btn {
+  background: none;
+  border: none;
+  font-size: 22px;
+  color: #333;
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  transition: transform .15s, color .15s;
 }
 
-.comment-input-group{
-display:flex;
-gap:10px;
-margin-top:10px;
+.feed-actions .action-btn:active { transform: scale(.85); }
+.feed-actions .action-btn.heart.liked { color: #e74c3c; }
+.feed-actions .action-btn.heart.liked i::before { content: "\f004"; font-weight: 900; }
+
+.likes-count {
+  font-size: 13px;
+  font-weight: 700;
+  padding: 0 14px 6px;
 }
 
-.comment-input-group input{
-flex:1;
-padding:8px;
-border:1px solid #ddd;
-border-radius:5px;
-outline:none;
+.comment-area {
+  padding: 6px 14px 14px;
+  border-top: 1px solid #f5f5f5;
 }
 
-.comment-input-group button{
-background:#061188;
-color:white;
-border:none;
-padding:5px 15px;
-border-radius:5px;
+.comments-list { font-size: 13px; margin-top: 6px; max-height: 160px; overflow-y: auto; }
+
+.comment {
+  padding: 5px 0;
+  border-bottom: 1px solid #f8f8f8;
+  line-height: 1.4;
 }
 
-.uploadModal{
-display:none;
-position:fixed;
-inset:0;
-background:rgba(0,0,0,0.8);
-z-index:6000;
-align-items:center;
-justify-content:center;
+.comment .cuser { font-weight: 700; margin-right: 4px; }
+.comment .ctime { font-size: 11px; color: var(--muted); }
+
+.comment-input-group {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
 }
 
-.uploadModal.open{display:flex;}
-
-.sheet{
-background:white;
-padding:20px;
-border-radius:12px;
-width:90%;
-max-width:400px;
+.comment-input-group input {
+  flex: 1;
+  padding: 9px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 30px;
+  outline: none;
+  font-size: 13px;
+  background: #fafafa;
+  transition: border-color .2s;
 }
 
-#progBox{
-width:100%;
-height:8px;
-background:#eee;
-border-radius:10px;
-margin:15px 0;
-display:none;
-overflow:hidden;
+.comment-input-group input:focus { border-color: var(--brand); background: white; }
+
+.comment-input-group button {
+  background: var(--brand);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
 }
 
-#progressBar{
-height:100%;
-width:0%;
-background:#061188;
-transition:0.3s;
+/* ─── UPLOAD MODAL ─── */
+.upload-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.7);
+  z-index: 7000;
+  align-items: flex-end;
+  justify-content: center;
+  backdrop-filter: blur(4px);
 }
+
+.upload-modal.open { display: flex; }
+
+.upload-sheet {
+  background: white;
+  padding: 24px 20px 30px;
+  border-radius: 24px 24px 0 0;
+  width: 100%;
+  max-width: 480px;
+  animation: slideUp .3s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+.upload-sheet h3 {
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 18px;
+  color: var(--brand);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.upload-field {
+  margin-bottom: 14px;
+}
+
+.upload-field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  margin-bottom: 6px;
+}
+
+.upload-field input[type="text"] {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-size: 14px;
+  outline: none;
+  background: #fafafa;
+  transition: border-color .2s;
+}
+
+.upload-field input:focus { border-color: var(--brand); background: white; }
+
+.file-pick-area {
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 14px;
+  transition: border-color .2s, background .2s;
+  position: relative;
+}
+
+.file-pick-area:hover { border-color: var(--brand); background: #f5f7ff; }
+.file-pick-area i { font-size: 28px; color: var(--brand); margin-bottom: 6px; display: block; }
+.file-pick-area input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+
+#previewThumb {
+  margin-top: 12px;
+  text-align: center;
+  display: none;
+}
+
+#previewThumb img, #previewThumb video {
+  max-height: 140px;
+  border-radius: 10px;
+  max-width: 100%;
+}
+
+#progBox {
+  width: 100%;
+  height: 6px;
+  background: #eee;
+  border-radius: 10px;
+  margin: 12px 0 4px;
+  display: none;
+  overflow: hidden;
+}
+
+#progressBar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--brand), var(--brand-light));
+  border-radius: 10px;
+  transition: width .3s;
+}
+
+#progressText {
+  font-size: 12px;
+  color: var(--muted);
+  text-align: center;
+  min-height: 16px;
+}
+
+.upload-btns {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.upload-btns button {
+  flex: 1;
+  padding: 13px;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: opacity .15s;
+}
+
+.upload-btns button:active { opacity: .8; }
+
+#shareBtn { background: var(--brand); color: white; }
+#cancelBtn { background: #eee; color: #333; }
+
+/* ─── TOAST ─── */
+#toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: #111;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-weight: 600;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: all .3s;
+  white-space: nowrap;
+}
+
+#toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ─── EMPTY STATE ─── */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--muted);
+  grid-column: 1/-1;
+}
+
+.empty-state i { font-size: 48px; margin-bottom: 12px; color: #ccd; display: block; }
 
 </style>
 </head>
-
 <body>
 
+<!-- HEADER -->
 <div class="header">
-<h2>Gallery</h2>
-<!--<button style="font-size:20px;" class="upload-btn" onclick="openUpload()">+</button>-->
-<span id="userName" style="font-weight: 500">As</span>
+  <div class="header-left">
+    <h2><i class="fas fa-images" style="margin-right:7px;opacity:.85"></i>Hirauli</h2>
+  </div>
+  <div class="header-right">
+    <div class="user-badge">
+      <i class="fas fa-user-circle" style="font-size:15px"></i>
+      <span id="userNameDisplay">—</span>
+      <span class="post-count" id="postCount">0</span>
+    </div>
+    <button class="upload-icon-btn" onclick="openUpload()" title="Upload">
+      <i class="fas fa-plus"></i>
+    </button>
+  </div>
 </div>
 
+<!-- SELECT BAR -->
+<div id="selectBar">
+  <span id="selectCount">0 selected</span>
+  <div class="select-actions">
+    <button onclick="downloadSelected()"><i class="fas fa-download"></i> Download</button>
+    <button onclick="cancelSelect()"><i class="fas fa-times"></i> Cancel</button>
+  </div>
+</div>
+
+<!-- PULL TO REFRESH -->
+<div id="ptr-indicator"><i class="fas fa-sync-alt"></i> Refreshing…</div>
+
+<!-- GALLERY -->
 <div id="gallery"></div>
 
+<button id="loadMoreBtn" onclick="loadMore()" style="display:none">Load more</button>
+
+<!-- FEED MODAL -->
 <div id="feedModal" class="feed-modal">
-
-<div class="feed-header">
-<button class="upload-btn" onclick="closeFeed()" style="background:;margin-right:15px;font-size:25px"><</button>
-<h3>Posts</h3>
+  <div class="feed-header">
+    <button onclick="closeFeed()"><i class="fas fa-arrow-left"></i></button>
+    <h3>Posts</h3>
+  </div>
+  <div id="feedContainer"></div>
 </div>
 
-<div id="feedContainer"></div>
+<!-- UPLOAD MODAL -->
+<div class="upload-modal" id="uploadModal">
+  <div class="upload-sheet">
+    <h3><i class="fas fa-cloud-upload-alt"></i> New Upload</h3>
 
+    <div class="upload-field">
+      <label>Caption</label>
+      <input type="text" id="titleInput" placeholder="Write something…">
+    </div>
+
+    <div class="upload-field">
+      <label>Photo / Video</label>
+      <div class="file-pick-area" id="filePickArea">
+        <i class="fas fa-photo-film"></i>
+        <span id="fileLabel">Tap to choose image or video</span>
+        <input type="file" id="fileInput" accept="image/*,video/*" onchange="onFileChosen(event)">
+      </div>
+    </div>
+
+    <div id="previewThumb"></div>
+
+    <div id="progBox"><div id="progressBar"></div></div>
+    <p id="progressText"></p>
+
+    <div class="upload-btns">
+      <button id="shareBtn" onclick="uploadToCloudinary()"><i class="fas fa-share"></i> Share</button>
+      <button id="cancelBtn" onclick="closeUpload()"><i class="fas fa-times"></i> Cancel</button>
+    </div>
+  </div>
 </div>
 
-<div class="uploadModal" id="uploadModal">
-
-<div class="sheet">
-
-<h3>New Upload</h3>
-
-<input type="text" id="titleInput" placeholder="Caption" style="width:94%;padding:10px;margin-bottom:10px;borfer-radius:10px">
-
-<input type="file" id="fileInput" accept="image/*,video/*"  style="width:94%;padding:10px;margin-bottom:10px;borfer-radius:10px">
-
-<div id="preview" style="margin-top:10px;text-align:center;"></div>
-
-<div id="progBox">
-<div id="progressBar"></div>
-</div>
-
-<p id="progressText" style="font-size:12px;text-align:center;color:#666;"></p>
-
-<div style="margin-top:20px;display:flex;gap:10px;">
-<button onclick="uploadToCloudinary()" id="upBtn"
-style="flex:1;padding:12px;background:#061188;color:white;border:none;border-radius:5px;font-weight:bold;">
-Share
-</button>
-<button onclick="closeUpload()" style="flex:1;padding:12px;background:#ddd;border:none;border-radius:5px;">Cancel</button>
-</div>
-
-</div>
-
-</div>
+<div id="toast"></div>
 
 <script type="module">
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, onValue, push, update, get, query, orderByChild } 
-from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-import { getAuth, onAuthStateChanged, signInAnonymously } 
-from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { initializeApp }    from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, onValue, push, update, get, query, orderByChild, limitToLast }
+  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getAuth, onAuthStateChanged, signInAnonymously }
+  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-const firebaseConfig={
-apiKey:"AIzaSyArtybAAgMFeLv1K9b_0GhSh66oYWuDLco",
-authDomain:"news-82329.firebaseapp.com",
-databaseURL:"https://news-82329-default-rtdb.firebaseio.com",
-projectId:"news-82329",
-storageBucket:"news-82329.appspot.com"
+/* ── Firebase config ── */
+const firebaseConfig = {
+  apiKey: "AIzaSyArtybAAgMFeLv1K9b_0GhSh66oYWuDLco",
+  authDomain: "news-82329.firebaseapp.com",
+  databaseURL: "https://news-82329-default-rtdb.firebaseio.com",
+  projectId: "news-82329",
+  storageBucket: "news-82329.appspot.com"
 };
 
-const app=initializeApp(firebaseConfig);
-const db=getDatabase(app);
-const auth=getAuth(app);
+const app  = initializeApp(firebaseConfig);
+const db   = getDatabase(app);
+const auth = getAuth(app);
 
-const CLOUD_NAME="dnrtx7xgp";
-const UPLOAD_PRESET="news_upload";
+const CLOUD_NAME    = "dnrtx7xgp";
+const UPLOAD_PRESET = "news_upload";
 
-let   currentUser=null;
-let allPosts={};
-let userId = document.getElementById('userName');
+let currentUser = null;
+let allPostKeys  = [];   // ordered array of keys (newest first)
+let allPosts     = {};   // key → post data
+let renderedCount = 0;
+const PAGE_SIZE   = 15;
 
-onAuthStateChanged(auth,user=>{
-if(!user){
-signInAnonymously(auth);
-loadGallery();
-}else{
-currentUser=user;
-loadGallery();
-userId.innerHTML = allPosts.length;
-}
-});
-
-function loadGallery(){
-
-onValue(query(ref(db,"photos"),orderByChild("timestamp")),(snap)=>{
-
-const g=document.getElementById("gallery");
-g.innerHTML="";
-
-if(!snap.exists()) return;
-
-allPosts=snap.val();
-
-Object.keys(allPosts).reverse().forEach(id=>{
-
-const p=allPosts[id];
-
-const div=document.createElement("div");
-div.className="photo";
-
-const isVideo=p.mediaUrl.match(/\.(mp4|webm|ogg|mov)/i);
-
-div.innerHTML=isVideo
-? `<video src="${p.mediaUrl}" muted playsinline preload="metadata"></video>`
-: `<img src="${p.mediaUrl}" loading="lazy">`;
-
-div.onclick=()=>openFeed(id);
-
-g.appendChild(div);
-
-});
-
-});
-
+/* ── Low-data thumbnail helper (Cloudinary transform) ── */
+function thumbUrl(url) {
+  if (!url || !url.includes("cloudinary.com")) return url;
+  return url.replace("/upload/", "/upload/q_auto:low,f_auto,w_300,c_fill,g_auto/");
 }
 
-window.openFeed=(id)=>{
-
-const modal=document.getElementById("feedModal");
-const container=document.getElementById("feedContainer");
-
-container.innerHTML="";
-modal.classList.add("open");
-
-Object.keys(allPosts).reverse().forEach(pid=>{
-
-const p=allPosts[pid];
-
-const post=document.createElement("div");
-post.className="feed-post";
-post.id="feed_"+pid;
-
-post.innerHTML=`
-
-<div style="padding:12px;font-weight:bold;display:flex;justify-content:space-between">
-<span><i class="fas fa-user-circle"></i> ${p.userName}</span>
-<span style="font-size:12px;color:#777">${timeAgo(p.timestamp)}</span>
-</div>
-
-<div class="media-wrapper">
-
-${p.title?`<div class="post-title">${p.title}</div>`:""}
-
-<div class="media-container">
-
-${p.mediaUrl.match(/\.(mp4|webm|ogg|mov)/i)
-? `<video src="${p.mediaUrl}" controls></video>`
-: `<img src="${p.mediaUrl}">`}
-
-</div>
-</div>
-
-<div class="feed-actions">
-
-<i class="far fa-heart heart ${p.likedBy&&p.likedBy[currentUser?.uid]?"liked":""}"
-onclick="likePost('${pid}',this)"></i>
-
-<i class="fas fa-share-alt"
-onclick="shareMedia('${p.mediaUrl}','${p.title}')"></i>
-
-<i class="fas fa-download"
-onclick="downloadMedia('${p.mediaUrl}')"></i>
-
-</div>
-
-<div class="comment-area">
-
-<p><b id="likes_${pid}">${p.likesCount||0} likes</b></p>
-
-<div class="comments-list" id="comments_${pid}">
-
-${p.comments?Object.values(p.comments).map(c=>`
-
-<div class="comment">
-<b>${c.user}</b>
-<span style="color:#777;font-size:12px">${timeAgo(c.time)}</span><br>
-${c.text}
-</div>
-
-`).join(""):""}
-
-</div>
-
-<div class="comment-input-group">
-<input type="text" id="input_${pid}" placeholder="Add comment">
-<button onclick="postComment('${pid}')">Post</button>
-</div>
-
-</div>
-`;
-
-container.appendChild(post);
-
-});
-
-setTimeout(()=>document.getElementById("feed_"+id).scrollIntoView(),200);
-
-};
-
-window.likePost=async(postId,el)=>{
-
-if(!currentUser)return;
-
-const postRef=ref(db,"photos/"+postId);
-const snap=await get(postRef);
-let data=snap.val();
-
-if(!data.likedBy)data.likedBy={};
-
-if(data.likedBy[currentUser.uid]){
-
-delete data.likedBy[currentUser.uid];
-data.likesCount--;
-
-el.classList.remove("liked");
-
-}else{
-
-data.likedBy[currentUser.uid]=true;
-data.likesCount++;
-
-el.classList.add("liked");
-
+function fullUrl(url) {
+  if (!url || !url.includes("cloudinary.com")) return url;
+  return url.replace("/upload/", "/upload/q_auto,f_auto/");
 }
 
-await update(postRef,{
-likesCount:data.likesCount,
-likedBy:data.likedBy
+/* ── Auth ── */
+onAuthStateChanged(auth, user => {
+  if (!user) {
+    signInAnonymously(auth);
+  } else {
+    currentUser = user;
+    const name = user.displayName || ("User#" + user.uid.slice(0,4));
+    document.getElementById("userNameDisplay").textContent = name;
+    loadGallery();
+  }
 });
 
-document.getElementById("likes_"+postId).innerText=data.likesCount+" likes";
+/* ── Load gallery (low data: thumbnails only) ── */
+function loadGallery() {
+  onValue(query(ref(db, "photos"), orderByChild("timestamp")), snap => {
+    allPosts    = {};
+    allPostKeys = [];
+    renderedCount = 0;
 
-};
+    document.getElementById("gallery").innerHTML = "";
 
-window.postComment=async(postId)=>{
+    if (!snap.exists()) {
+      document.getElementById("gallery").innerHTML =
+        `<div class="empty-state"><i class="fas fa-camera-retro"></i>No posts yet. Be the first!</div>`;
+      document.getElementById("postCount").textContent = "0";
+      return;
+    }
 
-if(!currentUser) return alert("Login required");
+    snap.forEach(child => {
+      allPosts[child.key] = child.val();
+      allPostKeys.unshift(child.key); // newest first
+    });
 
-const input=document.getElementById("input_"+postId);
-const text=input.value.trim();
+    document.getElementById("postCount").textContent = allPostKeys.length;
 
-if(!text) return;
-
-await push(ref(db,"photos/"+postId+"/comments"),{
-
-text:text,
-user:currentUser.displayName||"User",
-time:Date.now()
-
-});
-
-input.value="";
-
-};
-
-window.downloadMedia=(url)=>{
-
-const a=document.createElement("a");
-a.href=url;
-a.download="Hirauli_"+Date.now();
-document.body.appendChild(a);
-a.click();
-a.remove();
-
-};
-
-window.shareMedia=(url,title)=>{
-
-if(navigator.share){
-
-navigator.share({
-title:"Hirauli Gallery",
-text:title||"",
-url:url
-});
-
-}else{
-
-navigator.clipboard.writeText(url);
-alert("Link copied");
-
+    renderNextPage();
+  });
 }
 
-};
+function renderNextPage() {
+  const gallery = document.getElementById("gallery");
+  const end     = Math.min(renderedCount + PAGE_SIZE, allPostKeys.length);
 
-function timeAgo(timestamp){
+  for (let i = renderedCount; i < end; i++) {
+    const id = allPostKeys[i];
+    const p  = allPosts[id];
 
-const seconds=Math.floor((Date.now()-timestamp)/1000);
+    const div = document.createElement("div");
+    div.className = "photo";
+    div.dataset.id = id;
 
-const intervals={
-y:31536000,
-mo:2592000,
-w:604800,
-d:86400,
-h:3600,
-m:60
-};
+    const isVideo = /\.(mp4|webm|ogg|mov)/i.test(p.mediaUrl);
 
-for(const k in intervals){
+    if (isVideo) {
+      // For video: show thumbnail image using Cloudinary video thumbnail
+      const vThumb = p.mediaUrl.replace("/upload/", "/upload/q_auto:low,f_jpg,w_300,so_0/").replace(/\.(mp4|webm|ogg|mov)/i, ".jpg");
+      div.innerHTML = `
+        <img src="${vThumb}" loading="lazy" onerror="this.src='${thumbUrl(p.mediaUrl)}'">
+        <span class="video-badge"><i class="fas fa-play" style="font-size:9px;margin-right:3px"></i>Video</span>
+        <div class="check-icon"><i class="fas fa-check"></i></div>`;
+    } else {
+      div.innerHTML = `
+        <img src="${thumbUrl(p.mediaUrl)}" loading="lazy">
+        <div class="check-icon"><i class="fas fa-check"></i></div>`;
+    }
 
-const v=Math.floor(seconds/intervals[k]);
-if(v>=1) return v+k+" ago";
+    div.addEventListener("click", () => handlePhotoClick(id, div));
+    div.addEventListener("touchstart", onLongPressStart, { passive: true });
+    div.addEventListener("touchend",   onLongPressEnd,   { passive: true });
 
+    gallery.appendChild(div);
+  }
+
+  renderedCount = end;
+
+  const btn = document.getElementById("loadMoreBtn");
+  if (renderedCount < allPostKeys.length) {
+    btn.style.display = "block";
+    btn.disabled = false;
+    btn.textContent = `Load more (${allPostKeys.length - renderedCount} remaining)`;
+  } else {
+    btn.style.display = "none";
+  }
 }
 
-return "just now";
+window.loadMore = renderNextPage;
 
+/* ── Long press for multi-select ── */
+let longPressTimer = null;
+let selectMode     = false;
+let selectedIds    = new Set();
+
+function onLongPressStart(e) {
+  longPressTimer = setTimeout(() => {
+    const id  = e.currentTarget.dataset.id;
+    enterSelectMode(id, e.currentTarget);
+  }, 600);
 }
 
-window.uploadToCloudinary=async function(){
-
-const file=document.getElementById("fileInput").files[0];
-
-if(!file){
-alert("Select file");
-return;
+function onLongPressEnd() {
+  clearTimeout(longPressTimer);
 }
 
-const progBox=document.getElementById("progBox");
-const progBar=document.getElementById("progressBar");
+function enterSelectMode(id, el) {
+  selectMode = true;
+  toggleSelect(id, el);
+  document.getElementById("selectBar").classList.add("visible");
+}
 
-progBox.style.display="block";
+function toggleSelect(id, el) {
+  if (selectedIds.has(id)) {
+    selectedIds.delete(id);
+    el.classList.remove("selected");
+  } else {
+    selectedIds.add(id);
+    el.classList.add("selected");
+  }
+  document.getElementById("selectCount").textContent = selectedIds.size + " selected";
 
-const fd=new FormData();
-fd.append("file",file);
-fd.append("upload_preset",UPLOAD_PRESET);
+  if (selectedIds.size === 0 && selectMode) cancelSelect();
+}
 
-const xhr=new XMLHttpRequest();
-
-xhr.open("POST",`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`);
-
-xhr.upload.onprogress=e=>{
-
-const p=Math.round((e.loaded/e.total)*100);
-progBar.style.width=p+"%";
-
-document.getElementById("progressText").innerText=p+"% Uploaded";
-
+window.cancelSelect = () => {
+  selectMode = false;
+  selectedIds.clear();
+  document.querySelectorAll(".photo.selected").forEach(el => el.classList.remove("selected"));
+  document.getElementById("selectBar").classList.remove("visible");
 };
 
-xhr.onload=async()=>{
+window.downloadSelected = async () => {
+  if (selectedIds.size === 0) return;
+  showToast(`Downloading ${selectedIds.size} file(s)…`);
 
-const res=JSON.parse(xhr.responseText);
+  for (const id of selectedIds) {
+    const p = allPosts[id];
+    if (!p) continue;
+    await downloadBlob(fullUrl(p.mediaUrl), "Hirauli_" + id);
+    await new Promise(r => setTimeout(r, 400));
+  }
 
-await push(ref(db,"photos"),{
-
-title:document.getElementById("titleInput").value,
-mediaUrl:res.secure_url,
-mediaType:file.type.startsWith("video")?"video":"image",
-userName:currentUser.displayName||"User",
-timestamp:Date.now(),
-likesCount:0
-
-});
-
-closeUpload();
-
+  showToast("Done!");
+  cancelSelect();
 };
 
-xhr.send(fd);
+async function downloadBlob(url, filename) {
+  try {
+    const res  = await fetch(url);
+    const blob = await res.blob();
+    const a    = document.createElement("a");
+    a.href     = URL.createObjectURL(blob);
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  } catch {
+    // fallback
+    const a = document.createElement("a");
+    a.href     = url;
+    a.download = filename;
+    a.click();
+  }
+}
 
+/* ── Photo click: open feed OR toggle select ── */
+function handlePhotoClick(id, el) {
+  if (selectMode) {
+    toggleSelect(id, el);
+  } else {
+    openFeed(id);
+  }
+}
+
+/* ── FEED ── */
+window.openFeed = (id) => {
+  const modal     = document.getElementById("feedModal");
+  const container = document.getElementById("feedContainer");
+  container.innerHTML = "";
+  modal.classList.add("open");
+
+  allPostKeys.forEach(pid => {
+    const p    = allPosts[pid];
+    const post = document.createElement("div");
+    post.className = "feed-post";
+    post.id        = "feed_" + pid;
+
+    const isVideo   = /\.(mp4|webm|ogg|mov)/i.test(p.mediaUrl);
+    const liked     = p.likedBy && p.likedBy[currentUser?.uid];
+    const safeTitle = (p.title || "").replace(/'/g, "\\'").replace(/"/g, "&quot;");
+    const safeUrl   = fullUrl(p.mediaUrl);
+
+    post.innerHTML = `
+      <div class="post-user-row">
+        <span class="uname"><i class="fas fa-user-circle"></i>${p.userName || "User"}</span>
+        <span class="tago">${timeAgo(p.timestamp)}</span>
+      </div>
+
+      <div class="media-wrapper" id="mw_${pid}">
+        ${p.title ? `<div class="post-title-overlay">${p.title}</div>` : ""}
+        <div class="media-container">
+          ${isVideo
+            ? `<video src="${safeUrl}" controls playsinline></video>`
+            : `<img src="${safeUrl}" loading="lazy">`}
+        </div>
+        <i class="fas fa-heart like-flash" id="lf_${pid}"></i>
+      </div>
+
+      <div class="feed-actions">
+        <button class="action-btn heart ${liked ? "liked" : ""}" id="heartBtn_${pid}"
+          onclick="likePost('${pid}')">
+          <i class="far fa-heart"></i>
+        </button>
+        <button class="action-btn" onclick="shareMedia('${safeUrl}','${safeTitle}')">
+          <i class="fas fa-share-alt"></i>
+        </button>
+        <button class="action-btn" onclick="downloadSingle('${safeUrl}','${pid}')">
+          <i class="fas fa-download"></i>
+        </button>
+      </div>
+
+      <div class="likes-count" id="likes_${pid}">${p.likesCount || 0} likes</div>
+
+      <div class="comment-area">
+        <div class="comments-list" id="comments_${pid}">
+          ${p.comments
+            ? Object.values(p.comments).map(c => `
+                <div class="comment">
+                  <span class="cuser">${c.user}</span>
+                  <span class="ctime">${timeAgo(c.time)}</span><br>
+                  ${c.text}
+                </div>`).join("")
+            : "<span style='color:#bbb;font-size:12px'>No comments yet.</span>"}
+        </div>
+        <div class="comment-input-group">
+          <input type="text" id="input_${pid}" placeholder="Add a comment…">
+          <button onclick="postComment('${pid}')">Post</button>
+        </div>
+      </div>`;
+
+    container.appendChild(post);
+
+    // Double-tap to like
+    setupDoubleTap(document.getElementById("mw_" + pid), pid);
+  });
+
+  setTimeout(() => {
+    const el = document.getElementById("feed_" + id);
+    if (el) el.scrollIntoView({ behavior: "smooth" });
+  }, 200);
 };
 
-window.closeFeed=()=>document.getElementById("feedModal").classList.remove("open");
-window.openUpload=()=>document.getElementById("uploadModal").classList.add("open");
-window.closeUpload=()=>document.getElementById("uploadModal").classList.remove("open");
+/* ── Double tap ── */
+function setupDoubleTap(el, pid) {
+  let lastTap = 0;
+  el.addEventListener("touchend", (e) => {
+    const now = Date.now();
+    if (now - lastTap < 300) {
+      flashHeart(pid);
+      likePost(pid, true); // force like (no unlike on double tap)
+    }
+    lastTap = now;
+  });
+}
+
+function flashHeart(pid) {
+  const el = document.getElementById("lf_" + pid);
+  if (!el) return;
+  el.classList.remove("show");
+  void el.offsetWidth;
+  el.classList.add("show");
+  setTimeout(() => el.classList.remove("show"), 800);
+}
+
+/* ── Like ── */
+window.likePost = async (postId, forceLike = false) => {
+  if (!currentUser) return;
+
+  const postRef = ref(db, "photos/" + postId);
+  const snap    = await get(postRef);
+  let data      = snap.val();
+
+  if (!data.likedBy)    data.likedBy    = {};
+  if (!data.likesCount) data.likesCount = 0;
+
+  const btn = document.getElementById("heartBtn_" + postId);
+
+  if (!forceLike && data.likedBy[currentUser.uid]) {
+    delete data.likedBy[currentUser.uid];
+    data.likesCount = Math.max(0, data.likesCount - 1);
+    if (btn) btn.classList.remove("liked");
+  } else {
+    data.likedBy[currentUser.uid] = true;
+    data.likesCount++;
+    if (btn) btn.classList.add("liked");
+    flashHeart(postId);
+  }
+
+  await update(postRef, { likesCount: data.likesCount, likedBy: data.likedBy });
+  const lc = document.getElementById("likes_" + postId);
+  if (lc) lc.textContent = data.likesCount + " likes";
+};
+
+/* ── Comment ── */
+window.postComment = async (postId) => {
+  if (!currentUser) return showToast("Login required");
+  const input = document.getElementById("input_" + postId);
+  const text  = input.value.trim();
+  if (!text) return;
+
+  await push(ref(db, "photos/" + postId + "/comments"), {
+    text, user: currentUser.displayName || "User", time: Date.now()
+  });
+
+  const div = document.createElement("div");
+  div.className = "comment";
+  div.innerHTML = `<span class="cuser">${currentUser.displayName||"User"}</span>
+    <span class="ctime">just now</span><br>${text}`;
+
+  const list = document.getElementById("comments_" + postId);
+  const empty = list.querySelector("span");
+  if (empty) empty.remove();
+  list.appendChild(div);
+  input.value = "";
+  list.scrollTop = list.scrollHeight;
+};
+
+/* ── Share ── */
+window.shareMedia = async (url, title) => {
+  if (navigator.share) {
+    try { await navigator.share({ title: "Hirauli Gallery", text: title, url }); return; } catch {}
+  }
+  try {
+    await navigator.clipboard.writeText(url);
+    showToast("Link copied!");
+  } catch {
+    showToast("Could not copy link");
+  }
+};
+
+/* ── Download single ── */
+window.downloadSingle = (url, id) => {
+  downloadBlob(url, "Hirauli_" + id);
+};
+
+/* ── Upload ── */
+window.onFileChosen = (e) => {
+  const file  = e.target.files[0];
+  if (!file) return;
+  document.getElementById("fileLabel").textContent = file.name;
+
+  const prev = document.getElementById("previewThumb");
+  prev.style.display = "block";
+
+  if (file.type.startsWith("video")) {
+    prev.innerHTML = `<video src="${URL.createObjectURL(file)}" muted controls style="max-height:130px;border-radius:10px;max-width:100%"></video>`;
+  } else {
+    const img = new Image();
+    img.src   = URL.createObjectURL(file);
+    img.style = "max-height:130px;border-radius:10px;max-width:100%";
+    prev.innerHTML = "";
+    prev.appendChild(img);
+  }
+};
+
+window.uploadToCloudinary = async () => {
+  const file = document.getElementById("fileInput").files[0];
+  if (!file) return showToast("Please select a file first");
+
+  const progBox  = document.getElementById("progBox");
+  const progBar  = document.getElementById("progressBar");
+  const progText = document.getElementById("progressText");
+  const shareBtn = document.getElementById("shareBtn");
+
+  progBox.style.display = "block";
+  shareBtn.disabled     = true;
+  shareBtn.innerHTML    = '<i class="fas fa-spinner fa-spin"></i> Uploading…';
+
+  const fd = new FormData();
+  fd.append("file", file);
+  fd.append("upload_preset", UPLOAD_PRESET);
+
+  const xhr = new XMLHttpRequest();
+  xhr.open("POST", `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`);
+
+  xhr.upload.onprogress = e => {
+    const p = Math.round((e.loaded / e.total) * 100);
+    progBar.style.width = p + "%";
+    progText.textContent = p + "% uploaded";
+  };
+
+  xhr.onload = async () => {
+    if (xhr.status !== 200) {
+      showToast("Upload failed. Try again.");
+      shareBtn.disabled  = false;
+      shareBtn.innerHTML = '<i class="fas fa-share"></i> Share';
+      return;
+    }
+    const res = JSON.parse(xhr.responseText);
+
+    await push(ref(db, "photos"), {
+      title:     document.getElementById("titleInput").value.trim(),
+      mediaUrl:  res.secure_url,
+      mediaType: file.type.startsWith("video") ? "video" : "image",
+      userName:  currentUser?.displayName || "User",
+      timestamp: Date.now(),
+      likesCount: 0
+    });
+
+    showToast("Posted successfully!");
+    closeUpload();
+  };
+
+  xhr.onerror = () => {
+    showToast("Network error. Try again.");
+    shareBtn.disabled  = false;
+    shareBtn.innerHTML = '<i class="fas fa-share"></i> Share';
+  };
+
+  xhr.send(fd);
+};
+
+/* ── Pull to refresh ── */
+let ptrStart  = 0;
+let ptrActive = false;
+const PTR_THRESHOLD = 80;
+
+document.addEventListener("touchstart", e => {
+  if (window.scrollY === 0) { ptrStart = e.touches[0].clientY; ptrActive = true; }
+}, { passive: true });
+
+document.addEventListener("touchmove", e => {
+  if (!ptrActive) return;
+  const pull = e.touches[0].clientY - ptrStart;
+  if (pull > 30) document.getElementById("ptr-indicator").style.display = "block";
+}, { passive: true });
+
+document.addEventListener("touchend", e => {
+  if (!ptrActive) return;
+  const pull = e.changedTouches[0].clientY - ptrStart;
+  if (pull > PTR_THRESHOLD) {
+    const ptr = document.getElementById("ptr-indicator");
+    ptr.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> Refreshing…';
+    setTimeout(() => {
+      ptr.style.display = "none";
+      ptr.innerHTML     = '<i class="fas fa-sync-alt"></i> Refreshing…';
+      loadGallery();
+    }, 800);
+  } else {
+    document.getElementById("ptr-indicator").style.display = "none";
+  }
+  ptrActive = false;
+}, { passive: true });
+
+/* ── Helpers ── */
+window.closeFeed   = () => document.getElementById("feedModal").classList.remove("open");
+window.openUpload  = () => document.getElementById("uploadModal").classList.add("open");
+window.closeUpload = () => {
+  document.getElementById("uploadModal").classList.remove("open");
+  document.getElementById("titleInput").value   = "";
+  document.getElementById("fileInput").value    = "";
+  document.getElementById("fileLabel").textContent = "Tap to choose image or video";
+  document.getElementById("previewThumb").style.display = "none";
+  document.getElementById("previewThumb").innerHTML     = "";
+  document.getElementById("progBox").style.display      = "none";
+  document.getElementById("progressBar").style.width    = "0%";
+  document.getElementById("progressText").textContent   = "";
+  const btn = document.getElementById("shareBtn");
+  btn.disabled  = false;
+  btn.innerHTML = '<i class="fas fa-share"></i> Share';
+};
+
+function showToast(msg, duration = 2800) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), duration);
+}
+
+function timeAgo(ts) {
+  if (!ts) return "";
+  const s = Math.floor((Date.now() - ts) / 1000);
+  const map = [
+    [31536000, "y"], [2592000, "mo"], [604800, "w"],
+    [86400, "d"], [3600, "h"], [60, "m"]
+  ];
+  for (const [v, k] of map) {
+    const n = Math.floor(s / v);
+    if (n >= 1) return n + k + " ago";
+  }
+  return "just now";
+}
 
 </script>
-
 </body>
 </html>
