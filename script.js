@@ -29,39 +29,7 @@ setInterval(showNextSlide, 3000);
 
 
   
-    <footer class="main-footer" id="ft">
-        <div class="footer-column">
-
-             <h3>Privacy Policy</h3>
-            <a style="color: #eee;" href="privacypolicy.html">Privacy Policy</a>
-              <h3>Other Connection</h3>
-            <a style="color: #eee;text-decoration: none;" href="https://tsedio73-source.github.io/cdmilk/" >CD Milk Web</a> <br>
- <a style="color: #eee;text-decoration: none;" href="https://upload.app/download/my-school/com.mycomapny.mywebapp9p/8939c58145c78d7dfb87e3439c12736eabeeed74c2887fd8fe42285cfc1d54c0" >School Data APK Download</a> <br>
-<a style="color: #eee;text-decoration: none;"  href="https://upload.app/download/tourist/com.mycomapny.mywebapptourist/8a12b0d8750d621868b5801e5a04e44e3dd575d246d83ab86aa62d46a079b41e" >Tourist Manager APK Download</a> <br>
-<a style="color: #eee;text-decoration: none;" href="https://upload.app/download/cd-milk/com.mycomapny.mywebapp0/024b4e0964665add51e1cd3aa27439edffe5f89d4f219afa177f6237a9ef8f0c" >CD Milk APK Download</a>
-
-                        
-
-            <h3>Contact us</h3>
-            <p>Address: Hirauli Kutubnagar, Shahabad Hardoi</p>
-            <p>Email: info@hirauliwebsite.com</p>
-        </div>
-     <div class="footer-column">
-      <h3>Connect</h3>
-            <div class="social-icons">
-                <a href="https://www.facebook.com/share/188s4tq2FZ/"><i class="fab fa-facebook"></i></a>
-                <a href="https://www.instagram.com/rajput_hsihsa?igsh=MWF6bng1azl3amdhZA=="><i class="fab fa-instagram"></i></a>
-                <a href="https://x.com/AshishR29942459"><i class="fab fa-twitter"></i></a>
-            </div>
-        </div>
-        
-        <div style="text-align:center; padding-top:20px; border-top:1px solid #444;">
- <p>&reg; <script>document.write(new Date().getFullYear()) </script> Powered by Tsedio</p>
-        </div>
-    </footer>
-    
-
-
+ 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
