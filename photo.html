@@ -738,7 +738,7 @@ function fullUrl(url) {
 /* ── Auth ── */
 onAuthStateChanged(auth, user => {
   if (!user) {
-    alert("Please Login First!");
+     loadGallery();
     signInAnonymously(auth);
   } else {
     currentUser = user;
