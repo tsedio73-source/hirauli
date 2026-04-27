@@ -350,5 +350,14 @@ setInterval(showNextSlide, 3000);
    <script type="module" src="script1.js">
 
 </script>
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "bf628cd7-5763-4c31-87f0-560407fd5c35",
+    });
+  });
+</script>
 </body>
 </html>
