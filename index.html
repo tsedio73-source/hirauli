@@ -2,8 +2,8 @@
 <html lang="hi">
 <head>
 <meta name="google-site-verification" content="BxW7Xkyo3rT0xdwAEFQs6c73OTvCuMBNKLkR5kANxa0" />
-    <title>Hirauli - Gram Panchayat ki Jankari</title>
-<meta name="description" content="Hirauli gram ki sabhi mukhya jankari, samachar aur vikas karyon ki website.">
+    <title>Hirauli Kutubnagar Info</title>
+<meta name="description" content="This is the main portal of Hirauli Kutubnagar where are present News, Photos, Videos, Updates etc.">
 <meta name="keywords" content="Hirauli, Hirauli village, Hirauli news, Hirauli panchayat,hirauli gaon,hirauli village, hirauli photo,hirauli.com,hirauli.in,hirauli.io,hirauli.org">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,7 +23,9 @@
             margin: 0;
             padding: 0;
             background: #f4f4f4 url("https://i.ibb.co/CsH1WRmm/Untitled3-20251214153640.jpg") no-repeat fixed center;
-            background-size: fixed;
+            background-size: 350px;
+            background-opacity:0.8;
+            
         }
 
         /* Top Bar */
@@ -115,6 +117,7 @@
             transition: 0.3s;
             border: 1px solid rgba(255,255,255,0.2);
             cursor: pointer;
+            box-shadow:4px 4px 6px black;
         }
 
         .menu-item:hover { transform: scale(1.05); background:  #061188 #061188; }
@@ -161,23 +164,59 @@
   margin: auto;
   overflow: hidden;
   border-radius: 10px;
+          box-shadow:0 0 20px black;
 }
 
 .slides {
   display: flex;
   width: 100%; /* Agar 3 images hain toh 300%, 4 hain toh 400% */
   transition: transform 0.5s ease-in-out;
+
 }
 
 .slides img {
   width: 100%;
   display: block;
+    
 }
         .results{
 font-weight: 800;
  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+ position:relative;
+
+ top:-20px;
 
 }
+        @keyframes res{
+            0%{
+                 box-shadow:0 0 20px blue;
+                color:red;
+            }
+            20%{
+                 box-shadow:0 0 20px red;
+                 color:blue;
+            }
+            40%{
+                 box-shadow:0 0 20px green;
+                 color:yellow;
+            }
+            60%{
+                 box-shadow:0 0 20px orange;
+                 color:skyblue;
+            }
+            80%{
+                 box-shadow:0 0 20px skyblue;
+                 color:orange;
+            }
+           100%{
+                 box-shadow:0 0 20px purple;
+                 color:black;
+            }
+        }       
+.results a:active{
+    box-shadow:0 0 20px red;
+    color:blue;
+        }
 .results a{
 
     margin: 12px;
@@ -185,8 +224,10 @@ font-weight: 800;
     color:red ;
     font-weight: 700;
     font-size: 15px;
-    border: 1px solid black;
+   /* border: 2px solid red;*/
     border-radius:5px;
+    box-shadow:0 0 10px blue;
+    animation: res 2s linear 0s infinite alternate;
    
 }
         
@@ -198,7 +239,117 @@ font-weight: 800;
     border-radius:20px;
     box-shadow:3px 3px 3px black;
 }
+        #adv{
+            border:1px solid black;
+            border-radius:10px;
+            box-shadow:0 0 10px red;
+        }
+        
+        #villageBot{
+    position:fixed;
+    right:15px;
+    bottom:25px;
+    z-index:9999;
 
+    animation: botFloat 3s ease-in-out infinite;
+}
+
+/* IMAGE */
+#villageBot img{
+    width:120px;
+    cursor:pointer;
+
+    animation: botWave 2s infinite;
+    transform-origin: bottom center;
+
+    filter: drop-shadow(0 0 10px rgba(0,0,0,0.3));
+}
+
+/* MESSAGE */
+.bot-msg{
+    position:absolute;
+    right:100px;
+    top:10px;
+
+    background:white;
+    padding:8px 14px;
+
+    border-radius:20px;
+
+    font-size:14px;
+    font-weight:bold;
+
+    box-shadow:0 0 10px rgba(0,0,0,0.2);
+
+    animation: msgPop 2s infinite;
+}
+
+/* FLOAT */
+@keyframes botFloat{
+    0%{
+        transform:translateY(0px);
+    }
+
+    50%{
+        transform:translateY(-10px);
+    }
+
+    100%{
+        transform:translateY(0px);
+    }
+}
+
+/* WAVE */
+@keyframes botWave{
+    0%{
+        transform:rotate(0deg);
+    }
+
+    25%{
+        transform:rotate(5deg);
+    }
+
+    50%{
+        transform:rotate(-5deg);
+    }
+
+    75%{
+        transform:rotate(4deg);
+    }
+
+    100%{
+        transform:rotate(0deg);
+    }
+}
+
+/* MESSAGE POP */
+@keyframes msgPop{
+    0%{
+        transform:scale(1);
+    }
+
+    50%{
+        transform:scale(1.05);
+    }
+
+    100%{
+        transform:scale(1);
+    }
+}
+
+/* MOBILE */
+@media(max-width:600px){
+
+    #villageBot img{
+        width:95px;
+    }
+
+    .bot-msg{
+        right:80px;
+        font-size:12px;
+    }
+
+}
     </style>
 </head>
 <body>
@@ -223,7 +374,7 @@ font-weight: 800;
 
 
     <div class="notice">
-<marquee id="adv" style="color:#F4B01C;"  behaviour="scroll" direction="right" >.things more connect to unable will you otherwise account gmail the by login please First</marquee>
+        <center><h4 id="adv">⚠️ You didn't login yet, Please login</h4></center>
         <marquee>This website is for educational purposes only. For any official work, use the government portal.</marquee>
     </div>
    <div class="slider">
@@ -237,9 +388,18 @@ font-weight: 800;
 
     </div>
 
-         <div  onclick="window.location.href='https://tsedio.ct.ws/?i=1'"   id="ai"><img style="border-radius:20px;"  src="https://i.ibb.co/1tJbn7t9/images-2.jpg" alt="" height="50px"></div>
+         <div   id="ai"><img style="border-radius:20px;"  src="" alt="" height="50px"></div>
+       <!-- CHAT BOT -->
+<div id="villageBot"  onclick="window.location.href='https://tsedio.ct.ws/?i=1'">
+    <img src="boy.png" alt="ChatBot">
+
+    <div class="bot-msg">
+        Namaste 👋
+    </div>
+</div>
+
        <center>   <div class="results">
-        <h3 >10th Results 2026 - Click and view</h3> <br>
+        <h3 style=" background:yellow;">10th Results 2026 - Click and view</h3> <br>
         <a href="ashish10.pdf" target="_blank">Ashish 84.5%</a>
         <a href="nitin10.pdf" target="_blank">Nitin 81.5%</a>
         <a href="saurav10.pdf" target="_blank">Saurav 76.1%</a>
@@ -279,7 +439,7 @@ font-weight: 800;
         </div>
     </div>
 
-    <img id="footb" class="banner-img" >
+    <img  style="box-shadow:0 0 20px black" id="footb" class="banner-img" >
     <!--<a href="https://ibb.co/4ZFTB6gx"><img src="" alt="Screenshot-2025-12-30-211600" border="0"></a>-->
 
     <div id="navMenu">
@@ -307,23 +467,27 @@ font-weight: 800;
             <a style="color: #eee;" href="privacypolicy.html">Privacy Policy</a>
              <h3>Government Portal</h3>
             <a style="color: #eee;" href="https://villagegram.in/uttar-pradesh/hardoi/shahabad/hirauli-kutub-nagar/#info-tab">Govt Authorised Site</a>
-              <h3>Other Connection</h3>
-            <a style="color: #eee;text-decoration: none;" href="https://tsedio73-source.github.io/cdmilk/" >CD Milk Web</a> <br>
- <a style="color: #eee;text-decoration: none;" href="https://upload.app/download/education-save/com.mycomapny.mywebapp9p/3fed87ee0c00cda62a45c48cb62e4a92484e7c80fafc6814cfc879654d3fade8" >School Data APK Download</a> <br>
-<a style="color: #eee;text-decoration: none;"  href="https://upload.app/download/tourist/com.mycomapny.mywebapptourist/8a12b0d8750d621868b5801e5a04e44e3dd575d246d83ab86aa62d46a079b41e" >Tourist Manager APK Download</a> <br>
-<a style="color: #eee;text-decoration: none;" href="https://upload.app/download/cd-milk/com.mycomapny.mywebapp0/024b4e0964665add51e1cd3aa27439edffe5f89d4f219afa177f6237a9ef8f0c" >CD Milk APK Download</a>
+             <h3>Government Primary School</h3>
+            <a style="color: #eee;" href="https://schools.org.in/hardoi/9251101210/ps-hirauli.html">Govt PS Rural</a>
+              <h3>Apps for Android</h3>
+            <!--<a style="color: #eee;" href="https://tsedio73-source.github.io/cdmilk/" >CD Milk Web</a> <br>-->
+ <a style="color: #eee;" href="https://upload.app/download/education-save/com.mycomapny.mywebapp9p/3fed87ee0c00cda62a45c48cb62e4a92484e7c80fafc6814cfc879654d3fade8" >👉 School Data APK Download</a> <br>
+<a style="color: #eee;"  href="https://upload.app/download/tourist/com.mycomapny.mywebapptourist/8a12b0d8750d621868b5801e5a04e44e3dd575d246d83ab86aa62d46a079b41e" >👉 Tourist Manager APK Download</a> <br>
+<a style="color: #eee;" href="https://upload.app/download/cd-milk/com.mycomapny.mywebapp0/024b4e0964665add51e1cd3aa27439edffe5f89d4f219afa177f6237a9ef8f0c" >👉 CD Milk APK Download</a><br>
+ <a style="color: #eee;" href="https://upload.app/download/tsedio-ai/com.yourpackage.myai/055041366b7a23c7d6bca602572571fcaa58839771218891f018552c9ab2d8c1" >👉 Tsedio AI APK Download </a>
 
                         
 
             <h3>Contact us</h3>
             <p>Address: Hirauli Kutubnagar, Shahabad Hardoi</p>
-            <p>Email: info@hirauliwebsite.com</p>
+            <p>Email:  <a href="mailto:tsedio73@gmail.com?subject=From hirauli web&body=
+                I want to know about your service.">tsedio73@gmail.com</a></p>
         </div>
      <div class="footer-column">
       <h3>Connect</h3>
             <div class="social-icons">
                 <a href="https://www.facebook.com/share/188s4tq2FZ/"><i class="fab fa-facebook"></i></a>
-                <a href="https://www.instagram.com/tsedio73?igsh=ZXAyZHJxcGdyejNo"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.instagram.com/hirauli_?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="><i class="fab fa-instagram"></i></a>
                 <a href="https://x.com/AshishR29942459"><i class="fab fa-twitter"></i></a>
             </div>
         </div>
