@@ -1,15 +1,26 @@
 //Type writing Heading-----------------------------
 const type = document.getElementById("typing");
-const text = "Welcome to Village Hirauli";
-let i = 0;
-function write(){
-    if(i < text.length){
-        type.innerHTML += text.charAt(i);
-        i++;
-        setTimeout(write,50);
+const text = "Welcome to Hirauli";
+
+function startTyping() {
+    if (!type) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        type.textContent = text;
+        return;
     }
+    type.textContent = '';
+    type.classList.add('is-typing');
+    let index = 0;
+    const write = () => {
+        type.textContent += text.charAt(index++);
+        if (index < text.length) window.setTimeout(write, 65);
+        else type.classList.remove('is-typing');
+    };
+    window.setTimeout(write, 260);
 }
-window.onload = write();
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', startTyping, { once: true });
+else startTyping();
 
 // Disappear logo while scrolling-----------------
 
@@ -214,5 +225,4 @@ async function getWeather() {
 }
 
 getWeather();
-
 

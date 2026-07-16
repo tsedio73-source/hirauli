@@ -158,6 +158,11 @@ body {
   position: relative;
   cursor: pointer;
   background: #111;
+  /* Offscreen tiles skip layout/paint/style work until they scroll into view.
+     gallery-app.js should still set width/height (via aspect-ratio above)
+     so the browser can reserve space without measuring each image. */
+  content-visibility: auto;
+  contain-intrinsic-size: 260px 260px;
 }
 
 .photo img,
@@ -381,13 +386,13 @@ body {
 }
 
 .feed-actions .action-btn:active { transform: scale(.85); }
-.feed-actions .action-btn.heart.liked { color: #e74c3c; }
-.feed-actions .action-btn.heart.liked i::before { content: "\f004"; font-weight: 900; }
 
-.likes-count {
-  font-size: 13px;
-  font-weight: 700;
-  padding: 0 14px 6px;
+/* Likes are disabled site-wide: hide the heart button, like counter and
+   double-tap heart flash no matter what gallery-app.js renders. */
+.feed-actions .action-btn.heart,
+.likes-count,
+.like-flash {
+  display: none !important;
 }
 
 .comment-area {
@@ -647,7 +652,14 @@ body {
 <!-- PULL TO REFRESH -->
 <div id="ptr-indicator"><i class="fas fa-sync-alt"></i> Refreshing…</div>
 
-<!-- GALLERY -->
+<!--
+  GALLERY (filled by gallery-app.js)
+  To keep data usage low, each tile's <img>/<video> that gets inserted here should:
+    - use a small Cloudinary transform for the grid thumbnail, e.g. .../upload/w_300,h_300,c_fill,q_auto,f_auto/...
+    - only request the full-size /original URL when the user opens a post in the feed modal
+    - set loading="lazy" decoding="async" on every grid <img>
+    - paginate/virtualize instead of rendering every photo at once (loadMoreBtn already exists for this)
+-->
 <div id="gallery"></div>
 
 <button id="loadMoreBtn" onclick="loadMore()" style="display:none">Load more</button>

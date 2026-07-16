@@ -1,24 +1,15 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="google-site-verification" content="BxW7Xkyo3rT0xdwAEFQs6c73OTvCuMBNKLkR5kANxa0" />
     <title>Hirauli Kutubnagar Shahabad</title>
 <meta name="description" content="This is the main portal of Hirauli Kutubnagar where are present News, Photos, Videos, Updates etc.">
 <meta name="keywords" content="Hirauli, Hirauli village, Hirauli news, Hirauli panchayat,hirauli gaon,hirauli village, hirauli photo,hirauli.com,hirauli.in,hirauli.io,hirauli.org">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#004a99">
-    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-<script>
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-  OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "fce30003-a1ab-4782-aafa-e2d8132b8090",
-    });
-  });
-</script>
     <style>
         :root {
             --primary: #061188;
@@ -26,7 +17,7 @@
             --glass: rgba(255, 255, 255, 0.2);
         }
         body {
-            font-family: sans serif;
+            font-family: sans-serif;
             margin: 0;
             padding: 0;
             background: #f4f4f4 url("https://i.ibb.co/CsH1WRmm/Untitled3-20251214153640.jpg") no-repeat fixed center;
@@ -68,7 +59,7 @@
              font-weight: 900;
              background-image: linear-gradient( 90deg,
             #ff0000,
-            lab(95.59% -30.03 92.02),
+            #ffe600,
             #00ff00,
             #0099ff,
             #77ff00);
@@ -232,7 +223,7 @@
                 font-weight: bolder;
                 background-image: linear-gradient( 90deg,
                 #ff0000,
-                lab(95.59% -30.03 92.02),
+                #ffe600,
                 #00ff00,
                 #0099ff,
                 #77ff00);
@@ -496,8 +487,144 @@
             scale: 1.01;
             color: red;
         }
+
+        /* Home dashboard refresh */
+        :root { --ink: #102a43; --muted: #627d98; --surface: #ffffff; --line: #d9e2ec; --accent: #f59e0b; }
+        body {
+            color: var(--ink);
+            background: #f3f7fb;
+            font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+        }
+        .top-nav {
+            height: 72px; padding: 0 max(20px, calc((100% - 1180px) / 2));
+            background: rgba(6, 17, 136, .97); box-shadow: 0 2px 16px rgba(9, 30, 66, .2);
+        }
+        .brand { display: flex; align-items: center; gap: 11px; color: #fff; font-weight: 750; letter-spacing: .2px; margin-left: 20px; }
+        .brand small { display: block; color: #cbd5ff; font-size: 11px; font-weight: 500; margin-top: 2px; }
+        #main { position: static; transform: none; width: 42px; height: 42px; object-fit: cover; border: 2px solid rgba(255,255,255,.7); }
+        .nav-actions { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+        .dashboard-user { display: flex; align-items: center; gap: 8px; max-width: 235px; padding: 5px 10px 5px 5px; color: #fff; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.16); border-radius: 12px; animation: profileIn .35s cubic-bezier(.22, 1, .36, 1) both; }
+        .dashboard-user[hidden] { display: none; }
+        .dashboard-user img { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; background: #dbeafe; }
+        .dashboard-user strong, .dashboard-user span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .dashboard-user strong { font-size: 12px; line-height: 15px; }
+        .dashboard-user span { color: #dbeafe; font-size: 10px; line-height: 14px; }
+        .dashboard-user span i { font-size: 9px; margin-right: 2px; }
+        #donate, #chat { margin: 0; color: white; text-decoration: none; font-size: 17px; height: 39px; min-width: 39px; border-radius: 10px; display: grid; place-items: center; background: rgba(255,255,255,.13); }
+        #donate { width: auto; padding: 0 12px; gap: 7px; display: flex; font-size: 13px; font-weight: 700; }
+        .new-badge { margin: 0; background: #ef4444; }
+        .dashboard { max-width: 1180px; margin: 0 auto; padding: 26px 20px 48px; }
+        header { background: transparent; box-shadow: none; padding: 0; text-align: left; }
+        #typing { color: var(--ink); -webkit-text-fill-color: var(--ink); background: none; font-size: clamp(27px, 4vw, 43px); letter-spacing: -.8px; margin: 0; min-height: 55px; }
+        #typing.is-typing::after { content: ''; display: inline-block; width: 3px; height: .85em; margin-left: 5px; vertical-align: -.07em; background: #3156c9; animation: typingCaret .72s step-end infinite; }
+        .dashboard-subtitle { color: var(--muted); margin: 4px 0 22px; font-size: 16px; }
+        .notice { border: 1px solid #f4d67c; border-radius: 10px; background: #fff9e7; color: #795400; padding: 10px 14px; font-size: 13px; margin-bottom: 22px; }
+        .notice marquee { background: transparent !important; }
+        .dashboard-hero { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(280px, .85fr); gap: 22px; }
+        .main-links { display: none; }
+        .slider { width: 100%; margin: 0; border-radius: 18px; box-shadow: 0 12px 28px rgba(16,42,67,.16); border: 0; background: #0b1d42; }
+        .slides img { aspect-ratio: 16 / 8; }
+        .slider-btn { opacity: 1; background: rgba(4, 13, 36, .55); }
+        .spotlight { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; box-shadow: 0 7px 22px rgba(16,42,67,.07); }
+        .panel-title { padding: 16px 18px 13px; display: flex; justify-content: space-between; align-items: center; font-weight: 750; }
+        .panel-title span { color: #64748b; font-size: 12px; font-weight: 650; background: #eef2ff; padding: 5px 8px; border-radius: 20px; }
+        .expGall { display: block; position: relative; inset: auto; margin: 0; width: 100%; height: 220px; border: 0; border-radius: 0; box-shadow: none; background-position: center; }
+        #picDate { display: block; position: static; margin: 0; padding: 12px 18px 15px; font-size: 13px; color: var(--muted); background: transparent; border-radius: 0; }
+        .quick-section { margin-top: 30px; }
+        .section-heading { display: flex; align-items: end; justify-content: space-between; margin-bottom: 14px; }
+        .section-heading h2 { margin: 0; font-size: 21px; letter-spacing: -.2px; }
+        .section-heading p { margin: 0; color: var(--muted); font-size: 13px; }
+        .container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 0; padding: 0; }
+        .menu-item { width: auto; height: 136px; border-radius: 15px; background: var(--surface); border: 1px solid var(--line); box-shadow: 0 4px 14px rgba(16,42,67,.06); align-items: center; padding: 19px; color: var(--ink); text-align: center; }
+        .menu-item:hover { transform: translateY(-4px); box-shadow: 0 12px 20px rgba(16,42,67,.13); border-color: #9db4ff; }
+        .menu-item img { height: 38px; width: 38px; object-fit: contain; margin: 0 0 15px; padding: 8px; background: #eef2ff; border-radius: 11px; }
+        .menu-item span { color: var(--ink); font-size: 14px; font-weight: 700; }
+        #slideShow { display: flex !important; }
+        .services { margin-top: 30px; background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 21px; box-shadow: 0 4px 14px rgba(16,42,67,.05); }
+        .services h2 { margin: 0 0 4px; font-size: 20px; }
+        .services > p { margin: 0 0 16px; color: var(--muted); font-size: 13px; }
+        .services center { display: none; }
+        .link { margin: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 0; background: transparent; }
+        .link a { margin: 0; padding: 13px; border: 1px solid var(--line); border-radius: 10px; color: #163e7a; text-decoration: none; font-size: 14px; font-weight: 650; background: #fbfdff; }
+        .link a:hover { color: #061188; border-color: #a9bcf9; background: #f2f5ff; scale: none; }
+        .services .link a { font-size: 0; }
+        .services .link a::before { font-family: "Segoe UI", system-ui, sans-serif; font-size: 14px; }
+        .services .link a:nth-child(1)::before { content: "Income certificate"; }
+        .services .link a:nth-child(2)::before { content: "Caste certificate"; }
+        .services .link a:nth-child(3)::before { content: "Residence certificate"; }
+        .services .link a:nth-child(4)::before { content: "Disability certificate"; }
+        .services .link a:nth-child(5)::before { content: "Farmer accident assistance"; }
+        .services .link a:nth-child(6)::before { content: "Farm fire assistance"; }
+        .coming-soon { grid-column: 1 / -1; color: var(--muted); font-size: 12px; padding-top: 5px; }
+        #weather { position: static; display: inline-flex; align-items: center; margin: 0; padding: 9px 12px; font-size: 13px; color: #dbeafe; background: rgba(255,255,255,.12); border-radius: 9px; cursor: pointer; }
+        #ai { display: none; }
+        #footb { width: min(100%, 1140px); margin: 24px auto 0; box-shadow: none; }
+        .main-footer { background: #0d2241; background-image: none; padding: 38px max(20px, calc((100% - 1140px) / 2)); }
+        .main-footer a { color: #dbeafe !important; }
+        #villageBot img { width: 92px; }
+        @media (min-width: 1024px) {
+            body { background: #f3f7fb; }
+            .top-nav { height: 72px; }
+            .container { display: grid; width: auto; margin: 0; background: transparent; border-radius: 0; }
+            .menu-item { width: auto; height: 136px; border-radius: 15px; }
+            .expGall { position: relative; inset: auto; width: 100%; height: 220px; }
+            .slider { width: 100%; margin: 0; }
+            #typing { font-size: clamp(27px, 4vw, 43px); }
+        }
+        @media (max-width: 760px) {
+            .dashboard { padding: 20px 14px 36px; }
+            .top-nav { padding: 0 14px; height: 64px; }
+            .brand { font-size: 14px; margin-left: 13px; }
+            .brand small { display: none; }
+            .dashboard-user { max-width: 124px; padding-right: 7px; }
+            .dashboard-user span { display: none; }
+            #donate { padding: 0 9px; font-size: 0; min-width: 39px; }
+            #donate i { font-size: 16px; } #donate .new-badge { font-size: 9px; }
+            .dashboard-hero { grid-template-columns: 1fr; }
+            .container { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .menu-item { height: 120px; padding: 15px; }
+            .link { grid-template-columns: 1fr; }
+        }
+
+        /* Motion and interaction layer */
+        html { scroll-behavior: smooth; }
+        .top-nav { animation: navEnter .65s cubic-bezier(.22, 1, .36, 1) both; }
+        .dashboard > header { animation: riseIn .7s .08s cubic-bezier(.22, 1, .36, 1) both; }
+        .notice { animation: riseIn .7s .16s cubic-bezier(.22, 1, .36, 1) both; }
+        .dashboard-hero { animation: riseIn .8s .24s cubic-bezier(.22, 1, .36, 1) both; }
+        .spotlight { transition: transform .35s ease, box-shadow .35s ease; }
+        .spotlight:hover { transform: translateY(-4px); box-shadow: 0 16px 32px rgba(16,42,67,.13); }
+        .slider { transition: transform .35s ease, box-shadow .35s ease; }
+        .slider:hover { transform: translateY(-3px); box-shadow: 0 18px 38px rgba(16,42,67,.22); }
+        .slider-btn { transition: transform .2s ease, background .2s ease; }
+        .slider-btn:hover { transform: translateY(-50%) scale(1.08); }
+        .menu-item { animation: cardIn .55s cubic-bezier(.22, 1, .36, 1) both; }
+        .menu-item:nth-child(1) { animation-delay: .05s; }
+        .menu-item:nth-child(2) { animation-delay: .1s; }
+        .menu-item:nth-child(3) { animation-delay: .15s; }
+        .menu-item:nth-child(4) { animation-delay: .2s; }
+        .menu-item:nth-child(5) { animation-delay: .25s; }
+        .menu-item:nth-child(6) { animation-delay: .3s; }
+        .menu-item:nth-child(7) { animation-delay: .35s; }
+        .menu-item:nth-child(8) { animation-delay: .4s; }
+        .menu-item img { transition: transform .28s ease, background .28s ease; }
+        .menu-item:hover img { transform: scale(1.12) rotate(-4deg); background: #dfe6ff; }
+        .services { transition: transform .35s ease, box-shadow .35s ease; }
+        .services:hover { transform: translateY(-3px); box-shadow: 0 14px 28px rgba(16,42,67,.1); }
+        .link a { transition: transform .22s ease, background .22s ease, border-color .22s ease; }
+        .link a:hover { transform: translateX(3px); }
+        .reveal-on-scroll { opacity: 0; transform: translateY(24px); transition: opacity .65s cubic-bezier(.22, 1, .36, 1), transform .65s cubic-bezier(.22, 1, .36, 1); }
+        .reveal-on-scroll.is-visible { opacity: 1; transform: translateY(0); }
+        @keyframes navEnter { from { opacity: 0; transform: translateY(-100%); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes riseIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes cardIn { from { opacity: 0; transform: translateY(18px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes typingCaret { 50% { opacity: 0; } }
+        @keyframes profileIn { from { opacity: 0; transform: translateY(-6px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+        }
     </style>
-</head>
 <script>
   const PUBLIC_KEY = 'BKeO7-sb9EgAqHTWPHJQN7cS4w487DOWtcPYXniaotYQNpXg2kM3DBAydcuoGxRxyynT-iMTQLqbktNcMoVXBtQ';
 function urlBase64ToUint8Array(base64String) {
@@ -507,23 +634,26 @@ function urlBase64ToUint8Array(base64String) {
   return Uint8Array.from([...rawData].map(c => c.charCodeAt(0)));
 }
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/service-worker.js').then(async reg => {
-    try {
-      const sub = await reg.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(PUBLIC_KEY)
-      });
-      fetch('https://hirauli-notifications.onrender.com/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(sub)
-      });
-    } catch (err) {
-      console.log('Notification permission denied or error:', err);
-    }
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js').then(async reg => {
+      try {
+        const sub = await reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(PUBLIC_KEY)
+        });
+        fetch('https://hirauli-notifications.onrender.com/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(sub)
+        });
+      } catch (err) {
+        console.log('Notification permission denied or error:', err);
+      }
+    });
   });
 }
 </script>
+</head>
 <body>
 <div id="overlay" onclick="toggleMenu()"></div>
 <div class="top-nav">
@@ -531,14 +661,17 @@ if ('serviceWorker' in navigator) {
 <div></div>
 <div></div>
 <div></div>
-<span style="text-decoration: underline; color: #fbeeb8;"><img id="main" /></span></div>
-<a id="donate"   href="donation.html"><span class="new-badge">NEW</span><i class="fas fa-donate"></i></a>
-<a id="chat"  href="send.html"><i class="fas fa-paper-plane"></i></a>
+ </div>
+<div class="brand"><img id="main" /><div>Hirauli <small>Kutubnagar • Shahabad</small></div></div>
+<div class="nav-actions"><div class="dashboard-user" id="dashboardUser" hidden><img id="dashboardUserPhoto" alt="" /><div><strong id="dashboardUserName"></strong><span><i class="fas fa-envelope"></i> <span id="dashboardUserEmail"></span></span></div></div><a id="donate" href="donation.html"><span class="new-badge">NEW</span><i class="fas fa-donate"></i> Donate</a><a id="chat" href="send.html" aria-label="Send a message"><i class="fas fa-paper-plane"></i></a></div>
 </div>
+<main class="dashboard">
 <header id="header">
-<p id="typing"></p>
+<p id="typing">Hirauli Community Dashboard</p>
+<p class="dashboard-subtitle">Your central place for village updates, services and community media.</p>
 </header>
-<div class="notice"><marquee style="background-color: #e8e872;">This website is for educational purposes only. For any official work, use the government portal.</marquee></div>
+<div class="notice"><marquee>This website is for educational purposes only. For official work, please use the relevant government portal.</marquee></div>
+<section class="dashboard-hero" aria-label="Community highlights">
 <!-- SLIDER -->
 <div class="slider" id="sliderWrap">
 <div class="slides" id="slideContainer"><img id="new1" /> <img id="new2" /> <img id="new3" /> <img id="new4" /> <img id="new5" /> <img id="new1copy" /><!-- loop ke liye copy --></div>
@@ -550,8 +683,11 @@ if ('serviceWorker' in navigator) {
 <!--<li><a style="text-decoration: none; font-size: 25px;" href="submersible.html"><i class="fas fa-water"></i> Submersibles</a></li>
 </ul>-->
 </div>
+<aside class="spotlight"><div class="panel-title">Community spotlight <span>Latest</span></div>
 <div class="expGall" id="expGall"></div>
-<span id="picDate">Waiting...</span>
+<span id="picDate">Waiting for the latest update...</span></aside>
+</section>
+<section class="quick-section"><div class="section-heading"><div><h2>Quick access</h2><p>Frequently used community tools</p></div><span onclick="window.location.href='indexweather.html'" id="weather">Loading weather...</span></div>
 <div id="ai"><img style="border-radius: 20px;" alt="" height="50px" /></div>
 <!-- CHAT BOT -->
 <div id="villageBot" onclick="window.location.href='https://assis.site.je/'"><img src="boy.png" alt="ChatBot" />
@@ -567,6 +703,8 @@ if ('serviceWorker' in navigator) {
 <div class="menu-item" onclick="location.href='hiraulihis.html'"><img src="https://i.ibb.co/cc5kPsN5/theory.png" /> <span>Information</span></div>
 <div class="menu-item" onclick="location.href='https://www.google.com/maps?q=Hirauli+Kutubnagar'"><img src="https://i.ibb.co/Ndtv4jg5/location.png" /> <span>Location</span></div>
 </div>
+</section>
+<section class="services"><h2>Online applications</h2><p>Quick links to commonly requested certificates and schemes.</p>
 <center><h2 style="background-color: #ccc;">ऑनलाइन आवेदन करें</h2></center>
 <div class="link">
    <a href="eDistrict.html#aay">आय प्रमाण पत्र </a>
@@ -577,7 +715,8 @@ if ('serviceWorker' in navigator) {
    <a >मुख़्यमंत्री खेत-खलिहान अग्निकाण्ड दुर्घटना सहायता योजना</a>
    <span style="font-size: 10px;margin: 10px;user-select: none;">Coming soon more links...</span>
 </div>
-</div>
+</section>
+</main>
 <p><img style="" id="footb" class="banner-img" /></p>
 <div id="navMenu">
 <div id="user-profile"><img id="user-img" />
@@ -615,20 +754,37 @@ if ('serviceWorker' in navigator) {
 <h3>Connect</h3>
 <div class="social-icons"><a href="https://www.facebook.com/share/188s4tq2FZ/"><i class="fab fa-facebook"></i></a> <a href="https://www.instagram.com/hirauli_?utm_source=ig_web_button_share_sheet&amp;igsh=ZDNlZDc0MzIxNw=="><i class="fab fa-instagram"></i></a> <a href="https://x.com/AshishR29942459"><i class="fab fa-twitter"></i></a></div>
 </div>
-<span onclick="window.location.href='indexweather.html'" id="weather">Loading weather...</span>
 <div style="text-align: center; padding-top: 20px; border-top: 1px solid #444;">
 <p>Last update <span style="color:white;font-weight:bold;">6 Jul 2026-09:12 a.m.</span></p>
-<p>&copy;
-<script>document.write(new Date().getFullYear())</script>
-All Rights Reserved</p>
+<p>&copy; <span id="copyYear"></span> All Rights Reserved</p>
+<script>document.getElementById('copyYear').textContent = new Date().getFullYear();</script>
 </div>
 </footer>
 <script type="module" src="banner.js"></script>
 <script type="module" src="slide.js"></script>
 <script type="module" src="script.js"></script>
 <script type="module" src="script1.js"></script>
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer="defer"></script>
+<script type="module" src="dashboard-user.js"></script>
 <script>
+document.addEventListener('DOMContentLoaded', () => {
+    const targets = document.querySelectorAll('.quick-section, .services, #footb, .main-footer');
+    targets.forEach((element) => element.classList.add('reveal-on-scroll'));
+
+    if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.12 });
+        targets.forEach((element) => observer.observe(element));
+    } else {
+        targets.forEach((element) => element.classList.add('is-visible'));
+    }
+});
+
 function toggleMenu() {
     const nav     = document.getElementById("navMenu");
     const overlay = document.getElementById("overlay");
@@ -640,6 +796,53 @@ function toggleMenu() {
         overlay.style.display = "block";
     }
 }
+
+/* ── Typewriter heading ── */
+(function () {
+    const el = document.getElementById('typing');
+    if (!el) return;
+
+    const phrases = [
+        'Hirauli Community Dashboard',
+        'News, photos & updates in one place',
+        'Your village, online'
+    ];
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (reduceMotion) {
+        el.textContent = phrases[0];
+        return;
+    }
+
+    el.textContent = '';
+    el.classList.add('is-typing');
+
+    let phraseIndex = 0, charIndex = 0, deleting = false;
+
+    function tick() {
+        const current = phrases[phraseIndex];
+
+        if (!deleting) {
+            charIndex++;
+            el.textContent = current.slice(0, charIndex);
+            if (charIndex === current.length) {
+                deleting = true;
+                setTimeout(tick, 1800);
+                return;
+            }
+        } else {
+            charIndex--;
+            el.textContent = current.slice(0, charIndex);
+            if (charIndex === 0) {
+                deleting = false;
+                phraseIndex = (phraseIndex + 1) % phrases.length;
+            }
+        }
+        setTimeout(tick, deleting ? 35 : 55);
+    }
+
+    setTimeout(tick, 400);
+})();
 </script>
 
 
