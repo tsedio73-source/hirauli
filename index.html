@@ -528,7 +528,7 @@
         .spotlight { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; box-shadow: 0 7px 22px rgba(16,42,67,.07); }
         .panel-title { padding: 16px 18px 13px; display: flex; justify-content: space-between; align-items: center; font-weight: 750; }
         .panel-title span { color: #64748b; font-size: 12px; font-weight: 650; background: #eef2ff; padding: 5px 8px; border-radius: 20px; }
-        .expGall { display: block; position: relative; inset: auto; margin: 0; width: 100%; height: 220px; border: 0; border-radius: 0; box-shadow: none; background-position: center; }
+        .expGall { display: block; position: relative; inset: auto; margin: 0; width: 100%; height: 220px; border: 0; border-radius: 0; box-shadow: none; background-position: center; background-repeat: no-repeat; background-size: contain; background-color: #eef2ff; }
         #picDate { display: block; position: static; margin: 0; padding: 12px 18px 15px; font-size: 13px; color: var(--muted); background: transparent; border-radius: 0; }
         .quick-section { margin-top: 30px; }
         .section-heading { display: flex; align-items: end; justify-content: space-between; margin-bottom: 14px; }
@@ -656,6 +656,14 @@ if ('serviceWorker' in navigator) {
 </head>
 <body>
 <div id="overlay" onclick="toggleMenu()"></div>
+<!-- CHAT BOT: kept as a direct child of <body> on purpose. Any ancestor with a
+     CSS transform (even translateY(0)) creates a new containing block for
+     position:fixed children, which makes them scroll with that ancestor
+     instead of staying pinned to the viewport. .quick-section gets a
+     transform via .reveal-on-scroll, so this must live outside it. -->
+<div id="villageBot" onclick="window.location.href='https://assis.site.je/'"><img src="boy.png" alt="ChatBot" />
+<div class="bot-msg">Namaste 👋</div>
+</div>
 <div class="top-nav">
 <div class="Menu-icon" onclick="toggleMenu()">
 <div></div>
@@ -689,10 +697,6 @@ if ('serviceWorker' in navigator) {
 </section>
 <section class="quick-section"><div class="section-heading"><div><h2>Quick access</h2><p>Frequently used community tools</p></div><span onclick="window.location.href='indexweather.html'" id="weather">Loading weather...</span></div>
 <div id="ai"><img style="border-radius: 20px;" alt="" height="50px" /></div>
-<!-- CHAT BOT -->
-<div id="villageBot" onclick="window.location.href='https://assis.site.je/'"><img src="boy.png" alt="ChatBot" />
-<div class="bot-msg">Namaste 👋</div>
-</div>
 <div class="container">
 <div class="menu-item" onclick="protectedRoute('addnews.html')"><img src="https://i.ibb.co/ZPtTY5F/add.png" /> <span>Add News</span></div>
 <div class="menu-item" onclick="protectedRoute('addphoto.html')"><img src="https://i.ibb.co/WWFW2vZP/add-image.png" /> <span>Add Media</span></div>
