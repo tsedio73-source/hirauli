@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Send Feedback</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 400px;
+      margin: auto;
+      background-color: #f4f4f4;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    textarea {
+      font-family: Arial, sans-serif;
+      width: 100%;
+      min-height: 150px;
+      padding: 10px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      resize: vertical; /* केवल वर्टिकल रीसाइज़ की अनुमति */
+      margin-bottom: 15px;
+    }
+    button {
+      height: 40px;
+      width: 100%;
+      border-radius: 10px;
+      background: #6A77FF;
+      color: white;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background:  #061188;
+    }
+    #status-message {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 5px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  
+  <h2>Feedbacks</h2>
+  
+  <form id="feedback-form">
+    <textarea id="feed" placeholder="Type your feedback here..." required></textarea>
+    <button type="submit">Send Feedback</button>
+  </form>
+
+  <div id="status-message"></div>
+  
+  <script type="module" src="help.js">
+
+  </script>
+</body>
+</html>

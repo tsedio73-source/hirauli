@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>हिरौली गाँव — दान करें</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet"/>
+      <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "fce30003-a1ab-4782-aafa-e2d8132b8090",
+    });
+  });
+</script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green: #1a4a2e; --green-light: #2d6b45;
+      --saffron: #e8960a; --saffron-light: #f5b942;
+      --cream: #fdf8f0; --cream-dark: #f0e8d8;
+      --brown: #5c3d1e; --text: #2c1810; --text-muted: #6b5344; --white: #fff;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Noto Sans Devanagari', 'Inter', sans-serif; background: var(--cream); color: var(--text); line-height: 1.7; }
+
+    /* HERO */
+    .hero {
+      background: linear-gradient(160deg, var(--green) 0%, #0f3020 60%, #1a3a10 100%);
+      color: var(--white); padding: 70px 24px 0; text-align: center; position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .hero-badge {
+      display: inline-block; background: rgba(232,150,10,0.2); border: 1px solid rgba(232,150,10,0.5);
+      color: var(--saffron-light); font-size: 12px; font-weight: 600; letter-spacing: 1.5px;
+      padding: 6px 16px; border-radius: 20px; margin-bottom: 20px;
+    }
+    .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 6vw, 3.6rem); font-weight: 900; line-height: 1.2; margin-bottom: 12px; }
+    .hero h1 span { color: var(--saffron-light); }
+    .hero-tagline { font-size: clamp(1rem, 3vw, 1.25rem); color: rgba(255,255,255,0.72); margin-bottom: 28px; }
+    .hero-desc { max-width: 560px; margin: 0 auto 40px; font-size: 0.97rem; color: rgba(255,255,255,0.72); line-height: 1.8; }
+    .hero-stats { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; padding: 30px 0 0; }
+    .stat { text-align: center; }
+    .stat-num { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: var(--saffron-light); display: block; }
+    .stat-label { font-size: 0.75rem; color: rgba(255,255,255,0.5); }
+    .village-divider { display: block; width: 100%; margin-top: 30px; line-height: 0; }
+
+    /* STORY */
+    .story { padding: 60px 24px; max-width: 800px; margin: 0 auto; text-align: center; }
+    .section-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--saffron); margin-bottom: 12px; }
+    .story h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700; color: var(--green); margin-bottom: 20px; line-height: 1.3; }
+    .story p { color: var(--text-muted); font-size: 1rem; line-height: 1.9; margin-bottom: 16px; }
+    .story p strong { color: var(--text); font-weight: 600; }
+
+    /* BUILT */
+    .built-section { background: var(--green); padding: 60px 24px; color: var(--white); }
+    .built-inner { max-width: 900px; margin: 0 auto; text-align: center; }
+    .built-inner .section-eyebrow { color: var(--saffron-light); }
+    .built-inner h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 700; margin-bottom: 40px; color: var(--white); }
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; text-align: left; }
+    .feature-card { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 24px; transition: background 0.2s; }
+    .feature-card:hover { background: rgba(255,255,255,0.12); }
+    .feature-icon { font-size: 1.8rem; margin-bottom: 12px; display: block; }
+    .feature-card h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 6px; color: var(--saffron-light); }
+    .feature-card p { font-size: 0.85rem; color: rgba(255,255,255,0.65); line-height: 1.7; }
+
+    /* COST */
+    .cost-section { padding: 60px 24px; max-width: 700px; margin: 0 auto; }
+    .cost-section h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.5rem, 3.5vw, 2rem); color: var(--green); text-align: center; margin-bottom: 8px; }
+    .cost-section .subtitle { text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 36px; }
+    .cost-list { list-style: none; border: 1px solid var(--cream-dark); border-radius: 14px; overflow: hidden; box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
+    .cost-item { display: flex; justify-content: space-between; align-items: center; padding: 16px 22px; border-bottom: 1px solid var(--cream-dark); background: var(--white); font-size: 0.92rem; }
+    .cost-item:last-child { border-bottom: none; }
+    .cost-item:nth-child(even) { background: #fafaf7; }
+    .cost-label { color: var(--text-muted); }
+    .cost-amount { font-weight: 600; color: var(--brown); }
+    .cost-total { background: var(--green) !important; }
+    .cost-total .cost-label, .cost-total .cost-amount { color: var(--white) !important; }
+    .cost-total .cost-amount { font-family: 'Playfair Display', serif; font-size: 1.1rem; }
+
+    /* DONATE */
+    .donate-section { background: linear-gradient(135deg, #fffbf2 0%, #fff8e8 100%); border-top: 3px solid var(--saffron); padding: 70px 24px; text-align: center; }
+    .donate-section .section-eyebrow { color: var(--brown); }
+    .donate-section h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 900; color: var(--green); margin-bottom: 12px; }
+    .donate-section .tagline { color: var(--text-muted); font-size: 1rem; max-width: 480px; margin: 0 auto 48px; line-height: 1.8; }
+
+    .amount-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-bottom: 36px; }
+    .amount-btn {
+      background: var(--white); border: 2px solid var(--cream-dark); border-radius: 10px;
+      padding: 12px 24px; font-size: 1rem; font-weight: 600; color: var(--green);
+      cursor: pointer; transition: all 0.18s; font-family: 'Noto Sans Devanagari', 'Inter', sans-serif;
+    }
+    .amount-btn:hover, .amount-btn.active {
+      border-color: var(--saffron); background: var(--saffron); color: var(--white);
+      transform: translateY(-2px); box-shadow: 0 4px 14px rgba(232,150,10,0.3);
+    }
+    .amount-btn .equiv { display: block; font-size: 0.65rem; font-weight: 400; opacity: 0.75; margin-top: 2px; }
+
+    /* UPI BOX */
+    .upi-box { background: var(--white); border: 1px solid var(--cream-dark); border-radius: 20px; padding: 36px 28px; max-width: 420px; margin: 0 auto; box-shadow: 0 8px 40px rgba(0,0,0,0.08); }
+    .upi-box h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--green); margin-bottom: 8px; }
+    .selected-amount-display { font-size: 0.87rem; color: var(--text-muted); margin-bottom: 22px; min-height: 22px; }
+    .selected-amount-display strong { color: var(--saffron); font-size: 1rem; }
+
+    .qr-placeholder {
+      width: 160px; height: 160px; margin: 0 auto 20px;
+      background: #f5f5f5; border: 2px dashed #ccc; border-radius: 12px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      color: #aaa; font-size: 0.75rem; text-align: center; gap: 6px;
+    }
+    .qr-placeholder svg { width: 40px; height: 40px; opacity: 0.4; }
+
+    .upi-id-row {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--cream); border: 1px solid var(--cream-dark); border-radius: 10px;
+      padding: 12px 16px; margin-bottom: 20px; gap: 12px;
+    }
+    .upi-id-text { font-size: 0.95rem; font-weight: 600; color: var(--green); font-family: 'Inter', monospace; flex: 1; text-align: left; word-break: break-all; }
+    .copy-btn {
+      background: var(--green); color: var(--white); border: none; border-radius: 8px;
+      padding: 8px 14px; font-size: 0.78rem; font-weight: 600; cursor: pointer;
+      white-space: nowrap; transition: background 0.2s; font-family: 'Noto Sans Devanagari', 'Inter', sans-serif;
+    }
+    .copy-btn:hover { background: var(--green-light); }
+    .copy-btn.copied { background: #2e7d52; }
+
+    /* THE ONE BIG PAY BUTTON */
+    .pay-now-btn {
+      display: block; width: 100%;
+      background: linear-gradient(135deg, var(--saffron) 0%, #d4820a 100%);
+      color: var(--white); border: none; border-radius: 14px;
+      padding: 18px 24px; font-size: 1.1rem; font-weight: 700;
+      cursor: pointer; text-decoration: none; text-align: center;
+      font-family: 'Noto Sans Devanagari', 'Inter', sans-serif;
+      box-shadow: 0 6px 20px rgba(232,150,10,0.4);
+      transition: all 0.2s; letter-spacing: 0.3px;
+    }
+    .pay-now-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(232,150,10,0.5); }
+    .pay-now-btn:active { transform: translateY(0); }
+    .pay-now-btn.disabled { background: #ccc; box-shadow: none; cursor: not-allowed; transform: none; }
+    .pay-now-btn small { display: block; font-size: 0.72rem; font-weight: 400; margin-top: 4px; opacity: 0.85; }
+
+    .upi-note { margin-top: 18px; font-size: 0.78rem; color: var(--text-muted); font-style: italic; line-height: 1.6; }
+
+    /* TRUST */
+    .trust-strip { background: var(--cream-dark); padding: 28px 24px; text-align: center; }
+    .trust-strip p { font-size: 0.85rem; color: var(--text-muted); max-width: 600px; margin: 0 auto; line-height: 1.8; }
+    .trust-strip strong { color: var(--brown); }
+
+    /* FOOTER */
+    footer { background: var(--green); color: rgba(255,255,255,0.6); text-align: center; padding: 28px 24px; font-size: 0.82rem; }
+    footer a { color: var(--saffron-light); text-decoration: none; }
+    footer strong { color: var(--white); }
+
+    /* TOAST */
+    .toast {
+      position: fixed; bottom: 28px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--green); color: var(--white);
+      padding: 12px 24px; border-radius: 30px; font-size: 0.9rem; font-weight: 500;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.2); transition: transform 0.3s ease; z-index: 999; white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 480px) {
+      .hero-stats { gap: 24px; }
+      .features-grid { grid-template-columns: 1fr; }
+      .upi-box { padding: 24px 16px; }
+    }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">🌿 हिरौली गाँव · हरदोई, उत्तर प्रदेश</div>
+  <h1>हमारे गाँव को<br/><span>डिजिटल पहचान दें</span></h1>
+  <p class="hero-tagline">एक गाँव, एक वेबसाइट — आने वाली पीढ़ियों के लिए</p>
+  <p class="hero-desc">
+    हिरौली गाँव अब इंटरनेट पर है — एक ऐसी जगह जहाँ हमारा इतिहास, हमारे लोग और हमारी प्रगति हमेशा के लिए दर्ज है। इसे जिंदा रखने में हमारी मदद करें।
+  </p>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-num">1</span><span class="stat-label">गाँव की वेबसाइट</span></div>
+    <div class="stat"><span class="stat-num">AI</span><span class="stat-label">हिंदी चैटबॉट</span></div>
+    <div class="stat"><span class="stat-num">∞</span><span class="stat-label">पीढ़ियों की सेवा</span></div>
+  </div>
+  <svg class="village-divider" viewBox="0 0 1200 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,120 L0,90 L30,90 L30,60 L60,60 L60,40 L70,40 L70,30 L80,30 L80,40 L90,40 L90,60 L120,60 L120,90 L150,90 L150,70 L165,70 L165,50 L180,50 L180,70 L195,70 L195,90 L220,90 L220,80 L230,70 L240,80 L250,80 L250,55 L260,45 L270,55 L270,80 L280,80 L280,90 L310,90 L310,60 L325,60 L325,40 L340,40 L340,60 L355,60 L355,90 L390,90 L390,75 C410,30 430,20 450,25 C470,30 475,60 490,65 L490,90 L520,90 L520,70 L535,70 L535,50 L550,50 L550,70 L565,70 L565,90 L600,90 L600,80 L615,60 L625,60 L625,40 L635,40 L635,60 L645,60 L660,80 L660,90 L700,90 L700,60 L715,60 L715,40 L725,30 L735,40 L735,60 L750,60 L750,90 L790,90 L790,75 L800,65 L810,75 L810,90 L850,90 L850,60 L865,60 L865,40 L875,30 L885,40 L885,60 L900,60 L900,90 L940,90 L940,80 L960,80 L960,60 L975,40 L990,60 L990,80 L1010,80 L1010,90 L1050,90 L1050,70 L1065,70 L1065,50 L1080,50 L1080,70 L1095,70 L1095,90 L1130,90 L1130,60 L1145,60 L1145,40 L1155,30 L1165,40 L1165,60 L1180,60 L1180,90 L1200,90 L1200,120 Z" fill="#fdf8f0"/>
+    <circle cx="475" cy="22" r="14" fill="#2d6b45" opacity="0.7"/>
+    <rect x="473" y="36" width="4" height="12" fill="#5c3d1e" opacity="0.7"/>
+    <circle cx="455" cy="18" r="10" fill="#1a4a2e" opacity="0.6"/>
+    <rect x="453" y="28" width="4" height="10" fill="#5c3d1e" opacity="0.6"/>
+  </svg>
+</section>
+
+<!-- STORY -->
+
+<!-- BUILT -->
+<section class="built-section">
+  <div class="built-inner">
+    <p class="section-eyebrow">हमने क्या बनाया</p>
+    <h2>हिरौली का असली डिजिटल घर</h2>
+    <div class="features-grid">
+      <div class="feature-card"><span class="feature-icon">🌐</span><h3>गाँव की वेबसाइट</h3><p>हिरौली की अपनी वेबसाइट — गाँव की जानकारी, इतिहास और स्थानीय संसाधन, कहीं से भी, कभी भी देखें।</p></div>
+      <div class="feature-card"><span class="feature-icon">🤖</span><h3>AI चैटबॉट (हिंदी)</h3><p>एक बुद्धिमान सहायक जो हिंदी में गाँव के बारे में सवालों का जवाब देता है — ताकि भाषा कभी रुकावट न बने।</p></div>
+      <div class="feature-card"><span class="feature-icon">📱</span><h3>मोबाइल पर चलती है</h3><p>हर स्मार्टफोन पर काम करती है — क्योंकि गाँव के अधिकतर लोग मोबाइल से ही इंटरनेट चलाते हैं।</p></div>
+      <div class="feature-card"><span class="feature-icon">🔄</span><h3>लगातार सुधार</h3><p>वेबसाइट नियमित रूप से अपडेट होती है — यह कोई एक बार का काम नहीं, गाँव के प्रति एक लंबी प्रतिबद्धता है।</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- COST -->
+<section class="cost-section">
+  <p class="section-eyebrow" style="text-align:center;">पारदर्शिता</p>
+  <h2>पैसा कहाँ जाएगा?</h2>
+  <p class="subtitle">हर रुपया वेबसाइट को चलाने में लगता है। यहाँ पूरा हिसाब है।</p>
+  <ul class="cost-list">
+    <li class="cost-item"><span class="cost-label">🌐 डोमेन और होस्टिंग (प्रति वर्ष)</span><span class="cost-amount">₹1,500 – ₹3,000</span></li>
+    <li class="cost-item"><span class="cost-label">🤖 AI API खर्च (चैटबॉट के जवाब)</span><span class="cost-amount">₹500 – ₹2,000/वर्ष</span></li>
+    <li class="cost-item"><span class="cost-label">⏱️ बनाने वाले का समय</span><span class="cost-amount">₹0 (बिना पैसे के)</span></li>
+    <li class="cost-item"><span class="cost-label">📸 फोटो, सामग्री और अपडेट</span><span class="cost-amount">₹0 (खुद का प्रयास)</span></li>
+    <li class="cost-item cost-total"><span class="cost-label">💛 कुल सालाना जरूरत</span><span class="cost-amount">~₹3,000 – ₹5,000</span></li>
+  </ul>
+  <p style="text-align:center; margin-top:16px; font-size:0.85rem; color:var(--text-muted);">
+    100 लोग ₹51 दें तो पूरे साल का खर्च निकल आए। बस इतना काफी है।
+  </p>
+</section>
+
+<!-- DONATE -->
+<section class="donate-section" id="donate">
+  <p class="section-eyebrow">अभी सहयोग करें</p>
+  <h2>अपना योगदान चुनें</h2>
+  <p class="tagline">कोई भी राशि छोटी नहीं होती। हर रुपया हिरौली की डिजिटल उपस्थिति को एक और दिन जिंदा रखता है।</p>
+
+  <div class="amount-grid">
+    <button class="amount-btn" onclick="selectAmount(this, 11)">₹11<span class="equiv">एक चाय की कीमत</span></button>
+    <button class="amount-btn" onclick="selectAmount(this, 51)">₹51<span class="equiv">शुभ संख्या 🙏</span></button>
+    <button class="amount-btn" onclick="selectAmount(this, 101)">₹101<span class="equiv">1 महीने की होस्टिंग</span></button>
+    <button class="amount-btn" onclick="selectAmount(this, 251)">₹251<span class="equiv">3 महीने का सहारा</span></button>
+    <button class="amount-btn" onclick="selectAmount(this, 501)">₹501<span class="equiv">आधे साल की मदद</span></button>
+    <button class="amount-btn" onclick="selectAmount(this, 1100)">₹1100<span class="equiv">पूरे साल का दान 🎉</span></button>
+  </div>
+
+  <div class="upi-box">
+    <h3>📲 UPI से दान करें</h3>
+    <p class="selected-amount-display" id="selectedDisplay">ऊपर से राशि चुनें, फिर नीचे बटन दबाएं</p>
+
+    <div class="qr-placeholder">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <span><img src="6194893990205787966.jpg" height="150px"></img></span>
+      </svg>
+     
+    </div>
+
+    <div class="upi-id-row">
+      <span class="upi-id-text" id="upiId">kumar.18711@superyes</span>
+      <button class="copy-btn" id="copyBtn" onclick="copyUPI()">कॉपी करें</button>
+    </div>
+
+    <!-- SINGLE PAY BUTTON — OS handles app chooser -->
+    <a class="pay-now-btn disabled" id="payNowBtn" href="#" onclick="payNow(event)">
+      💸 अभी दान करें
+      <small>पहले ऊपर से राशि चुनें</small>
+    </a>
+
+    <p class="upi-note">बटन दबाने पर आपके फोन में जितने भी UPI ऐप होंगे (PhonePe, GPay, Paytm, BHIM…) उनकी सूची आ जाएगी। जो पसंद हो उससे भेजें।</p>
+  </div>
+</section>
+
+<!-- TRUST -->
+<div class="trust-strip">
+  <p>यह किसी NGO या कंपनी का काम नहीं — <strong>हिरौली के एक बेटे की</strong> निजी कोशिश है। न कोई तनख्वाह, न कोई ऑफिस। हर रुपया <strong>वेबसाइट होस्टिंग, AI API और भविष्य के सुधारों</strong> पर खर्च होता है। किसी भी सवाल के लिए मिलें <strong>hirauli.site.je</strong> पर।</p>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>❤️ के साथ बनाया <strong>हिरौली गाँव</strong> के लिए, हरदोई, उत्तर प्रदेश</p>
+  <p style="margin-top:6px;"><a href="https://hirauli.site.je" target="_blank">hirauli.site.je</a> &nbsp;·&nbsp; एक गाँव वाले ने, अपने गाँव के लिए</p>
+</footer>
+
+<div class="toast" id="toast">✅ UPI ID कॉपी हो गई!</div>
+
+<script>
+  // ── SIRF YEH DO CHEEZEIN BADLO ──
+  const ACTUAL_UPI_ID = 'kumar.18711@superyes';   // ← apna UPI ID
+  const PAYEE_NAME    = 'Tsedio'; // ← apna naam
+
+  document.getElementById('upiId').textContent = ACTUAL_UPI_ID;
+
+  let selectedAmount = null;
+
+  function selectAmount(el, amount) {
+    document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    selectedAmount = amount;
+
+    document.getElementById('selectedDisplay').innerHTML =
+      `आपने चुना: <strong>₹${amount}</strong> — नीचे बटन दबाकर दान करें 👇`;
+
+    const btn = document.getElementById('payNowBtn');
+    btn.classList.remove('disabled');
+    btn.innerHTML = `💸 ₹${amount} का दान करें<small>PhonePe / GPay / Paytm / BHIM — जो पसंद हो</small>`;
+
+    document.querySelector('.upi-box').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function payNow(e) {
+    e.preventDefault();
+    if (!selectedAmount) {
+      document.querySelector('.amount-grid').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    // Standard UPI deep link — phone ka OS khud payment app chooser dikhayega
+    const upiUrl = `upi://pay?pa=${encodeURIComponent(ACTUAL_UPI_ID)}&pn=${encodeURIComponent(PAYEE_NAME)}&am=${selectedAmount}&cu=INR&tn=${encodeURIComponent('Hirauli Village Website Donation')}`;
+    window.location.href = upiUrl;
+  }
+
+  function copyUPI() {
+    navigator.clipboard.writeText(ACTUAL_UPI_ID).then(() => {
+      const btn = document.getElementById('copyBtn');
+      btn.textContent = '✓ हो गया!';
+      btn.classList.add('copied');
+      showToast();
+      setTimeout(() => { btn.textContent = 'कॉपी करें'; btn.classList.remove('copied'); }, 2500);
+    });
+  }
+
+  function showToast() {
+    const t = document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>

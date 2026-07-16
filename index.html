@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta name="google-site-verification" content="BxW7Xkyo3rT0xdwAEFQs6c73OTvCuMBNKLkR5kANxa0" />
+    <title>Hirauli Kutubnagar Shahabad</title>
+<meta name="description" content="This is the main portal of Hirauli Kutubnagar where are present News, Photos, Videos, Updates etc.">
+<meta name="keywords" content="Hirauli, Hirauli village, Hirauli news, Hirauli panchayat,hirauli gaon,hirauli village, hirauli photo,hirauli.com,hirauli.in,hirauli.io,hirauli.org">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#004a99">
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "fce30003-a1ab-4782-aafa-e2d8132b8090",
+    });
+  });
+</script>
+    <style>
+        :root {
+            --primary: #061188;
+            --dark: #333;
+            --glass: rgba(255, 255, 255, 0.2);
+        }
+        body {
+            font-family: sans serif;
+            margin: 0;
+            padding: 0;
+            background: #f4f4f4 url("https://i.ibb.co/CsH1WRmm/Untitled3-20251214153640.jpg") no-repeat fixed center;
+            background-size: 350px;
+        }
+        .top-nav {
+            height: 60px;
+            background: #061188aa; /*#061188*/
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            position: sticky;
+            top: 0;
+            z-index: 1001;
+            box-shadow: 0 30px 40px #061188aa;
+        }
+        .Menu-icon {
+            cursor: pointer;
+            width: 30px;
+        }
+        .Menu-icon div {
+            height: 3px;
+            width:30px;
+            background: white;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+        header {
+            background-image: url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSzmSSZdb-NjMckmrzvaT57VW3SBlXtqyjc0CYH_yC4g&s=10);
+            background-repeat: no-repeat;
+            background-size: cover;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: opacity 0.5s;
+        }
+        #typing {
+             margin: 5px 0 0; font-size: 35px;
+             font-weight: 900;
+             background-image: linear-gradient( 90deg,
+            #ff0000,
+            lab(95.59% -30.03 92.02),
+            #00ff00,
+            #0099ff,
+            #77ff00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+             background-clip: text;
+        }
+        #chat {
+            color:#fbfbfb;
+            font-size:25px;
+            margin-left:20px;
+        }
+        #donate {
+            color:#fbfbfb;
+            font-size:25px;
+            margin-left:200px;
+            }
+        #main {
+            position: absolute;
+            height: 55px;
+            border-radius: 50%;
+            left: 50%;
+            top: 2px;
+            transform: translate(-50%, 0%);
+        }
+        .main-footer { 
+            background-color: #333;
+            background-image: url(https://w0.peakpx.com/wallpaper/460/521/HD-wallpaper-phone-pad-on-9-16-phone-waterfall-outdoor-graphy-tips-forest.jpg);
+            color: #ccc;
+            background-repeat: no-repeat;
+            background-size: cover;
+            padding: 40px 20px; }
+
+        .slider {
+            width: 100%;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 0 20px black;
+            position: relative;
+            user-select: none;
+        }
+        .slides {
+            display: flex;
+            width: 600%;
+            transition: transform 0.5s ease-in-out;
+            cursor: grab;
+        }
+        .slides.dragging {
+            transition: none;
+            cursor: grabbing; 
+        }
+        .slides img {
+            width: calc(100% / 6);
+            flex-shrink: 0;
+            display: block;
+            object-fit: cover;
+            aspect-ratio: 16/9;
+            pointer-events: none;
+        }
+        .slider-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.45);
+            color: #fff;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+            opacity:0%;
+        }
+        .slider-btn:hover { background: rgba(0,0,0,0.75); }
+        .slider-btn.prev  { left: 10px; }
+        .slider-btn.next  { right: 10px; }
+        .slider-dots {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 7px;
+            z-index: 10;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            padding: 20px;
+            margin-top: 50px;
+        }
+          .menu-item {
+            background: #061188;
+            height: 110px;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: 0.3s;
+            border: 1px solid rgba(255,255,255,0.2);
+            cursor: pointer;
+            box-shadow: 4px 4px 6px black;
+        }
+        .menu-item:hover { transform: scale(1.05); }
+        .menu-item img   { height: 45px; margin-bottom: 8px; }
+        .menu-item span  { color: white; font-size: 14px; font-weight: bold; }
+        .banner-img { width: 100%; display: block; border-radius: 10px; margin: 20px 0; }
+        .notice { background: white; color: red; padding: 10px; font-weight: bold; }
+        
+        #footb{
+            box-shadow: 0 0 20px black; 
+        }
+        .expGall{
+            display: none;
+        }
+        #picDate{
+            display: none;
+        }
+        #weather{
+            color: #ffffff;
+            margin: 20px;
+            font-size: 20px;
+            font-weight: 500;
+            position: absolute;
+            top: 450px;
+            left:50px;
+            background-color: #5C6C84;
+            border-radius: 15px;
+
+}
+@media (min-width:1024px){
+
+            body {
+                background-image: url(https://pbs.twimg.com/media/FUVvIcCXEAIuY6Z?format=jpg&name=4096x4096);
+                background-repeat: no-repeat;
+                background-size: cover;
+            }
+            #weather {
+                color: #ffffff;
+                margin: 20px;
+                font-size: 30px;
+                font-weight: 500;
+                position: absolute;
+                top: 280px;
+                background-color: #abbdd8;
+                border-radius: 15px;
+            }
+             #footb {
+                box-shadow: 0 0 20px black;
+                width: 50%;
+            }
+            #typing  {
+                margin: 5px 0 0; font-size: 90px;
+                font-weight: bolder;
+                background-image: linear-gradient( 90deg,
+                #ff0000,
+                lab(95.59% -30.03 92.02),
+                #00ff00,
+                #0099ff,
+                #77ff00);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+              }
+   	        .container {
+                display: flex;
+                padding: 20px;
+                width: 800px;
+                margin: 200px;
+                background: #abbdd8;
+                border-radius: 100px;
+             }
+            .menu-item {
+                background: #061188;
+                height: 100px;
+                width: 100px;
+                border-radius: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                transition: 0.3s;
+                border: 1px solid rgba(255,255,255,0.2);
+                cursor: pointer;
+                box-shadow: 4px 4px 6px black;
+            }
+            .menu-item:hover { transform: scale(1.1); }
+            .menu-item img   { height: 45px; margin-bottom: 8px; }
+            .menu-item span  { color: white; font-size: 14px; font-weight: bold; }
+            .banner-img { width: 100%; display: block; border-radius: 10px; margin: 20px 0; }
+            .notice { background: white; color: red; padding: 10px; font-weight: bold; }
+           .expGall {
+                display: block;
+                border: 2px solid black;
+                margin: 20px;
+                height:500px;
+                width: 46%;
+                overflow: hidden;  ;
+                background-image: url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS95TMn0N7xv1-Cs9wTwkgwoT50hOm5n16uZBjUz93RxLYTaxFemU4vyJPH&s=10);
+                background-repeat: no-repeat;
+                background-size: cover;
+                border-radius: 10px;
+                box-shadow: 0 0 20px black;
+                position: absolute;
+                user-select: none;
+                left: 51%;
+                top: 390px;
+           }
+            .expGall img{
+                border-radius: 10px;
+                height: 100%;
+                width: 100%;
+            }
+            #picDate{
+                display: block;
+                font-weight: bold;
+                font-size: 30px;
+                color: white;
+                border-radius: 10px;
+                position: absolute;
+                background:#061188;
+                top: 915px;
+                left: 800px;
+             }
+            .slider {
+                border: 2px solid black;
+                max-resolution: 1080;
+                margin: 20px;
+                width: 50%;
+                overflow: hidden;
+                border-radius: 10px;
+                box-shadow: 0 0 20px black;
+                position: relative;
+                user-select: none;
+             }
+            #slideShow{
+                display: none;
+             }
+            .main-footer { 
+                background-color: #33333300;
+                background-image: url();
+                color: #ccc;
+                background-repeat: no-repeat;
+                background-size: cover;
+                padding: 40px 20px; }
+            .top-nav {
+                height: 105px;
+                background: #061188aa; /*#061188*/
+                display: flex;
+                align-items: center;
+                padding: 0 15px;
+                position: sticky;
+                top: 0;
+                z-index: 1001;
+                box-shadow: 0 30px 40px #061188aa;
+            }
+            #main {
+                position: absolute;
+                height: 100px;
+                border-radius: 50%;
+                left: 50%;
+                top: 2px;
+                transform: translate(-50%, 0%);
+             }
+            #donate {
+                color:#ffffff;
+                font-size:25px;
+                margin-left:1150px;
+            }
+            #chat {
+                color:#fbfbfb;
+                font-size:25px;
+                margin-left:20px;
+
+           }
+            header {
+                height: 200px;
+                background-image: url(https://getwallpapers.com/wallpaper/full/f/7/e/1111023-1280x800-hd-wallpaper-1920x1200-hd.jpg);
+            }
+        }
+        header h2 { margin: 0; font-family: cursive; font-size: 22px; }
+        
+        #user-profile {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        #user-img { width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; display: none; margin: 0 auto 10px; }
+        #login-btn-sidebar {
+            background: white; color: #061188; border: none; padding: 10px 15px;
+            border-radius: 5px; cursor: pointer; font-weight: bold;
+            display: flex; align-items: center; gap: 8px; margin: 0 auto;
+        }
+        #navMenu {
+            height: 100vh;
+            width: 260px;
+            background: rgba(44, 62, 80, 0.95);
+            backdrop-filter: blur(10px);
+            color: #fff;
+            position: fixed;
+            left: -260px;
+            top: 0;
+            transition: 0.3s;
+            z-index: 1002;
+            padding-top: 20px;
+        }
+        #navMenu ul { list-style: none; padding: 0; }
+        #navMenu ul li { padding: 15px 25px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        #navMenu ul li a { color: white; text-decoration: none; font-size: 18px; display: block; }
+        
+      
+        .footer-column h3 { color: #fff; margin-bottom: 15px; }
+        .social-icons a { color: white; font-size: 22px; margin-right: 15px; }
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        
+
+        /* ── SLIDER ── */
+       
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+        }
+        .dot.active {
+            background: #fff;
+            transform: scale(1.3);
+        }
+
+        #ai {
+            position: fixed;
+            top: 600px;
+            left: 290px;
+            border-radius: 20px;
+            box-shadow: 3px 3px 3px black;
+        }
+        #villageBot {
+            position: fixed;
+            right: 15px;
+            bottom: 25px;
+            z-index: 9999;
+            animation: botFloat 3s ease-in-out infinite;
+        }
+        #villageBot img {
+            width: 120px;
+            cursor: pointer;
+            animation: botWave 2s infinite;
+            transform-origin: bottom center;
+            filter: drop-shadow(0 0 10px rgba(0,0,0,0.3));
+        }
+        .bot-msg {
+            position: absolute;
+            right: 100px;
+            top: 10px;
+            background: white;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            animation: msgPop 2s infinite;
+        }
+        @keyframes botFloat {
+            0%,100% { transform: translateY(0px); }
+            50%      { transform: translateY(-10px); }
+        }
+        @keyframes botWave {
+            0%,100% { transform: rotate(0deg); }
+            25%     { transform: rotate(5deg); }
+            50%     { transform: rotate(-5deg); }
+            75%     { transform: rotate(4deg); }
+        }
+        @keyframes msgPop {
+            0%,100% { transform: scale(1); }
+            50%     { transform: scale(1.05); }
+        }
+        @media(max-width:600px) {
+            #villageBot img { width: 95px; }
+            .bot-msg { right: 80px; font-size: 12px; }
+        }
+        .main-links{
+            height:auto;
+            width:100%;
+            margin-top:20px;
+            
+        }
+        .new-badge{
+            background:#ff3040;
+            color:#fff;
+            font-size:10px;
+            padding:2px 6px;
+            border-radius:10px;
+            margin-left:5px;
+            font-weight:600;
+            text-decoration:none;
+        }
+        .link{
+            display: grid;
+            grid-template-columns: repeat(2,1fr);
+            margin: 10px;
+            font-size: larger;
+            background-color: #ffffffed;
+            border-radius: 20px;
+
+        }
+        .link a{
+            margin: 20px 10px;
+        }
+        .link a:hover{
+            scale: 1.01;
+            color: red;
+        }
+    </style>
+</head>
+<script>
+  const PUBLIC_KEY = 'BKeO7-sb9EgAqHTWPHJQN7cS4w487DOWtcPYXniaotYQNpXg2kM3DBAydcuoGxRxyynT-iMTQLqbktNcMoVXBtQ';
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const rawData = atob(base64);
+  return Uint8Array.from([...rawData].map(c => c.charCodeAt(0)));
+}
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js').then(async reg => {
+    try {
+      const sub = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(PUBLIC_KEY)
+      });
+      fetch('https://hirauli-notifications.onrender.com/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(sub)
+      });
+    } catch (err) {
+      console.log('Notification permission denied or error:', err);
+    }
+  });
+}
+</script>
+<body>
+<div id="overlay" onclick="toggleMenu()"></div>
+<div class="top-nav">
+<div class="Menu-icon" onclick="toggleMenu()">
+<div></div>
+<div></div>
+<div></div>
+<span style="text-decoration: underline; color: #fbeeb8;"><img id="main" /></span></div>
+<a id="donate"   href="donation.html"><span class="new-badge">NEW</span><i class="fas fa-donate"></i></a>
+<a id="chat"  href="send.html"><i class="fas fa-paper-plane"></i></a>
+</div>
+<header id="header">
+<p id="typing"></p>
+</header>
+<div class="notice"><marquee style="background-color: #e8e872;">This website is for educational purposes only. For any official work, use the government portal.</marquee></div>
+<!-- SLIDER -->
+<div class="slider" id="sliderWrap">
+<div class="slides" id="slideContainer"><img id="new1" /> <img id="new2" /> <img id="new3" /> <img id="new4" /> <img id="new5" /> <img id="new1copy" /><!-- loop ke liye copy --></div>
+<button class="slider-btn prev" onclick="manualSlide(-1)">‹</button> <button class="slider-btn next" onclick="manualSlide(1)">›</button>
+<div class="slider-dots" id="sliderDots"></div>
+</div>
+<div class="main-links">
+<ul>
+<!--<li><a style="text-decoration: none; font-size: 25px;" href="submersible.html"><i class="fas fa-water"></i> Submersibles</a></li>
+</ul>-->
+</div>
+<div class="expGall" id="expGall"></div>
+<span id="picDate">Waiting...</span>
+<div id="ai"><img style="border-radius: 20px;" alt="" height="50px" /></div>
+<!-- CHAT BOT -->
+<div id="villageBot" onclick="window.location.href='https://assis.site.je/'"><img src="boy.png" alt="ChatBot" />
+<div class="bot-msg">Namaste 👋</div>
+</div>
+<div class="container">
+<div class="menu-item" onclick="protectedRoute('addnews.html')"><img src="https://i.ibb.co/ZPtTY5F/add.png" /> <span>Add News</span></div>
+<div class="menu-item" onclick="protectedRoute('addphoto.html')"><img src="https://i.ibb.co/WWFW2vZP/add-image.png" /> <span>Add Media</span></div>
+<div class="menu-item" onclick="window.location.href='slides.html'" id="slideShow"><img style="border-radius: 10px;" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwgW7MQBImn2RsflDowsjMpQ4e6RHU9z3b0jRsVWz79w&s=10" /> <span>Slide Show</span></div>
+<div class="menu-item" onclick="location.href='indexweather.html'"><img src="https://i.ibb.co/zTx9FtH8/cloudy.png" /> <span>Weather</span></div>
+<div class="menu-item" onclick="location.href='news.html'"><img src="https://i.ibb.co/XZcGLnn2/newspaper.png" /> <span>News</span></div>
+<div class="menu-item" onclick="location.href='photo.html'"><img src="https://i.ibb.co/G3bxwryD/pictures.png" /> <span>Gallery</span></div>
+<div class="menu-item" onclick="location.href='hiraulihis.html'"><img src="https://i.ibb.co/cc5kPsN5/theory.png" /> <span>Information</span></div>
+<div class="menu-item" onclick="location.href='https://www.google.com/maps?q=Hirauli+Kutubnagar'"><img src="https://i.ibb.co/Ndtv4jg5/location.png" /> <span>Location</span></div>
+</div>
+<center><h2 style="background-color: #ccc;">ऑनलाइन आवेदन करें</h2></center>
+<div class="link">
+   <a href="eDistrict.html#aay">आय प्रमाण पत्र </a>
+   <a href="eDistrict.html#jaati">जाति प्रमाण पत्र </a>
+   <a href="eDistrict.html#nivas">निवास प्रमाण पत्र </a>
+   <a >दिव्यांग प्रमाण पत्र </a>
+   <a >मुख़्यमंत्री कृषक दुर्घटना सहायता योजना</a>
+   <a >मुख़्यमंत्री खेत-खलिहान अग्निकाण्ड दुर्घटना सहायता योजना</a>
+   <span style="font-size: 10px;margin: 10px;user-select: none;">Coming soon more links...</span>
+</div>
+</div>
+<p><img style="" id="footb" class="banner-img" /></p>
+<div id="navMenu">
+<div id="user-profile"><img id="user-img" />
+<p id="user-name" style="margin: 0; font-weight: bold;"></p>
+<button id="login-btn-sidebar" onclick="login()"> <img height="30px" src="https://i.ibb.co/Ld1dCzkT/google-web-reputation-2022-1-1024x1024.png" border="0" /> Google Login </button> <button id="logout-btn" onclick="logout()" style="display: none; background: none; border: 1px solid #ff4444; color: #ff4444; padding: 5px 10px; margin-top: 10px; border-radius: 5px; cursor: pointer;">Logout</button></div>
+<ul>
+<li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+<li><a href="aboutme.html"><i class="fas fa-user"></i> About me</a></li>
+<li><a href="mailto:ashish7376529017@gmail.com?subject=From hirauli web&amp;body=I want to know about your service."><i class="fas fa-envelope"></i> Contact Us</a></li>
+<li><a href="help.html"><i class="fas fa-question-circle"></i> Help</a></li>
+<li><a href="privacypolicy.html"><i class="fa-solid fa-lock"></i> Privacy Policy</a></li>
+</ul>
+</div>
+<footer class="main-footer" id="ft">
+<div class="footer-column">
+<h3>Tsedio Portal</h3>
+<a style="color: #eee;" href="https://tsedio.42web.io">Tsedio Portal</a>
+<h3>Kaksha Manager</h3>
+<a style="color: #eee;" href="https://kakshamanager.wuaze.com/">Kaksha Manager</a>
+<h3>Privacy Policy</h3>
+<a style="color: #eee;" href="privacypolicy.html">Privacy Policy</a>
+<h3>Government Portal</h3>
+<a style="color: #eee;" href="https://villagegram.in/uttar-pradesh/hardoi/shahabad/hirauli-kutub-nagar/#info-tab">Govt Authorised Site</a>
+<h3>FEA Admission Portal Online</h3>
+<a style="color: #eee;" href="https://ashish-73-design.github.io/feaadmission/">Govt Authorised Site</a>
+<h3>Government Primary School</h3>
+<a style="color: #eee;" href="https://schools.org.in/hardoi/9251101210/ps-hirauli.html">Govt PS Rural</a>
+<h3>Apps for Android</h3>
+<a style="color: #eee;" href="https://upload.app/download/education-save/com.mycomapny.mywebapp9p/3fed87ee0c00cda62a45c48cb62e4a92484e7c80fafc6814cfc879654d3fade8">👉 School Data APK Download</a><br /><a style="color: #eee;" href="https://upload.app/download/tourist/com.mycomapny.mywebapptourist/8a12b0d8750d621868b5801e5a04e44e3dd575d246d83ab86aa62d46a079b41e">👉 Tourist Manager APK Download</a><br /><a style="color: #eee;" href="https://upload.app/download/cd-milk/com.mycomapny.mywebapp0/024b4e0964665add51e1cd3aa27439edffe5f89d4f219afa177f6237a9ef8f0c">👉 CD Milk APK Download</a><br />
+<h3>Contact us</h3>
+<p>Address: Hirauli Kutubnagar, Shahabad Hardoi</p>
+<p>Email: <a href="mailto:tsedio73@gmail.com?subject=From hirauli web&amp;body=I want to know about your service.">tsedio73@gmail.com</a></p>
+</div>
+<div class="footer-column">
+<h3>Connect</h3>
+<div class="social-icons"><a href="https://www.facebook.com/share/188s4tq2FZ/"><i class="fab fa-facebook"></i></a> <a href="https://www.instagram.com/hirauli_?utm_source=ig_web_button_share_sheet&amp;igsh=ZDNlZDc0MzIxNw=="><i class="fab fa-instagram"></i></a> <a href="https://x.com/AshishR29942459"><i class="fab fa-twitter"></i></a></div>
+</div>
+<span onclick="window.location.href='indexweather.html'" id="weather">Loading weather...</span>
+<div style="text-align: center; padding-top: 20px; border-top: 1px solid #444;">
+<p>Last update <span style="color:white;font-weight:bold;">6 Jul 2026-09:12 a.m.</span></p>
+<p>&copy;
+<script>document.write(new Date().getFullYear())</script>
+All Rights Reserved</p>
+</div>
+</footer>
+<script type="module" src="banner.js"></script>
+<script type="module" src="slide.js"></script>
+<script type="module" src="script.js"></script>
+<script type="module" src="script1.js"></script>
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer="defer"></script>
+<script>
+function toggleMenu() {
+    const nav     = document.getElementById("navMenu");
+    const overlay = document.getElementById("overlay");
+    if (nav.style.left === "0px") {
+        nav.style.left        = "-260px";
+        overlay.style.display = "none";
+    } else {
+        nav.style.left        = "0px";
+        overlay.style.display = "block";
+    }
+}
+</script>
+
+
+</body>
+</html>
