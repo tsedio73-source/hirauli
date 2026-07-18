@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hirauli Kutubnagar Portal — Status</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Yatra+One&family=Mukta:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night:#16231c;
+    --night2:#1e3327;
+    --marigold:#f2a93b;
+    --marigold-soft:#f6c56a;
+    --clay:#c1592f;
+    --paper:#ede6d6;
+    --leaf:#4c7a5e;
+    --line: rgba(237,230,214,0.16);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{ height:100%; }
+  body{
+    display:flex; align-items:center; justify-content:center;
+    background:#000;
+    font-family:'Mukta', sans-serif;
+  }
+  h1,h2,h3,.display{ font-family:'Yatra One', cursive; font-weight:400; }
+  .mono{ font-family:'JetBrains Mono', monospace; }
+
+  /* 16:9 stage, sized to fill an iframe */
+  .stage{
+    position:relative;
+    width:100vw;
+    height:100vh;
+    max-width: 177.78vh;   /* keeps 16:9 if height is the limiting side */
+    max-height: 56.25vw;   /* keeps 16:9 if width is the limiting side */
+    margin:auto;
+    overflow:hidden;
+    background: var(--night);
+    color: var(--paper);
+    box-shadow: 0 0 60px rgba(0,0,0,0.6);
+  }
+
+  /* progress bars */
+  .progress-row{
+    position:absolute; top:0; left:0; right:0;
+    display:flex; gap:5px;
+    padding: 10px 12px 0;
+    z-index:20;
+  }
+  .progress-track{
+    flex:1;
+    height:3px;
+    background: rgba(237,230,214,0.25);
+    border-radius:3px;
+    overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;
+    width:0%;
+    background: linear-gradient(90deg, var(--marigold), var(--marigold-soft));
+    border-radius:3px;
+  }
+  .progress-track.done .progress-fill{ width:100%; transition:none; }
+  .progress-track.active .progress-fill{ transition: width linear; }
+
+  .topbar{
+    position:absolute; top:18px; left:12px; right:12px;
+    display:flex; align-items:center; gap:10px;
+    z-index:20;
+    font-size:0.8rem;
+    color: rgba(237,230,214,0.85);
+  }
+  .topbar .badge{
+    width:26px; height:26px; border-radius:50%;
+    background: linear-gradient(135deg, var(--marigold), var(--clay));
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Yatra One', cursive; font-size:0.9rem; color: var(--night);
+    flex-shrink:0;
+  }
+  .topbar .name{ font-weight:600; }
+  .topbar .pause-icon{
+    margin-left:auto;
+    font-size:0.75rem;
+    font-family:'JetBrains Mono', monospace;
+    color: rgba(237,230,214,0.6);
+  }
+
+  /* nav zones */
+  .nav-zone{
+    position:absolute; top:0; bottom:0; width:35%;
+    z-index:15; cursor:pointer;
+  }
+  .nav-zone.left{ left:0; }
+  .nav-zone.right{ right:0; }
+
+  /* slides */
+  .slide{
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center;
+    padding: 90px 7% 60px;
+    opacity:0;
+    pointer-events:none;
+    transition: opacity .35s ease;
+  }
+  .slide.active{ opacity:1; pointer-events:auto; }
+
+  .slide .tag{
+    font-family:'JetBrains Mono', monospace;
+    font-size: clamp(0.6rem, 1.3vw, 0.8rem);
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color: var(--marigold-soft);
+    margin-bottom: 1.2vh;
+  }
+  .slide h2{
+    font-size: clamp(1.4rem, 4.6vw, 2.6rem);
+    color: var(--marigold-soft);
+    margin-bottom: 1.6vh;
+  }
+  .slide p{
+    font-size: clamp(0.75rem, 2vw, 1.05rem);
+    color: rgba(237,230,214,0.82);
+    max-width: 640px;
+  }
+
+  /* module list slides */
+  .mod-grid{
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2vh 3vw;
+    width:100%;
+    max-width:720px;
+    margin-top: 2vh;
+  }
+  .mod-card{
+    background: var(--night2);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding: 1.6vh 1.4vw;
+    text-align:left;
+    position:relative;
+    overflow:hidden;
+  }
+  .mod-card::before{
+    content:""; position:absolute; top:0; left:0; right:0; height:3px;
+    background: linear-gradient(90deg, var(--marigold), var(--clay));
+  }
+  .mod-card .icon{ font-size: clamp(1.1rem,2.6vw,1.6rem); display:block; margin-bottom:0.6vh; }
+  .mod-card .file{
+    display:inline-block; font-family:'JetBrains Mono', monospace;
+    font-size: clamp(0.55rem,1.1vw,0.68rem);
+    color: var(--marigold-soft);
+    background: rgba(242,169,59,0.12);
+    padding:2px 7px; border-radius:6px; margin-bottom:0.5vh;
+  }
+  .mod-card h3{ font-family:'Mukta',sans-serif; font-weight:700; font-size: clamp(0.8rem,1.9vw,1.05rem); margin-bottom:0.3vh;}
+  .mod-card p{ font-size: clamp(0.62rem,1.4vw,0.82rem); color: rgba(237,230,214,0.7); }
+
+  /* pills */
+  .pill-wrap{ display:flex; flex-wrap:wrap; gap:1vh 0.8vw; justify-content:center; margin-top:2vh; max-width:720px; }
+  .pill{
+    background: rgba(76,122,94,0.2);
+    border:1px solid rgba(76,122,94,0.55);
+    color:#bfe0cc;
+    font-size: clamp(0.62rem,1.5vw,0.85rem);
+    font-weight:600;
+    padding: 0.8vh 1.4vw;
+    border-radius:999px;
+  }
+
+  /* stack cols */
+  .stack-cols{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2vh 2vw;
+    width:100%;
+    max-width:760px;
+    margin-top:2vh;
+    text-align:left;
+  }
+  .stack-col h4{
+    font-family:'JetBrains Mono', monospace;
+    font-size: clamp(0.6rem,1.3vw,0.75rem);
+    letter-spacing:1.5px; text-transform:uppercase;
+    color: var(--marigold-soft);
+    margin-bottom:1vh; padding-bottom:0.6vh;
+    border-bottom:1px solid var(--line);
+  }
+  .stack-col li{
+    list-style:none;
+    font-size: clamp(0.62rem,1.4vw,0.85rem);
+    color: rgba(237,230,214,0.85);
+    padding: 0.4vh 0;
+    display:flex; align-items:center; gap:6px;
+  }
+  .stack-col li::before{ content:""; width:5px; height:5px; border-radius:50%; background:var(--leaf); flex-shrink:0; }
+
+  /* roles */
+  .split{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2vw;
+    width:100%; max-width:700px;
+    margin-top:2vh;
+    text-align:left;
+  }
+  .role-card{
+    background: var(--night2);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding: 1.8vh 1.4vw;
+  }
+  .role-card h3{ color:var(--marigold-soft); font-size: clamp(0.85rem,2vw,1.15rem); margin-bottom:1vh; }
+  .role-card li{
+    list-style:none;
+    font-size: clamp(0.62rem,1.4vw,0.85rem);
+    color: rgba(237,230,214,0.85);
+    padding:0.35vh 0;
+    display:flex; gap:6px;
+  }
+  .role-card li::before{ content:"✓"; color: var(--leaf); font-weight:700; }
+
+  /* diya on intro slide */
+  .diya{ width: clamp(34px,7vw,56px); height: clamp(34px,7vw,56px); margin: 2vh auto 0; position:relative; }
+  .diya .flame{
+    width: 22%; height:44%;
+    background: linear-gradient(180deg, #fff2c4, var(--marigold) 60%, var(--clay));
+    border-radius: 50% 50% 50% 50% / 65% 65% 35% 35%;
+    position:absolute; left:50%; top:-30%; transform:translateX(-50%);
+    animation: flicker 1.6s ease-in-out infinite;
+    filter: drop-shadow(0 0 8px rgba(242,169,59,0.6));
+  }
+  @keyframes flicker{
+    0%,100%{ transform:translateX(-50%) scaleY(1) rotate(0deg); }
+    30%{ transform:translateX(-52%) scaleY(1.05) rotate(-2deg); }
+    60%{ transform:translateX(-48%) scaleY(0.95) rotate(2deg); }
+  }
+  .diya .bowl{
+    width:100%; height:44%;
+    background: linear-gradient(180deg, var(--clay), #7c3418);
+    border-radius: 0 0 50px 50px / 0 0 40px 40px;
+    position:absolute; bottom:0; left:0;
+  }
+
+  footer.slide-footer{
+    font-size: clamp(0.55rem,1.2vw,0.75rem);
+    color: rgba(237,230,214,0.5);
+    margin-top:2.4vh;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .diya .flame{ animation:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stage" id="stage">
+
+  <div class="progress-row" id="progressRow"></div>
+
+  <div class="topbar">
+    <span class="badge">ह</span>
+    <span class="name">Hirauli Kutubnagar Portal</span>
+    <span class="pause-icon" id="pauseIcon"></span>
+  </div>
+
+  <div class="nav-zone left" id="navLeft"></div>
+  <div class="nav-zone right" id="navRight"></div>
+
+  <!-- Slide 1: Intro -->
+  <div class="slide active">
+    <span class="tag">Kutubnagar · Shahabad · Hardoi, UP</span>
+    <h2>Hirauli Kutubnagar Portal</h2>
+    <p>Village news, gallery and citizen services — all in one place. Built for the village, by the village.</p>
+    <div class="diya" aria-hidden="true"><div class="flame"></div><div class="bowl"></div></div>
+  </div>
+
+  <!-- Slide 2: Modules 1 -->
+  <div class="slide">
+    <span class="tag">Portal Modules · 1/2</span>
+    <h2>What You'll Find</h2>
+    <div class="mod-grid">
+      <div class="mod-card"><span class="icon">🏡</span><span class="file mono">aboutme.html</span><h3>About Village</h3><p>Village introduction and information.</p></div>
+      <div class="mod-card"><span class="icon">📰</span><span class="file mono">addnews.html</span><h3>News Management</h3><p>Admin can upload news with an image.</p></div>
+      <div class="mod-card"><span class="icon">📸</span><span class="file mono">addphoto.html</span><h3>Gallery Upload</h3><p>Upload photos and videos.</p></div>
+      <div class="mod-card"><span class="icon">🖼️</span><span class="file mono">gallery-app.js</span><h3>Gallery Viewer</h3><p>Load more, thumbnails and selection.</p></div>
+    </div>
+  </div>
+
+  <!-- Slide 3: Modules 2 -->
+  <div class="slide">
+    <span class="tag">Portal Modules · 2/2</span>
+    <h2>And More</h2>
+    <div class="mod-grid">
+      <div class="mod-card"><span class="icon">👤</span><span class="file mono">dashboard-user.js</span><h3>Dashboard User</h3><p>Shows logged-in user's name, email and photo.</p></div>
+      <div class="mod-card"><span class="icon">🪔</span><span class="file mono">donation.html</span><h3>Donation</h3><p>Donation page for village development.</p></div>
+      <div class="mod-card"><span class="icon">📜</span><span class="file mono">eDistrict.html</span><h3>eDistrict</h3><p>Certificate application portal.</p></div>
+      <div class="mod-card"><span class="icon">💬</span><span class="file mono">help.html</span><h3>Feedback</h3><p>Users can submit feedback.</p></div>
+    </div>
+  </div>
+
+  <!-- Slide 4: Features -->
+  <div class="slide">
+    <span class="tag">Full List</span>
+    <h2>All Features</h2>
+    <div class="pill-wrap">
+      <span class="pill">Google Sign In</span>
+      <span class="pill">Firebase Database</span>
+      <span class="pill">Photo Upload</span>
+      <span class="pill">Video Upload</span>
+      <span class="pill">Village Gallery</span>
+      <span class="pill">Village News</span>
+      <span class="pill">Donation Page</span>
+      <span class="pill">Feedback System</span>
+      <span class="pill">Citizen Services</span>
+      <span class="pill">Push Notifications</span>
+      <span class="pill">Responsive Design</span>
+    </div>
+  </div>
+
+  <!-- Slide 5: Tech Stack -->
+  <div class="slide">
+    <span class="tag">How It's Built</span>
+    <h2>Technology Stack</h2>
+    <div class="stack-cols">
+      <div class="stack-col">
+        <h4>Frontend</h4>
+        <ul><li>HTML5</li><li>CSS3</li><li>JavaScript (ES Modules)</li></ul>
+      </div>
+      <div class="stack-col">
+        <h4>Backend</h4>
+        <ul><li>Firebase Authentication</li><li>Firebase Realtime Database</li><li>Firebase Hosting</li></ul>
+      </div>
+      <div class="stack-col">
+        <h4>Authentication</h4>
+        <ul><li>Google Login</li><li>Anonymous Login</li></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 6: Cloud Services -->
+  <div class="slide">
+    <span class="tag">Cloud Partners</span>
+    <h2>Powered By</h2>
+    <div class="stack-cols">
+      <div class="stack-col">
+        <h4>Firebase</h4>
+        <ul><li>Authentication</li><li>Realtime Database</li></ul>
+      </div>
+      <div class="stack-col">
+        <h4>Cloudinary</h4>
+        <ul><li>Image Hosting</li><li>Video Hosting</li></ul>
+      </div>
+      <div class="stack-col">
+        <h4>OneSignal</h4>
+        <ul><li>Push Notification</li></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 7: Roles -->
+  <div class="slide">
+    <span class="tag">Who Can Do What</span>
+    <h2>Admin vs User</h2>
+    <div class="split">
+      <div class="role-card">
+        <h3>🛠️ Admin</h3>
+        <ul>
+          <li>Upload news</li>
+          <li>Upload media (photo/video)</li>
+          <li>Manage the gallery</li>
+        </ul>
+      </div>
+      <div class="role-card">
+        <h3>🙋 User</h3>
+        <ul>
+          <li>View the gallery</li>
+          <li>Read news</li>
+          <li>Send feedback</li>
+          <li>Donate</li>
+          <li>Apply for a certificate</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 8: Closing -->
+  <div class="slide">
+    <span class="tag">v1.0.0</span>
+    <h2>हिरौली कुतुबनगर</h2>
+    <p>Village Information · News · Gallery · Donation · Citizen Services Portal</p>
+    <footer class="slide-footer">Tap to replay · Built for Hirauli Kutubnagar</footer>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  const slides = document.querySelectorAll('.slide');
+  const progressRow = document.getElementById('progressRow');
+  const pauseIcon = document.getElementById('pauseIcon');
+  const navLeft = document.getElementById('navLeft');
+  const navRight = document.getElementById('navRight');
+  const DURATION = 4200; // ms per slide
+  let current = 0;
+  let paused = false;
+  let startTime = null;
+  let elapsed = 0;
+  let raf = null;
+
+  // build progress bars
+  slides.forEach(() => {
+    const track = document.createElement('div');
+    track.className = 'progress-track';
+    const fill = document.createElement('div');
+    fill.className = 'progress-fill';
+    track.appendChild(fill);
+    progressRow.appendChild(track);
+  });
+  const tracks = document.querySelectorAll('.progress-track');
+
+  function setSlide(index, resetElapsed = true){
+    slides[current].classList.remove('active');
+    tracks[current].classList.remove('active');
+    current = (index + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    tracks.forEach((t, i) => {
+      t.classList.toggle('done', i < current);
+      const fill = t.querySelector('.progress-fill');
+      if(i < current){ fill.style.transition = 'none'; fill.style.width = '100%'; }
+      if(i > current){ t.classList.remove('active','done'); fill.style.transition = 'none'; fill.style.width = '0%'; }
+    });
+    tracks[current].classList.add('active');
+    const fill = tracks[current].querySelector('.progress-fill');
+    if(resetElapsed){ elapsed = 0; }
+    fill.style.transition = 'none';
+    fill.style.width = (elapsed / DURATION * 100) + '%';
+    startTime = null;
+  }
+
+  function tick(ts){
+    if(paused){ raf = requestAnimationFrame(tick); return; }
+    if(startTime === null) startTime = ts - elapsed;
+    elapsed = ts - startTime;
+    const fill = tracks[current].querySelector('.progress-fill');
+    const pct = Math.min(100, (elapsed / DURATION) * 100);
+    fill.style.transition = 'none';
+    fill.style.width = pct + '%';
+    if(elapsed >= DURATION){
+      setSlide(current + 1);
+    }
+    raf = requestAnimationFrame(tick);
+  }
+
+  navRight.addEventListener('click', () => setSlide(current + 1));
+  navLeft.addEventListener('click', () => setSlide(current - 1));
+
+  // hold to pause
+  let holdTimer = null;
+  function holdStart(){ holdTimer = setTimeout(() => { paused = true; pauseIcon.textContent = 'II'; }, 180); }
+  function holdEnd(){ clearTimeout(holdTimer); if(paused){ paused = false; pauseIcon.textContent = ''; startTime = null; } }
+  ['mousedown','touchstart'].forEach(evt => {
+    navLeft.addEventListener(evt, holdStart);
+    navRight.addEventListener(evt, holdStart);
+  });
+  ['mouseup','mouseleave','touchend','touchcancel'].forEach(evt => {
+    navLeft.addEventListener(evt, holdEnd);
+    navRight.addEventListener(evt, holdEnd);
+  });
+
+  setSlide(0);
+  raf = requestAnimationFrame(tick);
+})();
+</script>
+
+</body>
+</html>

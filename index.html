@@ -562,7 +562,21 @@
         .main-footer { background: #0d2241; background-image: none; padding: 38px max(20px, calc((100% - 1140px) / 2)); }
         .main-footer a { color: #dbeafe !important; }
         #villageBot img { width: 92px; }
+        iframe {
+        border: 0;
+        width: 470px;
+        height: 275px;
+        margin-left: 10px;
+        border-radius: 10px;
+        }
         @media (min-width: 1024px) {
+             iframe {
+        border: 0;
+        width: 1200px;
+        height: 700px;
+        margin-left: 80px;
+        border-radius: 10px;
+        }
             body { background: #f3f7fb; }
             .top-nav { height: 72px; }
             .container { display: grid; width: auto; margin: 0; background: transparent; border-radius: 0; }
@@ -721,7 +735,7 @@ if ('serviceWorker' in navigator) {
 </div>
 </section>
 </main>
-<p><img style="" id="footb" class="banner-img" /></p>
+<iframe src="hirauli-status.html"></iframe>
 <div id="navMenu">
 <div id="user-profile"><img id="user-img" />
 <p id="user-name" style="margin: 0; font-weight: bold;"></p>
