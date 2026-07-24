@@ -20,7 +20,7 @@
             font-family: sans-serif;
             margin: 0;
             padding: 0;
-            background: #f4f4f4 url("https://i.ibb.co/CsH1WRmm/Untitled3-20251214153640.jpg") no-repeat fixed center;
+            background: #f4f4f4 url("https://images.weserv.nl/?url=ssl:i.ibb.co/CsH1WRmm/Untitled3-20251214153640.jpg&w=350&q=60") no-repeat fixed center;
             background-size: 350px;
         }
         .top-nav {
@@ -87,7 +87,7 @@
         }
         .main-footer { 
             background-color: #333;
-            background-image: url(https://w0.peakpx.com/wallpaper/460/521/HD-wallpaper-phone-pad-on-9-16-phone-waterfall-outdoor-graphy-tips-forest.jpg);
+            background-image: url(https://images.weserv.nl/?url=ssl:w0.peakpx.com/wallpaper/460/521/HD-wallpaper-phone-pad-on-9-16-phone-waterfall-outdoor-graphy-tips-forest.jpg&w=700&q=55);
             color: #ccc;
             background-repeat: no-repeat;
             background-size: cover;
@@ -200,7 +200,7 @@
 @media (min-width:1024px){
 
             body {
-                background-image: url(https://pbs.twimg.com/media/FUVvIcCXEAIuY6Z?format=jpg&name=4096x4096);
+                background-image: url(https://pbs.twimg.com/media/FUVvIcCXEAIuY6Z?format=jpg&name=medium);
                 background-repeat: no-repeat;
                 background-size: cover;
             }
@@ -344,7 +344,7 @@
            }
             header {
                 height: 200px;
-                background-image: url(https://getwallpapers.com/wallpaper/full/f/7/e/1111023-1280x800-hd-wallpaper-1920x1200-hd.jpg);
+                background-image: url(https://images.weserv.nl/?url=ssl:getwallpapers.com/wallpaper/full/f/7/e/1111023-1280x800-hd-wallpaper-1920x1200-hd.jpg&w=1000&q=55);
             }
         }
         header h2 { margin: 0; font-family: cursive; font-size: 22px; }
@@ -490,6 +490,7 @@
 
         /* Home dashboard refresh */
         :root { --ink: #102a43; --muted: #627d98; --surface: #ffffff; --line: #d9e2ec; --accent: #f59e0b; }
+        html, body { max-width: 100%; overflow-x: hidden; }
         body {
             color: var(--ink);
             background: #f3f7fb;
@@ -503,13 +504,14 @@
         .brand small { display: block; color: #cbd5ff; font-size: 11px; font-weight: 500; margin-top: 2px; }
         #main { position: static; transform: none; width: 42px; height: 42px; object-fit: cover; border: 2px solid rgba(255,255,255,.7); }
         .nav-actions { margin-left: auto; display: flex; align-items: center; gap: 10px; }
-        .dashboard-user { display: flex; align-items: center; gap: 8px; max-width: 235px; padding: 5px 10px 5px 5px; color: #fff; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.16); border-radius: 12px; animation: profileIn .35s cubic-bezier(.22, 1, .36, 1) both; }
+        .dashboard-user { display: flex; align-items: center; gap: 8px; width: 100%; max-width: 100%; box-sizing: border-box; margin-top: 12px; padding: 8px 10px; color: #fff; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.16); border-radius: 12px; animation: profileIn .35s cubic-bezier(.22, 1, .36, 1) both; overflow: hidden; }
         .dashboard-user[hidden] { display: none; }
-        .dashboard-user img { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; background: #dbeafe; }
+        .dashboard-user img { width: 30px; height: 30px; flex-shrink: 0; border-radius: 50%; object-fit: cover; background: #dbeafe; }
+        .dashboard-user > div { min-width: 0; flex: 1; }
         .dashboard-user strong, .dashboard-user span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .dashboard-user strong { font-size: 12px; line-height: 15px; }
-        .dashboard-user span { color: #dbeafe; font-size: 10px; line-height: 14px; }
-        .dashboard-user span i { font-size: 9px; margin-right: 2px; }
+        .dashboard-user strong { font-size: 13px; line-height: 16px; }
+        .dashboard-user span { color: #dbeafe; font-size: 11px; line-height: 15px; }
+        .dashboard-user span i { font-size: 10px; margin-right: 2px; }
         #donate, #chat { margin: 0; color: white; text-decoration: none; font-size: 17px; height: 39px; min-width: 39px; border-radius: 10px; display: grid; place-items: center; background: rgba(255,255,255,.13); }
         #donate { width: auto; padding: 0 12px; gap: 7px; display: flex; font-size: 13px; font-weight: 700; }
         .new-badge { margin: 0; background: #ef4444; }
@@ -534,8 +536,8 @@
         .section-heading { display: flex; align-items: end; justify-content: space-between; margin-bottom: 14px; }
         .section-heading h2 { margin: 0; font-size: 21px; letter-spacing: -.2px; }
         .section-heading p { margin: 0; color: var(--muted); font-size: 13px; }
-        .container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 0; padding: 0; }
-        .menu-item { width: auto; height: 136px; border-radius: 15px; background: var(--surface); border: 1px solid var(--line); box-shadow: 0 4px 14px rgba(16,42,67,.06); align-items: center; padding: 19px; color: var(--ink); text-align: center; }
+        .container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 0; padding: 22px; background: var(--surface); border: 1px solid var(--line); border-radius: 20px; box-shadow: 0 10px 26px rgba(16,42,67,.08); }
+        .menu-item { width: auto; height: 136px; border-radius: 15px; background: #f7f9fc; border: 1px solid var(--line); box-shadow: 0 4px 14px rgba(16,42,67,.06); align-items: center; padding: 19px; color: var(--ink); text-align: center; }
         .menu-item:hover { transform: translateY(-4px); box-shadow: 0 12px 20px rgba(16,42,67,.13); border-color: #9db4ff; }
         .menu-item img { height: 38px; width: 38px; object-fit: contain; margin: 0 0 15px; padding: 8px; background: #eef2ff; border-radius: 11px; }
         .menu-item span { color: var(--ink); font-size: 14px; font-weight: 700; }
@@ -579,7 +581,7 @@
         }
             body { background: #f3f7fb; }
             .top-nav { height: 72px; }
-            .container { display: grid; width: auto; margin: 0; background: transparent; border-radius: 0; }
+            .container { display: grid; width: auto; margin: 0; }
             .menu-item { width: auto; height: 136px; border-radius: 15px; }
             .expGall { position: relative; inset: auto; width: 100%; height: 220px; }
             .slider { width: 100%; margin: 0; }
@@ -590,12 +592,10 @@
             .top-nav { padding: 0 14px; height: 64px; }
             .brand { font-size: 14px; margin-left: 13px; }
             .brand small { display: none; }
-            .dashboard-user { max-width: 124px; padding-right: 7px; }
-            .dashboard-user span { display: none; }
             #donate { padding: 0 9px; font-size: 0; min-width: 39px; }
             #donate i { font-size: 16px; } #donate .new-badge { font-size: 9px; }
             .dashboard-hero { grid-template-columns: 1fr; }
-            .container { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .container { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 16px; border-radius: 16px; }
             .menu-item { height: 120px; padding: 15px; }
             .link { grid-template-columns: 1fr; }
         }
@@ -629,6 +629,12 @@
         .link a:hover { transform: translateX(3px); }
         .reveal-on-scroll { opacity: 0; transform: translateY(24px); transition: opacity .65s cubic-bezier(.22, 1, .36, 1), transform .65s cubic-bezier(.22, 1, .36, 1); }
         .reveal-on-scroll.is-visible { opacity: 1; transform: translateY(0); }
+        .text-animate { opacity: 0; transform: translateY(16px); transition: opacity .6s cubic-bezier(.22, 1, .36, 1), transform .6s cubic-bezier(.22, 1, .36, 1); }
+        .is-visible .text-animate, .text-animate.is-visible { opacity: 1; transform: translateY(0); }
+        .text-animate:nth-of-type(2) { transition-delay: .08s; }
+        .text-animate:nth-of-type(3) { transition-delay: .16s; }
+        .text-animate:nth-of-type(4) { transition-delay: .24s; }
+        .dashboard > header .dashboard-subtitle { opacity: 0; transform: translateY(14px); animation: riseIn .7s .22s cubic-bezier(.22, 1, .36, 1) both; }
         @keyframes navEnter { from { opacity: 0; transform: translateY(-100%); } to { opacity: 1; transform: translateY(0); } }
         @keyframes riseIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes cardIn { from { opacity: 0; transform: translateY(18px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
@@ -685,7 +691,7 @@ if ('serviceWorker' in navigator) {
 <div></div>
  </div>
 <div class="brand"><img id="main" /><div>Hirauli <small>Kutubnagar • Shahabad</small></div></div>
-<div class="nav-actions"><div class="dashboard-user" id="dashboardUser" hidden><img id="dashboardUserPhoto" alt="" /><div><strong id="dashboardUserName"></strong><span><i class="fas fa-envelope"></i> <span id="dashboardUserEmail"></span></span></div></div><a id="donate" href="donation.html"><span class="new-badge">NEW</span><i class="fas fa-donate"></i> Donate</a><a id="chat" href="send.html" aria-label="Send a message"><i class="fas fa-paper-plane"></i></a></div>
+<div class="nav-actions"><a id="donate" href="donation.html"><span class="new-badge">NEW</span><i class="fas fa-donate"></i> Donate</a><a id="chat" href="send.html" aria-label="Send a message"><i class="fas fa-paper-plane"></i></a></div>
 </div>
 <main class="dashboard">
 <header id="header">
@@ -709,7 +715,7 @@ if ('serviceWorker' in navigator) {
 <div class="expGall" id="expGall"></div>
 <span id="picDate">Waiting for the latest update...</span></aside>
 </section>
-<section class="quick-section"><div class="section-heading"><div><h2>Quick access</h2><p>Frequently used community tools</p></div><span onclick="window.location.href='indexweather.html'" id="weather">Loading weather...</span></div>
+<section class="quick-section"><div class="section-heading"><div><h2 class="text-animate">Quick access</h2><p class="text-animate">Frequently used community tools</p></div><span class="text-animate" onclick="window.location.href='indexweather.html'" id="weather">Loading weather...</span></div>
 <div id="ai"><img style="border-radius: 20px;" alt="" height="50px" /></div>
 <div class="container">
 <div class="menu-item" onclick="protectedRoute('addnews.html')"><img src="https://i.ibb.co/ZPtTY5F/add.png" /> <span>Add News</span></div>
@@ -722,7 +728,7 @@ if ('serviceWorker' in navigator) {
 <div class="menu-item" onclick="location.href='https://www.google.com/maps?q=Hirauli+Kutubnagar'"><img src="https://i.ibb.co/Ndtv4jg5/location.png" /> <span>Location</span></div>
 </div>
 </section>
-<section class="services"><h2>Online applications</h2><p>Quick links to commonly requested certificates and schemes.</p>
+<section class="services"><h2 class="text-animate">Online applications</h2><p class="text-animate">Quick links to commonly requested certificates and schemes.</p>
 <center><h2 style="background-color: #ccc;">ऑनलाइन आवेदन करें</h2></center>
 <div class="link">
    <a href="eDistrict.html#aay">आय प्रमाण पत्र </a>
@@ -739,7 +745,9 @@ if ('serviceWorker' in navigator) {
 <div id="navMenu">
 <div id="user-profile"><img id="user-img" />
 <p id="user-name" style="margin: 0; font-weight: bold;"></p>
-<button id="login-btn-sidebar" onclick="login()"> <img height="30px" src="https://i.ibb.co/Ld1dCzkT/google-web-reputation-2022-1-1024x1024.png" border="0" /> Google Login </button> <button id="logout-btn" onclick="logout()" style="display: none; background: none; border: 1px solid #ff4444; color: #ff4444; padding: 5px 10px; margin-top: 10px; border-radius: 5px; cursor: pointer;">Logout</button></div>
+<button id="login-btn-sidebar" onclick="login()"> <img height="30px" src="https://i.ibb.co/Ld1dCzkT/google-web-reputation-2022-1-1024x1024.png" border="0" /> Google Login </button> <button id="logout-btn" onclick="logout()" style="display: none; background: none; border: 1px solid #ff4444; color: #ff4444; padding: 5px 10px; margin-top: 10px; border-radius: 5px; cursor: pointer;">Logout</button>
+<div class="dashboard-user" id="dashboardUser" hidden><img id="dashboardUserPhoto" alt="" /><div><strong id="dashboardUserName"></strong><span><i class="fas fa-envelope"></i> <span id="dashboardUserEmail"></span></span></div></div>
+</div>
 <ul>
 <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
 <li><a href="aboutme.html"><i class="fas fa-user"></i> About me</a></li>
@@ -750,26 +758,26 @@ if ('serviceWorker' in navigator) {
 </div>
 <footer class="main-footer" id="ft">
 <div class="footer-column">
-<h3>Tsedio Portal</h3>
+<h3 class="text-animate">Tsedio Portal</h3>
 <a style="color: #eee;" href="https://tsedio.42web.io">Tsedio Portal</a>
-<h3>Kaksha Manager</h3>
+<h3 class="text-animate">Kaksha Manager</h3>
 <a style="color: #eee;" href="https://kakshamanager.wuaze.com/">Kaksha Manager</a>
-<h3>Privacy Policy</h3>
+<h3 class="text-animate">Privacy Policy</h3>
 <a style="color: #eee;" href="privacypolicy.html">Privacy Policy</a>
-<h3>Government Portal</h3>
+<h3 class="text-animate">Government Portal</h3>
 <a style="color: #eee;" href="https://villagegram.in/uttar-pradesh/hardoi/shahabad/hirauli-kutub-nagar/#info-tab">Govt Authorised Site</a>
-<h3>FEA Admission Portal Online</h3>
+<h3 class="text-animate">FEA Admission Portal Online</h3>
 <a style="color: #eee;" href="https://ashish-73-design.github.io/feaadmission/">Govt Authorised Site</a>
-<h3>Government Primary School</h3>
+<h3 class="text-animate">Government Primary School</h3>
 <a style="color: #eee;" href="https://schools.org.in/hardoi/9251101210/ps-hirauli.html">Govt PS Rural</a>
-<h3>Apps for Android</h3>
+<h3 class="text-animate">Apps for Android</h3>
 <a style="color: #eee;" href="https://upload.app/download/education-save/com.mycomapny.mywebapp9p/3fed87ee0c00cda62a45c48cb62e4a92484e7c80fafc6814cfc879654d3fade8">👉 School Data APK Download</a><br /><a style="color: #eee;" href="https://upload.app/download/tourist/com.mycomapny.mywebapptourist/8a12b0d8750d621868b5801e5a04e44e3dd575d246d83ab86aa62d46a079b41e">👉 Tourist Manager APK Download</a><br /><a style="color: #eee;" href="https://upload.app/download/cd-milk/com.mycomapny.mywebapp0/024b4e0964665add51e1cd3aa27439edffe5f89d4f219afa177f6237a9ef8f0c">👉 CD Milk APK Download</a><br />
-<h3>Contact us</h3>
-<p>Address: Hirauli Kutubnagar, Shahabad Hardoi</p>
-<p>Email: <a href="mailto:tsedio73@gmail.com?subject=From hirauli web&amp;body=I want to know about your service.">tsedio73@gmail.com</a></p>
+<h3 class="text-animate">Contact us</h3>
+<p class="text-animate">Address: Hirauli Kutubnagar, Shahabad Hardoi</p>
+<p class="text-animate">Email: <a href="mailto:tsedio73@gmail.com?subject=From hirauli web&amp;body=I want to know about your service.">tsedio73@gmail.com</a></p>
 </div>
 <div class="footer-column">
-<h3>Connect</h3>
+<h3 class="text-animate">Connect</h3>
 <div class="social-icons"><a href="https://www.facebook.com/share/188s4tq2FZ/"><i class="fab fa-facebook"></i></a> <a href="https://www.instagram.com/hirauli_?utm_source=ig_web_button_share_sheet&amp;igsh=ZDNlZDc0MzIxNw=="><i class="fab fa-instagram"></i></a> <a href="https://x.com/AshishR29942459"><i class="fab fa-twitter"></i></a></div>
 </div>
 <div style="text-align: center; padding-top: 20px; border-top: 1px solid #444;">
