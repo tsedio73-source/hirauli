@@ -1,6 +1,6 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getDatabase, ref, onValue, push, update } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
-import { getAuth, onAuthStateChanged, signInAnonymously } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyArtybAAgMFeLv1K9b_0GhSh66oYWuDLco',
@@ -12,6 +12,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
+const googleProvider = new GoogleAuthProvider();
 const PAGE_SIZE = 15;
 const CLOUD_NAME = 'dnrtx7xgp';
 const UPLOAD_PRESET = 'news_upload';
@@ -31,10 +32,25 @@ const thumbUrl = (url, video) => {
   const transform = video ? 'q_auto:low,f_jpg,w_300,so_0' : 'q_auto:low,f_auto,w_300,c_fill,g_auto';
   return url.replace('/upload/', `/upload/${transform}/`);
 };
+// Feed (opened post) view: still compressed, just bigger than the grid thumb.
+// This is what actually killed data before — the feed used the raw original file.
+const feedUrl = (url, video) => {
+  if (!url || !url.includes('res.cloudinary.com') || !url.includes('/upload/')) return url || '';
+  const transform = video ? 'q_auto,f_auto,w_720' : 'q_auto,f_auto,w_1080';
+  return url.replace('/upload/', `/upload/${transform}/`);
+};
+// Only used for explicit "download original" — full, unmodified file.
 const fullUrl = (url) => url || '';
 
+// Google profile photo URLs (lh3.googleusercontent.com) accept a size suffix.
+// Requesting a small avatar instead of Google's default (often 96px+ but sometimes larger) saves data.
+const avatarUrl = (url, size = 64) => {
+  if (!url) return '';
+  return url.replace(/=s\d+(-c)?$/, '') + `=s${size}-c`;
+};
+
 function displayName(user) {
-  return user?.displayName || `User #${(user?.uid || '').slice(0, 6)}`;
+  return user?.displayName || 'Guest';
 }
 
 function showToast(message, duration = 2800) {
@@ -172,7 +188,10 @@ function createPost(id, post) {
   article.className = 'feed-post';
   const header = document.createElement('div');
   header.className = 'post-user-row';
-  header.innerHTML = `<div class="uname"><i class="fas fa-user-circle"></i>${escapeHtml(post.userName || 'Hirauli user')}</div><span class="tago">${timeAgo(post.timestamp)}</span>`;
+  const posterAvatar = post.userPhoto
+    ? `<img class="avatar-img" src="${avatarUrl(post.userPhoto, 64)}" alt="" loading="lazy" decoding="async">`
+    : '<i class="fas fa-user-circle"></i>';
+  header.innerHTML = `<div class="uname">${posterAvatar}${escapeHtml(post.userName || 'Hirauli user')}</div><span class="tago">${timeAgo(post.timestamp)}</span>`;
   const mediaWrap = document.createElement('div');
   mediaWrap.className = 'media-wrapper';
   if (post.title) {
@@ -183,10 +202,18 @@ function createPost(id, post) {
   }
   const mediaContainer = document.createElement('div');
   mediaContainer.className = 'media-container';
-  const media = isVideo(post) ? document.createElement('video') : document.createElement('img');
-  media.src = fullUrl(post.mediaUrl);
-  if (media.tagName === 'VIDEO') media.controls = true;
-  else media.alt = post.title || 'Gallery post';
+  const video = isVideo(post);
+  const media = video ? document.createElement('video') : document.createElement('img');
+  media.src = feedUrl(post.mediaUrl, video);
+  media.loading = 'lazy';
+  media.decoding = 'async';
+  if (media.tagName === 'VIDEO') {
+    media.controls = true;
+    media.preload = 'none';
+    media.poster = thumbUrl(post.mediaUrl, true);
+  } else {
+    media.alt = post.title || 'Gallery post';
+  }
   mediaContainer.append(media);
   mediaWrap.append(mediaContainer);
   const actions = document.createElement('div');
@@ -216,8 +243,26 @@ function createPost(id, post) {
 function createComments(data) {
   const list = document.createElement('div');
   list.className = 'comments-list';
-  Object.values(data || {}).sort((a, b) => (a.timestamp || a.time || 0) - (b.timestamp || b.time || 0)).forEach((comment) => {
+  const entries = Object.values(data || {}).sort((a, b) => (a.timestamp || a.time || 0) - (b.timestamp || b.time || 0));
+  if (!entries.length) {
+    const empty = document.createElement('div');
+    empty.className = 'comment-empty';
+    empty.textContent = 'No comments yet — be the first!';
+    list.append(empty);
+    return list;
+  }
+  entries.forEach((comment) => {
     const row = document.createElement('div'); row.className = 'comment';
+    if (comment.userPhoto) {
+      const avatar = document.createElement('img');
+      avatar.className = 'avatar-img avatar-img-sm';
+      avatar.src = avatarUrl(comment.userPhoto, 40);
+      avatar.alt = ''; avatar.loading = 'lazy'; avatar.decoding = 'async';
+      row.append(avatar);
+    } else {
+      const icon = document.createElement('i'); icon.className = 'fas fa-user-circle';
+      row.append(icon);
+    }
     const user = document.createElement('span'); user.className = 'cuser'; user.textContent = comment.userName || comment.user || 'User';
     const text = document.createTextNode(comment.text || '');
     row.append(user, text); list.append(row);
@@ -226,7 +271,7 @@ function createComments(data) {
 }
 
 async function likePost(id, post, button, label) {
-  if (!currentUser) return showToast('Connecting your account…');
+  if (!currentUser) return signInWithGoogle();
   const liked = Boolean(post.likedBy?.[currentUser.uid]);
   const likesCount = Math.max(0, (post.likesCount || 0) + (liked ? -1 : 1));
   try {
@@ -241,9 +286,15 @@ async function likePost(id, post, button, label) {
 async function postComment(id, input) {
   const text = input.value.trim();
   if (!text) return;
-  if (!currentUser) return showToast('Connecting your account…');
+  if (!currentUser) return signInWithGoogle();
   try {
-    await push(ref(db, `photos/${id}/comments`), { text, userName: displayName(currentUser), timestamp: Date.now() });
+    await push(ref(db, `photos/${id}/comments`), {
+      text,
+      userName: displayName(currentUser),
+      userPhoto: currentUser.photoURL || '',
+      uid: currentUser.uid,
+      timestamp: Date.now()
+    });
     input.value = '';
   } catch (error) { console.error(error); showToast('Could not post comment'); }
 }
@@ -268,7 +319,7 @@ function onFileChosen(event) {
 async function uploadToCloudinary() {
   const file = $('fileInput').files?.[0];
   if (!file) return showToast('Choose a photo or video first');
-  if (!currentUser) return showToast('Connecting your account…');
+  if (!currentUser) return signInWithGoogle();
   const button = $('shareBtn'); button.disabled = true;
   $('progBox').style.display = 'block'; $('progressText').textContent = 'Uploading…';
   try {
@@ -277,13 +328,25 @@ async function uploadToCloudinary() {
     const response = await fetch(endpoint, { method: 'POST', body: form });
     if (!response.ok) throw new Error('Upload failed');
     const uploaded = await response.json();
-    await push(ref(db, 'photos'), { mediaUrl: uploaded.secure_url, mediaType: file.type.startsWith('video/') ? 'video' : 'image', title: $('titleInput').value.trim(), userName: displayName(currentUser), uid: currentUser.uid, timestamp: Date.now(), likesCount: 0 });
+    await push(ref(db, 'photos'), {
+      mediaUrl: uploaded.secure_url,
+      mediaType: file.type.startsWith('video/') ? 'video' : 'image',
+      title: $('titleInput').value.trim(),
+      userName: displayName(currentUser),
+      userPhoto: currentUser.photoURL || '',
+      uid: currentUser.uid,
+      timestamp: Date.now(),
+      likesCount: 0
+    });
     closeUpload(); showToast('Posted to the gallery');
   } catch (error) { console.error(error); showToast('Upload failed. Please try again.'); }
   finally { button.disabled = false; $('progBox').style.display = 'none'; }
 }
 
-function openUpload() { $('uploadModal').classList.add('open'); }
+function openUpload() {
+  if (!currentUser) return signInWithGoogle();
+  $('uploadModal').classList.add('open');
+}
 function closeUpload() { $('uploadModal').classList.remove('open'); $('fileInput').value = ''; $('titleInput').value = ''; $('previewThumb').replaceChildren(); $('previewThumb').style.display = 'none'; }
 function timeAgo(timestamp) {
   const seconds = Math.max(0, Math.floor((Date.now() - (timestamp || Date.now())) / 1000));
@@ -292,8 +355,51 @@ function timeAgo(timestamp) {
 }
 function escapeHtml(value) { const div = document.createElement('div'); div.textContent = value; return div.innerHTML; }
 
-Object.assign(window, { loadMore: () => renderGallery(), cancelSelect, downloadSelected, openFeed, closeFeed, openUpload, closeUpload, onFileChosen, uploadToCloudinary });
+async function signInWithGoogle() {
+  try {
+    await signInWithPopup(auth, googleProvider);
+  } catch (error) {
+    console.error(error);
+    if (error.code !== 'auth/popup-closed-by-user' && error.code !== 'auth/cancelled-popup-request') {
+      showToast('Google sign-in failed. Please try again.');
+    }
+  }
+}
+
+function signOutUser() {
+  signOut(auth).catch((error) => console.error(error));
+}
+
+function updateAuthUI(user) {
+  const nameEl = $('userNameDisplay');
+  const avatarEl = $('userAvatar');
+  const fallbackIcon = $('userIconFallback');
+  const signInBtn = $('signInBtn');
+  const uploadBtn = $('uploadIconBtn');
+  if (user) {
+    nameEl.textContent = displayName(user);
+    if (avatarEl && user.photoURL) {
+      avatarEl.src = avatarUrl(user.photoURL, 48);
+      avatarEl.style.display = '';
+      if (fallbackIcon) fallbackIcon.style.display = 'none';
+    } else {
+      if (avatarEl) avatarEl.style.display = 'none';
+      if (fallbackIcon) fallbackIcon.style.display = '';
+    }
+    if (signInBtn) signInBtn.style.display = 'none';
+    if (uploadBtn) uploadBtn.style.display = '';
+  } else {
+    nameEl.textContent = 'Guest';
+    if (avatarEl) avatarEl.style.display = 'none';
+    if (fallbackIcon) fallbackIcon.style.display = '';
+    if (signInBtn) signInBtn.style.display = '';
+    if (uploadBtn) uploadBtn.style.display = 'none';
+  }
+}
+
+Object.assign(window, { loadMore: () => renderGallery(), cancelSelect, downloadSelected, openFeed, closeFeed, openUpload, closeUpload, onFileChosen, uploadToCloudinary, signInWithGoogle, signOutUser });
 onAuthStateChanged(auth, (user) => {
-  if (user) { currentUser = user; $('userNameDisplay').textContent = displayName(user); loadGallery(); }
-  else signInAnonymously(auth).catch((error) => { console.error(error); showToast('Could not sign in to gallery'); loadGallery(); });
+  currentUser = user;
+  updateAuthUI(user);
+  loadGallery();
 });

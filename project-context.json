@@ -1,0 +1,91 @@
+{
+  "generated_at": "2026-08-04",
+  "project": {
+    "name": "Hirauli",
+    "description": "Village Hirauli / Kutubnagar information and community portal",
+    "type": "static multi-page web application",
+    "readme": "A web where lots of features related to village Hirauli"
+  },
+  "technology": {
+    "frontend": ["HTML", "CSS embedded in pages", "browser JavaScript"],
+    "backend_services": ["Firebase Authentication", "Firebase Realtime Database", "Cloudinary uploads"],
+    "other_integrations": ["OneSignal web push", "OpenWeatherMap", "Open-Meteo", "Google Maps", "Google Fonts", "Font Awesome"]
+  },
+  "data_services": {
+    "firebase_projects": [
+      { "project": "news-82329", "database": "news-82329-default-rtdb.firebaseio.com", "used_by": ["addnews.html", "addphoto.html", "gallery-app.js", "gallery.js", "help.js", "manager.html", "news.js", "send.html"] },
+      { "project": "freefollowers-d31af", "database": "freefollowers-d31af-default-rtdb.firebaseio.com", "used_by": ["script1.js"] }
+    ],
+    "realtime_database_paths_detected": ["news", "photos"],
+    "cloudinary": { "cloud_name_detected": "dnrtx7xgp", "upload_preset_detected": "news_upload" }
+  },
+  "pages": [
+    { "file": "index.html", "title": "Hirauli Kutubnagar Shahabad", "purpose": "Main portal / home page", "local_scripts": ["banner.js", "slide.js", "script.js", "script1.js", "dashboard-user.js"] },
+    { "file": "aboutme.html", "title": "Mera Gaon - Hirauli Kutubnagar", "purpose": "Village/about page" },
+    { "file": "news.html", "title": "Hirauli News - Digital Feed", "purpose": "News feed", "local_scripts": ["news.js"] },
+    { "file": "addnews.html", "title": "Admin: News Portal", "purpose": "Authenticated news publishing and optional media upload" },
+    { "file": "photo.html", "title": "Hirauli Gallery", "purpose": "Public media gallery", "local_scripts": ["gallery-app.js"] },
+    { "file": "addphoto.html", "title": "Upload Media - Hirauli", "purpose": "Authenticated photo/video upload" },
+    { "file": "help.html", "title": "Send Feedback", "purpose": "Feedback form", "local_scripts": ["help.js"] },
+    { "file": "hirauli-status.html", "title": "Hirauli Kutubnagar Portal — Status", "purpose": "Portal status page" },
+    { "file": "hiraulihis.html", "title": null, "purpose": "Village history page" },
+    { "file": "indexweather.html", "title": "Hirauli Weather", "purpose": "Weather page using Open-Meteo" },
+    { "file": "donation.html", "title": "हिरौली गाँव — दान करें", "purpose": "Donation page" },
+    { "file": "eDistrict.html", "title": "प्रमाण-पत्र आवेदन पोर्टल", "purpose": "Certificate/application portal; not an official government service" },
+    { "file": "manager.html", "title": "Hirauli Chat", "purpose": "Chat interface" },
+    { "file": "send.html", "title": "Hirauli Chat", "purpose": "Chat/send interface" },
+    { "file": "slides.html", "title": "Slide-show", "purpose": "Firebase-backed slideshow" },
+    { "file": "submersible.html", "title": "Hirauli Kutubnagar Submersibles", "purpose": "Submersible-related information" },
+    { "file": "privacypolicy.html", "title": "Privacy Policy", "purpose": "Privacy policy" }
+  ],
+  "scripts": [
+    { "file": "banner.js", "purpose": "Home-page banner and weather-related behavior", "firebase_version": "10.12.2", "obfuscated": true },
+    { "file": "dashboard-user.js", "purpose": "Firebase user dashboard/avatar behavior", "firebase_version": "10.7.1" },
+    { "file": "gallery-app.js", "purpose": "Gallery rendering, authentication and media upload", "firebase_version": "10.7.1" },
+    { "file": "gallery.js", "purpose": "Additional gallery functionality", "firebase_version": "10.7.1", "obfuscated": true },
+    { "file": "help.js", "purpose": "Feedback form persistence", "firebase_version": "10.7.1", "obfuscated": true },
+    { "file": "news.js", "purpose": "News-feed behavior", "firebase_version": "10.7.1", "obfuscated": true },
+    { "file": "script.js", "purpose": "Main authentication and home-page behavior", "firebase_version": "10.7.1", "obfuscated": true },
+    { "file": "script1.js", "purpose": "Additional home-page Firebase functionality", "firebase_version": "10.12.2", "obfuscated": true },
+    { "file": "slide.js", "purpose": "Slideshow behavior", "firebase_version": "12.0.0", "obfuscated": true },
+    { "file": "service-worker.js", "purpose": "Push notification display and click handling" },
+    { "file": "OneSignalSDKWorker.js", "purpose": "Loads the OneSignal service worker" }
+  ],
+  "pwa": {
+    "manifest_file_present": "mainfest.json",
+    "manifest_name": "Hirauli-GramPanchayat",
+    "manifest_icon": "icon.png",
+    "issue": "index.html links to manifest.json, but the actual file is named mainfest.json"
+  },
+  "verification_files": ["google2a3e684a112c4535.html", "googleebca7c89c80a810a.html"],
+  "assets": [
+    { "file": "6194893990205787966.jpg", "bytes": 76259 },
+    { "file": "boy.png", "bytes": 2359293 },
+    { "file": "icon.png", "bytes": 91142 }
+  ],
+  "inventory": [
+    { "file": "aboutme.html", "bytes": 3264 }, { "file": "addnews.html", "bytes": 7923 },
+    { "file": "addphoto.html", "bytes": 6017 }, { "file": "banner.js", "bytes": 85530 },
+    { "file": "dashboard-user.js", "bytes": 1292 }, { "file": "donation.html", "bytes": 23172 },
+    { "file": "eDistrict.html", "bytes": 46635 }, { "file": "gallery-app.js", "bytes": 14014 },
+    { "file": "gallery.js", "bytes": 133252 }, { "file": "google2a3e684a112c4535.html", "bytes": 53 },
+    { "file": "googleebca7c89c80a810a.html", "bytes": 53 }, { "file": "help.html", "bytes": 1541 },
+    { "file": "help.js", "bytes": 94903 }, { "file": "hirauli-status.html", "bytes": 15966 },
+    { "file": "hiraulihis.html", "bytes": 19028 }, { "file": "index.html", "bytes": 41801 },
+    { "file": "indexweather.html", "bytes": 33640 }, { "file": "mainfest.json", "bytes": 445 },
+    { "file": "manager.html", "bytes": 39653 }, { "file": "news.html", "bytes": 5137 },
+    { "file": "news.js", "bytes": 102674 }, { "file": "OneSignalSDKWorker.js", "bytes": 79 },
+    { "file": "photo.html", "bytes": 15927 }, { "file": "privacypolicy.html", "bytes": 3335 },
+    { "file": "README.md", "bytes": 67 }, { "file": "script.js", "bytes": 93670 },
+    { "file": "script1.js", "bytes": 91880 }, { "file": "send.html", "bytes": 45129 },
+    { "file": "service-worker.js", "bytes": 748 }, { "file": "slide.js", "bytes": 90916 },
+    { "file": "slides.html", "bytes": 3102 }, { "file": "submersible.html", "bytes": 2034 },
+    { "file": "6194893990205787966.jpg", "bytes": 76259 }, { "file": "boy.png", "bytes": 2359293 },
+    { "file": "icon.png", "bytes": 91142 }
+  ],
+  "notes": [
+    "Most large JavaScript files are obfuscated, so their stated purposes are inferred from imports, connected pages and visible string references.",
+    "This JSON is a technical project map, not a copy of every source file's contents.",
+    "Public Firebase client configuration is intentionally not reproduced here."
+  ]
+}
