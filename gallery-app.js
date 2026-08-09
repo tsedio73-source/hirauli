@@ -1,5 +1,5 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import { getDatabase, ref, onValue, push, update } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+import { getDatabase, ref, onValue, push, update, remove } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
 const firebaseConfig = {
@@ -13,6 +13,8 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
+// Only this account ever sees the delete option on posts — regardless of who posted it.
+const ADMIN_EMAIL = 'ashish7356836@gmai.com';
 const PAGE_SIZE = 15;
 const CLOUD_NAME = 'dnrtx7xgp';
 const UPLOAD_PRESET = 'news_upload';
@@ -81,7 +83,7 @@ function renderGallery(reset = false) {
   const button = $('loadMoreBtn');
   button.style.display = remaining > 0 ? 'block' : 'none';
   button.disabled = remaining <= 0;
-  button.textContent = `Load more${remaining ? ` (${remaining} remaining)` : ''}`;
+  button.textContent = 'Load more';
 }
 
 function createTile(id, post) {
@@ -168,6 +170,22 @@ async function downloadSelected() {
   cancelSelect();
 }
 
+function closeAllMenus(except) {
+  document.querySelectorAll('.menu-dropdown.open').forEach((el) => { if (el !== except) el.classList.remove('open'); });
+}
+document.addEventListener('click', () => closeAllMenus());
+
+async function deletePost(id, article) {
+  if (!currentUser || currentUser.email?.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) return;
+  if (!window.confirm('Delete this post? This cannot be undone.')) return;
+  try {
+    await remove(ref(db, `photos/${id}`));
+    remove(ref(db, `likes/${currentUser.uid}/${id}`)).catch(() => {});
+    article.remove();
+    showToast('Post deleted');
+  } catch (error) { console.error(error); showToast('Could not delete post'); }
+}
+
 function openFeed(startId) {
   const modal = $('feedModal');
   const container = $('feedContainer');
@@ -191,7 +209,21 @@ function createPost(id, post) {
   const posterAvatar = post.userPhoto
     ? `<img class="avatar-img" src="${avatarUrl(post.userPhoto, 64)}" alt="" loading="lazy" decoding="async">`
     : '<i class="fas fa-user-circle"></i>';
-  header.innerHTML = `<div class="uname">${posterAvatar}${escapeHtml(post.userName || 'Hirauli user')}</div><span class="tago">${timeAgo(post.timestamp)}</span>`;
+  const isAdmin = Boolean(currentUser?.email && currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase());
+  header.innerHTML = `<div class="uname">${posterAvatar}${escapeHtml(post.userName || 'Hirauli user')}</div><div class="post-header-right"><span class="tago">${timeAgo(post.timestamp)}</span>${isAdmin ? '<div class="post-menu"><button class="menu-btn" aria-label="More options"><i class="fas fa-ellipsis-vertical"></i></button><div class="menu-dropdown"><button class="menu-delete"><i class="fas fa-trash"></i> Delete post</button></div></div>' : ''}</div>`;
+  if (isAdmin) {
+    const menuBtn = header.querySelector('.menu-btn');
+    const dropdown = header.querySelector('.menu-dropdown');
+    menuBtn.addEventListener('click', (event) => {
+      event.stopPropagation();
+      closeAllMenus(dropdown);
+      dropdown.classList.toggle('open');
+    });
+    header.querySelector('.menu-delete').addEventListener('click', (event) => {
+      event.stopPropagation();
+      deletePost(id, article);
+    });
+  }
   const mediaWrap = document.createElement('div');
   mediaWrap.className = 'media-wrapper';
   if (post.title) {
@@ -276,6 +308,7 @@ async function likePost(id, post, button, label) {
   const likesCount = Math.max(0, (post.likesCount || 0) + (liked ? -1 : 1));
   try {
     await update(ref(db, `photos/${id}`), { [`likedBy/${currentUser.uid}`]: liked ? null : true, likesCount });
+    await update(ref(db, `likes/${currentUser.uid}`), { [id]: liked ? null : Date.now() });
     post.likedBy ||= {}; if (liked) delete post.likedBy[currentUser.uid]; else post.likedBy[currentUser.uid] = true;
     post.likesCount = likesCount;
     button.classList.toggle('liked', !liked); button.querySelector('i').className = `${liked ? 'far' : 'fas'} fa-heart`;

@@ -341,6 +341,58 @@ body {
   font-style: italic;
 }
 
+.post-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.post-menu { position: relative; }
+
+.menu-btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 15px;
+  padding: 4px 6px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.menu-btn:hover { background: #f2f2f8; color: var(--brand); }
+
+.menu-dropdown {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 6px 24px rgba(0,0,0,.18);
+  min-width: 150px;
+  overflow: hidden;
+  z-index: 20;
+}
+
+.menu-dropdown.open { display: block; }
+
+.menu-delete {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 11px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #e0245e;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.menu-delete:hover { background: #fdf1f4; }
+
 .media-wrapper { position: relative; user-select: none; }
 
 .post-title-overlay {
@@ -416,13 +468,8 @@ body {
 
 .feed-actions .action-btn:active { transform: scale(.85); }
 
-/* Likes are disabled site-wide: hide the heart button, like counter and
-   double-tap heart flash no matter what gallery-app.js renders. */
-.feed-actions .action-btn.heart,
-.likes-count,
-.like-flash {
-  display: none !important;
-}
+.feed-actions .action-btn.liked { color: var(--accent); }
+.like-flash { display: none !important; }
 
 .comment-area {
   padding: 6px 14px 14px;
