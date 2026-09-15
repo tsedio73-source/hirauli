@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Command Assist — Remote Control</title>
+<style>
+  :root{
+    --bg:#1B1E27;
+    --surface:#242836;
+    --surface-2:#2C3142;
+    --border:#383E52;
+    --text:#EDEEF2;
+    --muted:#8B90A0;
+    --lens:#6FA8DC;
+    --amber:#E8A33D;
+    --good:#4CAF6D;
+    --bad:#E5534B;
+    --mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:var(--sans);}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding:28px 16px 60px;
+  }
+  .wrap{width:100%;max-width:460px;}
+
+  header{margin-bottom:22px;}
+  header .eyes{font-size:34px;line-height:1;}
+  header h1{font-size:19px;margin:10px 0 2px;font-weight:600;letter-spacing:0.2px;}
+  header p{margin:0;color:var(--muted);font-size:13px;}
+
+  .card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:18px;
+    margin-bottom:16px;
+  }
+  .card h2{font-size:13px;margin:0 0 12px;color:var(--muted);font-weight:600;}
+
+  label{display:block;font-size:12px;color:var(--muted);margin:0 0 6px;}
+  input[type=text], input[type=password], textarea{
+    width:100%;
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    border-radius:10px;
+    color:var(--text);
+    padding:11px 12px;
+    font-size:14px;
+    font-family:var(--sans);
+    margin-bottom:12px;
+  }
+  input:focus, textarea:focus{outline:none;border-color:var(--lens);}
+  textarea{font-family:var(--mono);font-size:12px;min-height:110px;resize:vertical;}
+
+  button{
+    border:none;
+    border-radius:10px;
+    padding:11px 16px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    font-family:var(--sans);
+  }
+  .btn-primary{background:var(--lens);color:#0F1420;width:100%;}
+  .btn-primary:disabled{opacity:0.45;cursor:not-allowed;}
+  .btn-ghost{background:transparent;color:var(--lens);border:1px solid var(--border);width:100%;}
+  .btn-danger{background:var(--bad);color:#1a0a08;}
+
+  /* --- Hero: HUD-style connect card --- */
+  .hud{
+    position:relative;
+    background:radial-gradient(120% 140% at 15% 0%, #2E3350 0%, var(--surface) 60%);
+    border:1px solid var(--border);
+  }
+  .hud .row2{display:flex;gap:10px;}
+  .hud .row2 > div{flex:1;}
+  .status-line{
+    display:flex;align-items:center;gap:8px;
+    font-family:var(--mono);font-size:12px;color:var(--muted);
+    margin-top:12px;
+  }
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--muted);flex-shrink:0;}
+  .dot.online{background:var(--good);box-shadow:0 0 0 0 rgba(76,175,109,0.6);animation:pulse 1.8s infinite;}
+  .dot.bad{background:var(--bad);}
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(76,175,109,0.55);}
+    70%{box-shadow:0 0 0 8px rgba(76,175,109,0);}
+    100%{box-shadow:0 0 0 0 rgba(76,175,109,0);}
+  }
+
+  /* --- Quick actions grid --- */
+  .grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+  .chip{
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    color:var(--text);
+    border-radius:12px;
+    padding:12px 6px;
+    font-size:12px;
+    text-align:center;
+    cursor:pointer;
+  }
+  .chip:disabled{opacity:0.35;cursor:not-allowed;}
+  .chip .ic{display:block;font-size:18px;margin-bottom:4px;}
+  .chip.warn{border-color:var(--bad);}
+
+  .send-row{display:flex;gap:8px;}
+  .send-row input{margin-bottom:0;}
+  .send-row button{white-space:nowrap;}
+
+  /* --- Activity log --- */
+  .log{
+    font-family:var(--mono);
+    font-size:11.5px;
+    max-height:220px;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .log .empty{color:var(--muted);}
+  .log-item{color:var(--muted);border-left:2px solid var(--border);padding-left:8px;}
+  .log-item.ok{border-left-color:var(--good);color:var(--text);}
+  .log-item.fail{border-left-color:var(--bad);color:var(--text);}
+  .log-item .t{color:var(--muted);margin-right:6px;}
+
+  .setup-toggle{font-size:12px;color:var(--lens);cursor:pointer;text-align:right;margin:-4px 0 12px;}
+  .hint{font-size:11.5px;color:var(--muted);line-height:1.5;margin:0 0 12px;}
+  .field-pair{display:flex;gap:10px;}
+  .field-pair > div{flex:1;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyes">👓</div>
+    <h1>Command Assist — Remote Control</h1>
+    <p>Kisi bhi phone/browser se, emergency me, apna device control karo.</p>
+  </header>
+
+  <!-- SETUP: Firebase project config, only needed once per browser -->
+  <div class="card" id="setupCard">
+    <h2>Firebase setup</h2>
+    <p class="hint">Ye ek-baar ka setup hai — apne Firebase project ka Web config yahan paste karo (README_FIREBASE_SETUP.md dekho). Ye config secret nahi hai, isi browser me save ho jaayega.</p>
+    <textarea id="configInput" placeholder='{"apiKey":"...", "authDomain":"...", "databaseURL":"...", "projectId":"...", "appId":"..."}'></textarea>
+    <button class="btn-primary" id="saveConfigBtn">Save Firebase Config</button>
+  </div>
+  <div class="setup-toggle" id="editConfigToggle" style="display:none;">Firebase config edit karo</div>
+  <p class="hint" id="lockerNote" style="display:none;margin-top:-8px;">🔒 Firebase pre-connected — Device ID aur password daal ke seedha Connect karo.</p>
+
+  <!-- CONNECT: which device + its password -->
+  <div class="card hud" id="connectCard" style="display:none;">
+    <h2>Device se connect karo</h2>
+    <label for="deviceIdInput">Device ID</label>
+    <input type="text" id="deviceIdInput" placeholder="jaise: papa-phone">
+    <label for="passwordInput">Password</label>
+    <input type="password" id="passwordInput" placeholder="device par set kiya gaya password">
+    <button class="btn-primary" id="connectBtn">Connect</button>
+    <div class="status-line" id="statusLine">
+      <span class="dot" id="statusDot"></span>
+      <span id="statusText">Connect nahi hua</span>
+    </div>
+  </div>
+
+  <!-- QUICK ACTIONS -->
+  <div class="card" id="actionsCard" style="display:none;">
+    <h2>Quick actions</h2>
+    <div class="grid" id="actionsGrid"></div>
+  </div>
+
+  <!-- CUSTOM COMMAND -->
+  <div class="card" id="customCard" style="display:none;">
+    <h2>Koi bhi command bolo</h2>
+    <p class="hint">Hinglish me kuch bhi likh sakte ho — jaise "brightness 50 kar do" ya "5 minute ka timer laga do".</p>
+    <div class="send-row">
+      <input type="text" id="customInput" placeholder="apna command likho...">
+      <button class="btn-primary" id="sendBtn" style="width:auto;">Send</button>
+    </div>
+  </div>
+
+  <!-- ACTIVITY LOG -->
+  <div class="card" id="logCard" style="display:none;">
+    <h2>Activity log</h2>
+    <div class="log" id="log"><div class="empty">Abhi tak koi command nahi bheja.</div></div>
+  </div>
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  // ====================================================================
+  // 🔒 CONFIG LOCKER — apna Firebase Web config yahan EK BAAR paste karo.
+  // Iske baad ye webpage kisi bhi device/browser par kholte hi turant
+  // ready ho jaayegi — "Firebase setup" form kabhi manually nahi bharna
+  // padega, sirf Device ID + password daal ke seedha Connect kar sakte ho.
+  //
+  // Value nikalne ka tareeka: Firebase console → Project settings →
+  // Your apps → Web app → "Config" — waha jo {...} object dikhta hai,
+  // usi ko neeche paste karo (README_FIREBASE_SETUP.md me detail hai).
+  //
+  // Jab tak yahan null hai, page purane tareeke se (manual paste +
+  // is browser ki localStorage) kaam karta rahega, kuch nahi tootega.
+  // ====================================================================
+  var CONFIG_LOCKER = {
+    apiKey: "AIzaSyCcNIzoBaITfVxfu6mT2FQMOymSQupp75A",
+    authDomain: "gxduty.firebaseapp.com",
+    databaseURL: "https://gxduty-default-rtdb.firebaseio.com",
+    projectId: "gxduty",
+    storageBucket: "gxduty.firebasestorage.app",
+    messagingSenderId: "633387339345",
+    appId: "1:633387339345:web:ca43c331f00bf0ab2cf270",
+    measurementId: "G-ZM2GTHNHX8"
+  };
+  /* Example — apna waala aisa hi dikhega:
+  var CONFIG_LOCKER = {
+    apiKey: "AIzaSy...",
+    authDomain: "command-assist-xxxxx.firebaseapp.com",
+    databaseURL: "https://command-assist-xxxxx-default-rtdb.firebaseio.com",
+    projectId: "command-assist-xxxxx",
+    appId: "1:1234567890:web:abcdef1234567890"
+  };
+  */
+  // ====================================================================
+
+  var CONFIG_KEY = "ca_firebase_config";
+  var DEVICE_KEY = "ca_last_device_id";
+
+  var setupCard = document.getElementById("setupCard");
+  var editConfigToggle = document.getElementById("editConfigToggle");
+  var configInput = document.getElementById("configInput");
+  var saveConfigBtn = document.getElementById("saveConfigBtn");
+  var lockerNote = document.getElementById("lockerNote");
+
+  var connectCard = document.getElementById("connectCard");
+  var deviceIdInput = document.getElementById("deviceIdInput");
+  var passwordInput = document.getElementById("passwordInput");
+  var connectBtn = document.getElementById("connectBtn");
+  var statusDot = document.getElementById("statusDot");
+  var statusText = document.getElementById("statusText");
+
+  var actionsCard = document.getElementById("actionsCard");
+  var actionsGrid = document.getElementById("actionsGrid");
+  var customCard = document.getElementById("customCard");
+  var customInput = document.getElementById("customInput");
+  var sendBtn = document.getElementById("sendBtn");
+  var logCard = document.getElementById("logCard");
+  var logEl = document.getElementById("log");
+
+  var db = null;
+  var currentDeviceId = null;
+  var currentPassword = "";
+  var statusRef = null;
+  var resultsRef = null;
+
+  var QUICK_ACTIONS = [
+    {icon:"🔒", label:"Lock", cmd:"lock kar do", warn:true},
+    {icon:"🔦", label:"Torch On", cmd:"torch on karo"},
+    {icon:"🔦", label:"Torch Off", cmd:"torch off karo"},
+    {icon:"◀️", label:"Back", cmd:"back jao"},
+    {icon:"⌂", label:"Home", cmd:"home jao"},
+    {icon:"▢", label:"Recents", cmd:"recent apps dikhao"},
+    {icon:"📸", label:"Screenshot", cmd:"screenshot le lo"},
+    {icon:"🔔", label:"Notifications", cmd:"notification panel khol do"},
+    {icon:"⚙️", label:"Quick Settings", cmd:"quick settings khol do"},
+    {icon:"🔊", label:"Volume +", cmd:"volume badhao"},
+    {icon:"🔉", label:"Volume −", cmd:"volume ghatao"},
+    {icon:"🔇", label:"Mute", cmd:"mute kar do"}
+  ];
+
+  function buildActionsGrid(){
+    actionsGrid.innerHTML = "";
+    QUICK_ACTIONS.forEach(function(a){
+      var btn = document.createElement("button");
+      btn.className = "chip" + (a.warn ? " warn" : "");
+      btn.innerHTML = '<span class="ic">' + a.icon + '</span>' + a.label;
+      btn.disabled = true;
+      btn.addEventListener("click", function(){ sendCommand(a.cmd); });
+      actionsGrid.appendChild(btn);
+    });
+  }
+  buildActionsGrid();
+
+  function setActionsEnabled(on){
+    var chips = actionsGrid.querySelectorAll("button");
+    chips.forEach(function(c){ c.disabled = !on; });
+    sendBtn.disabled = !on;
+  }
+
+  function pad(n){ return n < 10 ? "0" + n : "" + n; }
+  function timeNow(){
+    var d = new Date();
+    return pad(d.getHours()) + ":" + pad(d.getMinutes()) + ":" + pad(d.getSeconds());
+  }
+
+  function logLine(text, kind){
+    if (logEl.querySelector(".empty")) logEl.innerHTML = "";
+    var row = document.createElement("div");
+    row.className = "log-item" + (kind ? " " + kind : "");
+    row.innerHTML = '<span class="t">' + timeNow() + '</span>' + escapeHtml(text);
+    logEl.insertBefore(row, logEl.firstChild);
+  }
+
+  function escapeHtml(s){
+    var div = document.createElement("div");
+    div.textContent = s;
+    return div.innerHTML;
+  }
+
+  // ---------- Firebase config (setup) ----------
+
+  function loadSavedConfig(){
+    var raw = localStorage.getItem(CONFIG_KEY);
+    if (!raw) return null;
+    try { return JSON.parse(raw); } catch(e){ return null; }
+  }
+
+  function initFirebase(config){
+    try {
+      firebase.initializeApp(config);
+    } catch(e){
+      // already initialized (e.g. hot reload) — ignore
+    }
+    db = firebase.database();
+    firebase.auth().signInAnonymously().catch(function(err){
+      logLine("Auth error: " + err.message, "fail");
+    });
+    setupCard.style.display = "none";
+    editConfigToggle.style.display = "block";
+    connectCard.style.display = "block";
+    customCard.style.display = "block";
+    actionsCard.style.display = "block";
+    logCard.style.display = "block";
+
+    var savedDevice = localStorage.getItem(DEVICE_KEY);
+    if (savedDevice) deviceIdInput.value = savedDevice;
+  }
+
+  saveConfigBtn.addEventListener("click", function(){
+    var raw = configInput.value.trim();
+    if (!raw){ alert("Config paste karo pehle."); return; }
+    try {
+      var parsed = JSON.parse(raw);
+      localStorage.setItem(CONFIG_KEY, JSON.stringify(parsed));
+      initFirebase(parsed);
+    } catch(e){
+      alert("Ye valid JSON nahi hai. Firebase console se 'Config' object copy karke paste karo.");
+    }
+  });
+
+  editConfigToggle.addEventListener("click", function(){
+    setupCard.style.display = "block";
+    var saved = loadSavedConfig();
+    if (saved) configInput.value = JSON.stringify(saved, null, 2);
+  });
+
+  // Locker me config already baked hai to seedha connect ho jao — koi paste nahi chahiye.
+  if (CONFIG_LOCKER) {
+    initFirebase(CONFIG_LOCKER);
+    setupCard.style.display = "none";
+    editConfigToggle.style.display = "none";
+    if (lockerNote) lockerNote.style.display = "block";
+  } else {
+    var existing = loadSavedConfig();
+    if (existing) {
+      configInput.value = JSON.stringify(existing, null, 2);
+      initFirebase(existing);
+    }
+  }
+
+  // ---------- Connect ----------
+
+  function setStatus(state, label){
+    statusDot.className = "dot" + (state === "online" ? " online" : state === "bad" ? " bad" : "");
+    statusText.textContent = label;
+  }
+
+  connectBtn.addEventListener("click", function(){
+    var deviceId = deviceIdInput.value.trim();
+    var password = passwordInput.value;
+    if (!deviceId || !password){
+      alert("Device ID aur password dono bharo.");
+      return;
+    }
+    if (!db){
+      alert("Pehle Firebase config save karo.");
+      return;
+    }
+
+    if (statusRef) statusRef.off();
+    if (resultsRef) resultsRef.off();
+
+    currentDeviceId = deviceId;
+    currentPassword = password;
+    localStorage.setItem(DEVICE_KEY, deviceId);
+
+    setStatus("", "Connecting...");
+
+    statusRef = db.ref("devices/" + deviceId + "/status");
+    statusRef.on("value", function(snap){
+      var val = snap.val();
+      if (val === "online"){
+        setStatus("online", "Device online hai");
+      } else if (val === "offline"){
+        setStatus("bad", "Device offline hai (app band ho sakta hai)");
+      } else {
+        setStatus("bad", "Is Device ID ka koi status nahi mila — check karo ID sahi hai");
+      }
+    }, function(err){
+      setStatus("bad", "Connect nahi ho paya: " + err.message);
+    });
+
+    resultsRef = db.ref("devices/" + deviceId + "/results").limitToLast(20);
+    resultsRef.on("child_added", function(snap){
+      var val = snap.val();
+      if (!val) return;
+      var kind = String(val).indexOf("rejected") === 0 ? "fail" : "ok";
+      logLine(val, kind);
+    });
+
+    setActionsEnabled(true);
+  });
+
+  // ---------- Sending commands ----------
+
+  function sendCommand(commandText){
+    if (!currentDeviceId || !currentPassword){
+      alert("Pehle Connect karo.");
+      return;
+    }
+    if (!commandText || !commandText.trim()) return;
+    var ref = db.ref("devices/" + currentDeviceId + "/commands").push();
+    ref.set({
+      command: commandText.trim(),
+      password: currentPassword,
+      ts: firebase.database.ServerValue.TIMESTAMP
+    });
+    logLine("→ sent: " + commandText.trim());
+  }
+
+  sendBtn.addEventListener("click", function(){
+    sendCommand(customInput.value);
+    customInput.value = "";
+  });
+  customInput.addEventListener("keydown", function(e){
+    if (e.key === "Enter"){
+      sendCommand(customInput.value);
+      customInput.value = "";
+    }
+  });
+
+})();
+</script>
+</body>
+</html>
