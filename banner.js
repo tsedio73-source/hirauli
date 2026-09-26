@@ -171,6 +171,30 @@ const weatherSpan = document.getElementById("weather");
 const apiKey = "d1555b0a00821aceaa7cfa201414a848";
 const city = "Shahabad, Hardoi, IN";
 
+function updateWeatherScene(condition) {
+  const normalized = String(condition || "unknown").toLowerCase();
+  const scene = document.getElementById("weatherParticles") || document.createElement("div");
+  scene.id = "weatherParticles";
+  scene.innerHTML = "";
+  if (!scene.parentNode) document.body.appendChild(scene);
+  document.body.dataset.weather = normalized;
+
+  const isRain = ["rain", "drizzle", "thunderstorm"].includes(normalized);
+  const isSnow = normalized === "snow";
+  if (!isRain && !isSnow) return;
+
+  const count = isSnow ? 22 : 34;
+  for (let i = 0; i < count; i += 1) {
+    const particle = document.createElement("span");
+    particle.className = isSnow ? "snow-flake" : "rain-drop";
+    particle.style.left = `${Math.random() * 100}%`;
+    particle.style.animationDelay = `${Math.random() * -4}s`;
+    particle.style.animationDuration = `${isSnow ? 5 + Math.random() * 5 : .65 + Math.random() * .75}s`;
+    particle.style.opacity = `${.24 + Math.random() * .56}`;
+    scene.appendChild(particle);
+  }
+}
+
 async function getWeather() {
   try {
     const response = await fetch(
@@ -188,6 +212,8 @@ async function getWeather() {
     const temp = Math.round(data.main.temp);
     const condition = data.weather[0].main;
     const description = data.weather[0].description;
+
+    updateWeatherScene(condition);
 
     let emoji = "🌤️";
 
@@ -219,10 +245,10 @@ async function getWeather() {
 
     weatherSpan.innerHTML = `${emoji} ${temp}°C • ${description}`;
   } catch (err) {
+    updateWeatherScene("unknown");
     weatherSpan.innerHTML = "⚠️ Failed to load weather";
     console.error(err);
   }
 }
 
 getWeather();
-
