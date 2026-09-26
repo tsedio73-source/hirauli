@@ -1,107 +1,227 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Slide-show</title>
-    <style>
-        #gallery img{
-            border-radius: 20px;
-        }
-    </style>
-        <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-<script>
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-  OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "fce30003-a1ab-4782-aafa-e2d8132b8090",
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hirauli Community Slideshow</title>
+  <meta name="description" content="Hirauli community slideshow">
+  <link rel="stylesheet" href="design.css">
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+  <script>
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(async function(OneSignal) {
+      await OneSignal.init({ appId: "fce30003-a1ab-4782-aafa-e2d8132b8090" });
     });
-  });
-</script>
-    <link rel="stylesheet" href="design.css">
+  </script>
 </head>
 <body>
-    <div id="gallery"></div>
-    <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-   import { getDatabase ,ref,set,get} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+  <main id="slideshowApp" class="slideshow-page">
+    <header class="slideshow-head">
+      <div>
+        <p class="slideshow-kicker">HIRAULI COMMUNITY MEDIA</p>
+        <h1>Village slideshow</h1>
+        <p class="slideshow-subtitle">A cleaner way to explore the latest photos and videos from Hirauli.</p>
+      </div>
+      <a class="slideshow-home" href="index.html">Back to home <span>↗</span></a>
+    </header>
 
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
+    <section class="slideshow-shell" aria-label="Community slideshow">
+      <div id="mediaStage" class="media-stage">
+        <div class="stage-loader" id="loadingState"><span></span> Loading community media…</div>
+        <div class="empty-state" id="emptyState" hidden>No community media is available yet.</div>
+      </div>
+      <div class="slide-overlay">
+        <span id="slideCounter">0 / 0</span>
+        <span id="slideTime">Waiting for updates</span>
+      </div>
+      <button class="slide-control previous" id="previousButton" type="button" aria-label="Previous slide">‹</button>
+      <button class="slide-control next" id="nextButton" type="button" aria-label="Next slide">›</button>
+      <div class="slide-dots" id="slideDots" aria-label="Choose a slide"></div>
+    </section>
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyArtybAAgMFeLv1K9b_0GhSh66oYWuDLco",
-    authDomain: "news-82329.firebaseapp.com",
-    databaseURL: "https://news-82329-default-rtdb.firebaseio.com",
-    projectId: "news-82329",
-    storageBucket: "news-82329.firebasestorage.app",
-    messagingSenderId: "29851688400",
-    appId: "1:29851688400:web:7a9c17b2bf758ca76aadd5",
-    measurementId: "G-ZN98HBX1ZP"
-  };
+    <section class="slide-info" aria-live="polite">
+      <div>
+        <p class="slide-label">NOW SHOWING</p>
+        <h2 id="slideTitle">Preparing the next view…</h2>
+        <p id="slideDescription">Swipe, use the arrows, or let the slideshow move automatically.</p>
+      </div>
+      <button id="likeButton" class="like-button" type="button" disabled aria-label="Like this slide">
+        <span class="heart">♡</span><span id="likeText">Like</span><strong id="likeCount">0</strong>
+      </button>
+    </section>
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-  
+    <div class="slideshow-footer"><span id="statusMessage">Autoplay is on</span><button id="pauseButton" type="button">Pause autoplay</button></div>
+  </main>
 
-  const dataRef = ref(db, "photos");
-  get(dataRef)
-  .then((snapshot) => {
-    if(snapshot.exists()){
-        let data = snapshot.val();
-        let usr = 0;
-        let all = [];
-        let n = 0;
-        for(usr in data){
-        n++;
-        all.push(data[usr]);
-        
-        }
-        
-        console.log(all);
-        console.log(n);
-        let frame = document.getElementById("gallery");
-        let src = all[0];
-        let img = document.createElement("img");
-        let like = document.createElement("span");
-        img.src = src;
-        img.height = 800;
-        img.loading = "lazy";
-        img.border = "2px solid black";
-        frame.appendChild(img);
-        frame.appendChild(like);
-        setInterval(() => {
-            try {
-            img.style.opacity = "0";
-            setTimeout(() => {
-            let random = Math.floor(Math.random() * n);
-            img.src = all[random].mediaUrl;
-            let date = new Date(all[random].timestamp);
-            like.innerHTML = all[random].likesCount + " Likes " + date.toLocaleString();
-            img.style.transition = "0.5s";
-            img.style.opacity = "1";
-            },600);
-            } catch (error) {
-                
-            }
-            
-            
-        },4000);
-        
-        
-        
-    } else{
-        
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+    import { getDatabase, ref, get, runTransaction } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyArtybAAgMFeLv1K9b_0GhSh66oYWuDLco",
+      authDomain: "news-82329.firebaseapp.com",
+      databaseURL: "https://news-82329-default-rtdb.firebaseio.com",
+      projectId: "news-82329",
+      storageBucket: "news-82329.firebasestorage.app",
+      messagingSenderId: "29851688400",
+      appId: "1:29851688400:web:7a9c17b2bf758ca76aadd5",
+      measurementId: "G-ZN98HBX1ZP"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const auth = getAuth(app);
+    const stage = document.getElementById("mediaStage");
+    const loadingState = document.getElementById("loadingState");
+    const emptyState = document.getElementById("emptyState");
+    const slideCounter = document.getElementById("slideCounter");
+    const slideTime = document.getElementById("slideTime");
+    const slideTitle = document.getElementById("slideTitle");
+    const slideDescription = document.getElementById("slideDescription");
+    const likeButton = document.getElementById("likeButton");
+    const likeText = document.getElementById("likeText");
+    const likeCount = document.getElementById("likeCount");
+    const dots = document.getElementById("slideDots");
+    const statusMessage = document.getElementById("statusMessage");
+    const pauseButton = document.getElementById("pauseButton");
+    const previousButton = document.getElementById("previousButton");
+    const nextButton = document.getElementById("nextButton");
+
+    let slides = [];
+    let currentIndex = 0;
+    let timer = null;
+    let paused = false;
+    let touchStartX = 0;
+    let anonymousUserPromise;
+    const likedIds = new Set(JSON.parse(localStorage.getItem("hirauli-slideshow-likes") || "[]"));
+
+    const clean = (value) => String(value ?? "").replace(/[&<>'"]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[char]));
+    const mediaUrl = (raw) => raw?.mediaUrl || raw?.downloadURL || raw?.imageUrl || raw?.url || raw?.src || (typeof raw === "string" ? raw : "");
+    const isVideo = (item) => /video/i.test(item.mediaType || item.type || "") || /\.(mp4|webm|ogg)(\?|$)/i.test(item.mediaUrl);
+    const formatDate = (stamp) => stamp ? new Date(stamp).toLocaleString([], { dateStyle: "medium", timeStyle: "short" }) : "Community media";
+
+    function normalize(id, raw) {
+      const item = typeof raw === "string" ? { mediaUrl: raw } : (raw || {});
+      return {
+        id,
+        mediaUrl: mediaUrl(item),
+        title: item.title || item.caption || "Hirauli community moment",
+        description: item.description || "Shared from the Hirauli community gallery.",
+        timestamp: item.timestamp || item.createdAt || item.date || null,
+        likesCount: Math.max(0, Number(item.likesCount || item.likes || 0))
+      };
     }
-    
-  })
-  .catch((error) =>{
-        console.error(error);
-    })
-</script>
+
+    function setLoading(isLoading) {
+      loadingState.hidden = !isLoading;
+      emptyState.hidden = true;
+    }
+
+    function renderDots() {
+      dots.innerHTML = slides.map((item, index) => `<button type="button" class="slide-dot${index === currentIndex ? " active" : ""}" data-index="${index}" aria-label="Show slide ${index + 1}"></button>`).join("");
+      dots.querySelectorAll("button").forEach((button) => button.addEventListener("click", () => showSlide(Number(button.dataset.index), true)));
+    }
+
+    function renderSlide() {
+      if (!slides.length) return;
+      const item = slides[currentIndex];
+      stage.querySelectorAll(".media-content").forEach((node) => node.remove());
+      const media = isVideo(item) ? document.createElement("video") : document.createElement("img");
+      media.className = "media-content";
+      media.src = item.mediaUrl;
+      media.alt = item.title;
+      media.draggable = false;
+      if (isVideo(item)) { media.controls = true; media.playsInline = true; media.preload = "metadata"; }
+      media.addEventListener("error", () => { media.classList.add("media-error"); media.insertAdjacentHTML("afterend", "<p class=\"media-error-text\">This media could not be loaded.</p>"); }, { once: true });
+      stage.appendChild(media);
+      slideCounter.textContent = `${currentIndex + 1} / ${slides.length}`;
+      slideTime.textContent = formatDate(item.timestamp);
+      slideTitle.textContent = item.title;
+      slideDescription.textContent = item.description;
+      likeCount.textContent = item.likesCount;
+      const alreadyLiked = likedIds.has(item.id);
+      likeButton.disabled = false;
+      likeButton.classList.toggle("liked", alreadyLiked);
+      likeButton.setAttribute("aria-pressed", String(alreadyLiked));
+      likeText.textContent = alreadyLiked ? "Liked" : "Like";
+      renderDots();
+    }
+
+    function showSlide(index, manual = false) {
+      if (!slides.length) return;
+      currentIndex = (index + slides.length) % slides.length;
+      renderSlide();
+      if (manual) restartAutoplay();
+    }
+
+    function restartAutoplay() {
+      clearInterval(timer);
+      if (!paused && slides.length > 1) timer = setInterval(() => showSlide(currentIndex + 1), 5000);
+    }
+
+    function setPaused(nextState) {
+      paused = nextState;
+      pauseButton.textContent = paused ? "Resume autoplay" : "Pause autoplay";
+      statusMessage.textContent = paused ? "Autoplay is paused" : "Autoplay is on";
+      restartAutoplay();
+    }
+
+    async function getAnonymousUser() {
+      if (!anonymousUserPromise) anonymousUserPromise = signInAnonymously(auth).then(({ user }) => user);
+      return anonymousUserPromise;
+    }
+
+    async function toggleLike() {
+      const item = slides[currentIndex];
+      if (!item || likeButton.disabled) return;
+      const wasLiked = likedIds.has(item.id);
+      likeButton.disabled = true;
+      likeText.textContent = wasLiked ? "Removing…" : "Saving…";
+      try {
+        await getAnonymousUser();
+        const likesRef = ref(db, `photos/${item.id}/likesCount`);
+        const result = await runTransaction(likesRef, (value) => Math.max(0, Number(value || item.likesCount || 0) + (wasLiked ? -1 : 1)));
+        item.likesCount = Number(result.snapshot.val() || 0);
+        wasLiked ? likedIds.delete(item.id) : likedIds.add(item.id);
+        localStorage.setItem("hirauli-slideshow-likes", JSON.stringify([...likedIds]));
+        renderSlide();
+      } catch (error) {
+        console.error("Unable to update slideshow like", error);
+        likeButton.disabled = false;
+        likeText.textContent = "Try again";
+      }
+    }
+
+    async function loadSlides() {
+      setLoading(true);
+      try {
+        const snapshot = await get(ref(db, "photos"));
+        const value = snapshot.val() || {};
+        slides = Object.entries(value).map(([id, raw]) => normalize(id, raw)).filter((item) => item.mediaUrl);
+        slides.sort((a, b) => Number(b.timestamp || 0) - Number(a.timestamp || 0));
+        setLoading(false);
+        if (!slides.length) { emptyState.hidden = false; return; }
+        renderSlide();
+        restartAutoplay();
+      } catch (error) {
+        console.error("Unable to load slideshow", error);
+        setLoading(false);
+        emptyState.hidden = false;
+        emptyState.textContent = "The slideshow is temporarily unavailable. Please try again later.";
+      }
+    }
+
+    previousButton.addEventListener("click", () => showSlide(currentIndex - 1, true));
+    nextButton.addEventListener("click", () => showSlide(currentIndex + 1, true));
+    likeButton.addEventListener("click", toggleLike);
+    pauseButton.addEventListener("click", () => setPaused(!paused));
+    stage.addEventListener("mouseenter", () => { if (!paused) clearInterval(timer); });
+    stage.addEventListener("mouseleave", restartAutoplay);
+    stage.addEventListener("touchstart", (event) => { touchStartX = event.changedTouches[0].clientX; }, { passive: true });
+    stage.addEventListener("touchend", (event) => { const distance = event.changedTouches[0].clientX - touchStartX; if (Math.abs(distance) > 45) showSlide(currentIndex + (distance < 0 ? 1 : -1), true); }, { passive: true });
+    document.addEventListener("visibilitychange", () => document.hidden ? clearInterval(timer) : restartAutoplay());
+    loadSlides();
+  </script>
 </body>
 </html>
