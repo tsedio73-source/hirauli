@@ -22,7 +22,45 @@ body {
     radial-gradient(circle at 85% 5%, rgba(155,140,255,.18), transparent 28%),
     linear-gradient(145deg, #071326 0%, #0b1630 48%, #15123a 100%) !important;
   min-height: 100vh;
+  transition: background 1.2s ease, color .6s ease;
 }
+
+body[data-weather="clear"] {
+  background:
+    radial-gradient(circle at 18% 12%, rgba(255,210,125,.28), transparent 28%),
+    radial-gradient(circle at 82% 8%, rgba(105,231,255,.20), transparent 30%),
+    linear-gradient(145deg, #10294e 0%, #123c63 48%, #352056 100%) !important;
+}
+body[data-weather="clouds"], body[data-weather="mist"], body[data-weather="fog"], body[data-weather="haze"] {
+  background:
+    radial-gradient(circle at 20% 16%, rgba(188,211,236,.20), transparent 30%),
+    radial-gradient(circle at 80% 20%, rgba(126,153,190,.18), transparent 34%),
+    linear-gradient(145deg, #182b48 0%, #293d5d 48%, #1a2240 100%) !important;
+}
+body[data-weather="rain"], body[data-weather="drizzle"] {
+  background:
+    radial-gradient(circle at 20% 10%, rgba(105,231,255,.16), transparent 30%),
+    radial-gradient(circle at 82% 14%, rgba(112,146,255,.18), transparent 34%),
+    linear-gradient(145deg, #071528 0%, #10294b 48%, #171a3c 100%) !important;
+}
+body[data-weather="thunderstorm"] {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(210,190,255,.20), transparent 26%),
+    linear-gradient(145deg, #090c20 0%, #16184a 52%, #090b18 100%) !important;
+}
+body[data-weather="snow"] {
+  background:
+    radial-gradient(circle at 24% 12%, rgba(255,255,255,.32), transparent 26%),
+    radial-gradient(circle at 78% 20%, rgba(154,220,255,.24), transparent 34%),
+    linear-gradient(145deg, #183657 0%, #31597c 48%, #2a315e 100%) !important;
+}
+
+#weatherParticles { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+#weatherParticles .rain-drop { position: absolute; top: -12vh; width: 2px; height: 42px; border-radius: 99px; transform: rotate(16deg); background: linear-gradient(to bottom, transparent, rgba(143,225,255,.92)); filter: drop-shadow(0 0 5px rgba(105,231,255,.52)); animation: rainFall linear infinite; }
+#weatherParticles .snow-flake { position: absolute; top: -8vh; width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,.85); filter: blur(.3px) drop-shadow(0 0 6px rgba(255,255,255,.65)); animation: snowFall linear infinite; }
+body:has(.dashboard) .dashboard, body:has(.dashboard) .top-nav, body:has(.dashboard) .main-footer { position: relative; z-index: 1; }
+@keyframes rainFall { to { transform: translate3d(-14vw, 118vh, 0) rotate(16deg); } }
+@keyframes snowFall { 0% { transform: translate3d(0, -10vh, 0) rotate(0); } 50% { transform: translate3d(5vw, 55vh, 0) rotate(180deg); } 100% { transform: translate3d(-4vw, 118vh, 0) rotate(360deg); } }
 
 body::before {
   content: "";
@@ -98,7 +136,10 @@ body:has(.dashboard) .section-heading h2, body:has(.dashboard) .services h2 { co
 body:has(.dashboard) .section-heading p, body:has(.dashboard) .services p { color: var(--hirauli-muted); }
 body:has(.dashboard) #weather { position: static; margin: 0; padding: 10px 14px; color: var(--hirauli-cyan); background: rgba(105,231,255,.10); border: 1px solid rgba(105,231,255,.22); border-radius: 999px; font-size: .82rem; }
 body:has(.dashboard) .container { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 14px; padding: 0; margin: 22px 0 0; width: auto; background: transparent; }
-body:has(.dashboard) .menu-item { min-height: 132px; width: auto; height: auto; padding: 18px; border-radius: 22px; border: 1px solid var(--hirauli-line); background: linear-gradient(145deg, rgba(32,61,108,.88), rgba(16,29,59,.82)) !important; box-shadow: 10px 14px 0 rgba(4,10,25,.30), 0 18px 34px rgba(0,0,0,.20) !important; transform: translateY(0); }
+body:has(.dashboard) .menu-item { min-height: 132px; width: auto; height: auto; padding: 18px; border-radius: 22px; border: 1px solid transparent; background: linear-gradient(145deg, rgba(32,61,108,.88), rgba(16,29,59,.82)) !important; box-shadow: 10px 14px 0 rgba(4,10,25,.30), 0 18px 34px rgba(0,0,0,.20) !important; transform: translateY(0); position: relative; isolation: isolate; overflow: hidden; }
+body:has(.dashboard) .menu-item::before, body:has(.dashboard) .menu-item::after { content: ""; position: absolute; inset: -1px; padding: 1.5px; border-radius: inherit; pointer-events: none; z-index: 0; -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
+body:has(.dashboard) .menu-item::before { background: conic-gradient(from 0deg, transparent 0 20%, var(--hirauli-cyan) 23% 29%, transparent 32% 68%, var(--hirauli-violet) 71% 77%, transparent 80% 100%); animation: cardBorderSpin 3s linear infinite; }
+body:has(.dashboard) .menu-item::after { background: conic-gradient(from 180deg, transparent 0 20%, var(--hirauli-gold) 23% 28%, transparent 31% 68%, #ff7a9c 71% 77%, transparent 80% 100%); animation: cardBorderSpinReverse 3s linear infinite; opacity: .9; }
 body:has(.dashboard) .menu-item:hover { transform: translateY(-8px) rotateX(4deg) rotateY(-4deg); border-color: rgba(105,231,255,.56); box-shadow: 14px 20px 0 rgba(4,10,25,.26), 0 28px 40px rgba(0,0,0,.28) !important; }
 body:has(.dashboard) .card-model {
   --model-main: var(--hirauli-cyan);
@@ -111,6 +152,7 @@ body:has(.dashboard) .card-model {
   transform-style: preserve-3d;
   filter: drop-shadow(0 13px 10px rgba(0,0,0,.28));
   animation: modelFloat 4s ease-in-out infinite;
+  z-index: 1;
 }
 body:has(.dashboard) .card-model::before,
 body:has(.dashboard) .card-model::after,
@@ -150,6 +192,9 @@ body:has(.dashboard) .model-location::before { left: 18px; top: 5px; width: 34px
 body:has(.dashboard) .model-location i { left: 30px; top: 18px; width: 12px; height: 12px; border-radius: 50%; background: #32204f; z-index: 1; }
 @keyframes modelFloat { 0%,100% { transform: translateY(0) rotateZ(0); } 50% { transform: translateY(-5px) rotateZ(2deg); } }
 body:has(.dashboard) .menu-item span { color: var(--hirauli-ink); }
+body:has(.dashboard) .menu-item > span { position: relative; z-index: 2; }
+@keyframes cardBorderSpin { to { transform: rotate(360deg); } }
+@keyframes cardBorderSpinReverse { to { transform: rotate(-360deg); } }
 body:has(.dashboard) .services { margin-top: 22px; padding: 24px; border-radius: 28px; }
 body:has(.dashboard) .services .link { background: rgba(255,255,255,.05); border: 1px solid var(--hirauli-line); border-radius: 16px; color: var(--hirauli-ink); }
 body:has(.dashboard) .main-footer { margin: 24px -58px -70px; padding: 54px clamp(24px, 6vw, 88px); background: rgba(5,12,27,.72) !important; border-top: 1px solid var(--hirauli-line); }

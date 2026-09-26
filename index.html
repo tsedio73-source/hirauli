@@ -786,8 +786,9 @@ if ('serviceWorker' in navigator) {
 <div class="social-icons"><a href="https://www.facebook.com/share/188s4tq2FZ/"><i class="fab fa-facebook"></i></a> <a href="https://www.instagram.com/hirauli_?utm_source=ig_web_button_share_sheet&amp;igsh=ZDNlZDc0MzIxNw=="><i class="fab fa-instagram"></i></a> <a href="https://x.com/AshishR29942459"><i class="fab fa-twitter"></i></a></div>
 </div>
 <div style="text-align: center; padding-top: 20px; border-top: 1px solid #444;">
-<p>Last update <span style="color:white;font-weight:bold;">6 Jul 2026-09:12 a.m.</span></p>
+<p>Last update <span id="lastUpdate" style="color:white;font-weight:bold;"></span></p>
 <p>&copy; <span id="copyYear"></span> All Rights Reserved</p>
+<script>document.getElementById('lastUpdate').textContent = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });</script>
 <script>document.getElementById('copyYear').textContent = new Date().getFullYear();</script>
 </div>
 </footer>
