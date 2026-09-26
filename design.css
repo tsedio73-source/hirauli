@@ -100,7 +100,55 @@ body:has(.dashboard) #weather { position: static; margin: 0; padding: 10px 14px;
 body:has(.dashboard) .container { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 14px; padding: 0; margin: 22px 0 0; width: auto; background: transparent; }
 body:has(.dashboard) .menu-item { min-height: 132px; width: auto; height: auto; padding: 18px; border-radius: 22px; border: 1px solid var(--hirauli-line); background: linear-gradient(145deg, rgba(32,61,108,.88), rgba(16,29,59,.82)) !important; box-shadow: 10px 14px 0 rgba(4,10,25,.30), 0 18px 34px rgba(0,0,0,.20) !important; transform: translateY(0); }
 body:has(.dashboard) .menu-item:hover { transform: translateY(-8px) rotateX(4deg) rotateY(-4deg); border-color: rgba(105,231,255,.56); box-shadow: 14px 20px 0 rgba(4,10,25,.26), 0 28px 40px rgba(0,0,0,.28) !important; }
-body:has(.dashboard) .menu-item img { height: 50px; filter: drop-shadow(0 8px 10px rgba(0,0,0,.35)); }
+body:has(.dashboard) .card-model {
+  --model-main: var(--hirauli-cyan);
+  --model-hot: var(--hirauli-violet);
+  position: relative;
+  width: 70px;
+  height: 62px;
+  margin-bottom: 12px;
+  perspective: 420px;
+  transform-style: preserve-3d;
+  filter: drop-shadow(0 13px 10px rgba(0,0,0,.28));
+  animation: modelFloat 4s ease-in-out infinite;
+}
+body:has(.dashboard) .card-model::before,
+body:has(.dashboard) .card-model::after,
+body:has(.dashboard) .card-model i,
+body:has(.dashboard) .card-model b { content: ""; position: absolute; display: block; transform-style: preserve-3d; }
+body:has(.dashboard) .card-model::after { left: 50%; bottom: -3px; width: 54px; height: 10px; transform: translateX(-50%) rotateX(68deg); border-radius: 50%; background: radial-gradient(ellipse, color-mix(in srgb, var(--model-main) 50%, transparent), transparent 70%); opacity: .55; }
+body:has(.dashboard) .card-model i, body:has(.dashboard) .card-model b { font-style: normal; }
+body:has(.dashboard) .model-news { --model-main: #ffd27d; --model-hot: #ff7a9c; }
+body:has(.dashboard) .model-news::before { left: 16px; top: 10px; width: 40px; height: 46px; transform: rotateY(-18deg) rotateX(8deg) skewY(-4deg); border: 1px solid rgba(255,255,255,.65); border-radius: 4px; background: linear-gradient(145deg, #fff7d8, var(--model-main) 45%, #e98d62); box-shadow: 8px 8px 0 rgba(255,122,156,.38); }
+body:has(.dashboard) .model-news i { left: 24px; top: 22px; width: 22px; height: 3px; background: #793b65; box-shadow: 0 8px #793b65, 0 16px rgba(121,59,101,.45); z-index: 1; }
+body:has(.dashboard) .model-news b { right: 4px; top: 4px; width: 17px; height: 17px; border-radius: 50%; background: var(--model-hot); box-shadow: 0 0 0 4px rgba(255,122,156,.18); z-index: 2; }
+body:has(.dashboard) .model-media { --model-main: #69e7ff; --model-hot: #9b8cff; }
+body:has(.dashboard) .model-media::before { left: 7px; top: 17px; width: 54px; height: 33px; transform: rotateX(10deg) rotateY(-18deg); border: 2px solid var(--model-main); border-radius: 8px; background: linear-gradient(145deg, rgba(105,231,255,.45), rgba(155,140,255,.18)); box-shadow: 8px 8px 0 rgba(155,140,255,.3), inset 0 0 22px rgba(105,231,255,.24); }
+body:has(.dashboard) .model-media i { left: 30px; top: 27px; width: 14px; height: 14px; border-radius: 50%; background: var(--model-hot); box-shadow: 0 0 12px var(--model-hot); z-index: 1; }
+body:has(.dashboard) .model-media b { left: 17px; top: 39px; width: 38px; height: 3px; transform: rotate(-25deg); background: var(--model-main); z-index: 1; }
+body:has(.dashboard) .model-slides { --model-main: #ffcf70; --model-hot: #ff6e9b; }
+body:has(.dashboard) .model-slides::before { left: 12px; top: 14px; width: 48px; height: 35px; transform: rotateY(-20deg) rotateX(12deg); border-radius: 6px; background: linear-gradient(135deg, #fff2b0, var(--model-hot)); box-shadow: 9px 8px 0 rgba(255,110,155,.35), 17px 15px 0 rgba(255,207,112,.22); }
+body:has(.dashboard) .model-slides i { left: 31px; top: 25px; width: 0; height: 0; border-top: 9px solid transparent; border-bottom: 9px solid transparent; border-left: 14px solid white; z-index: 1; }
+body:has(.dashboard) .model-slides b { left: 21px; top: 51px; width: 32px; height: 3px; border-radius: 5px; background: var(--model-main); }
+body:has(.dashboard) .model-weather { --model-main: #69e7ff; --model-hot: #ffdf8a; }
+body:has(.dashboard) .model-weather::before { left: 13px; top: 7px; width: 39px; height: 39px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff, var(--model-hot) 20%, #f28e83 52%, #6f60c8 100%); box-shadow: 0 0 24px rgba(255,223,138,.5); }
+body:has(.dashboard) .model-weather i { left: 5px; bottom: 13px; width: 49px; height: 18px; border-radius: 20px; background: linear-gradient(145deg, #d9fbff, var(--model-main)); box-shadow: 0 6px 0 rgba(105,231,255,.25); z-index: 1; }
+body:has(.dashboard) .model-weather b { left: 19px; bottom: 2px; width: 34px; height: 3px; transform: rotate(-18deg); background: var(--model-main); box-shadow: 13px 6px 0 var(--model-main); }
+body:has(.dashboard) .model-paper { --model-main: #9b8cff; --model-hot: #69e7ff; }
+body:has(.dashboard) .model-paper::before { left: 17px; top: 8px; width: 38px; height: 48px; transform: rotateY(-18deg) skewY(-4deg); border-radius: 4px; background: linear-gradient(145deg, #eeeaff, var(--model-main)); box-shadow: 8px 8px 0 rgba(105,231,255,.3); }
+body:has(.dashboard) .model-paper i { left: 24px; top: 22px; width: 25px; height: 3px; background: #473b93; box-shadow: 0 8px #473b93, 0 16px rgba(71,59,147,.4); z-index: 1; }
+body:has(.dashboard) .model-paper b { left: 21px; top: 5px; width: 11px; height: 11px; border-radius: 50%; background: var(--model-hot); z-index: 1; }
+body:has(.dashboard) .model-gallery { --model-main: #ff7a9c; --model-hot: #ffd27d; }
+body:has(.dashboard) .model-gallery::before { left: 7px; top: 16px; width: 55px; height: 36px; transform: rotateY(-22deg) rotateX(8deg); border: 5px solid var(--model-main); border-radius: 7px; background: linear-gradient(135deg, rgba(255,210,125,.86), rgba(105,231,255,.42)); box-shadow: 9px 9px 0 rgba(255,122,156,.26); }
+body:has(.dashboard) .model-gallery i { left: 21px; top: 27px; width: 12px; height: 12px; border-radius: 50%; background: var(--model-hot); z-index: 1; }
+body:has(.dashboard) .model-gallery b { left: 18px; top: 40px; width: 32px; height: 3px; transform: rotate(-25deg); background: var(--model-main); z-index: 1; }
+body:has(.dashboard) .model-info { --model-main: #b8a5ff; --model-hot: #69e7ff; }
+body:has(.dashboard) .model-info::before { left: 15px; top: 10px; width: 42px; height: 42px; transform: rotate(45deg) rotateY(28deg); border-radius: 8px; background: linear-gradient(135deg, var(--model-hot), var(--model-main) 50%, #51498f); box-shadow: 9px 10px 0 rgba(81,73,143,.36); }
+body:has(.dashboard) .model-info i { left: 34px; top: 21px; width: 5px; height: 23px; border-radius: 5px; background: white; z-index: 1; box-shadow: 0 6px 0 white; }
+body:has(.dashboard) .model-location { --model-main: #ff7a9c; --model-hot: #ffd27d; }
+body:has(.dashboard) .model-location::before { left: 18px; top: 5px; width: 34px; height: 44px; transform: rotate(45deg) rotateY(-20deg); border-radius: 55% 55% 55% 0; background: linear-gradient(145deg, var(--model-hot), var(--model-main) 58%, #c33e83); box-shadow: 9px 10px 0 rgba(195,62,131,.3); }
+body:has(.dashboard) .model-location i { left: 30px; top: 18px; width: 12px; height: 12px; border-radius: 50%; background: #32204f; z-index: 1; }
+@keyframes modelFloat { 0%,100% { transform: translateY(0) rotateZ(0); } 50% { transform: translateY(-5px) rotateZ(2deg); } }
 body:has(.dashboard) .menu-item span { color: var(--hirauli-ink); }
 body:has(.dashboard) .services { margin-top: 22px; padding: 24px; border-radius: 28px; }
 body:has(.dashboard) .services .link { background: rgba(255,255,255,.05); border: 1px solid var(--hirauli-line); border-radius: 16px; color: var(--hirauli-ink); }
