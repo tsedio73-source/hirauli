@@ -299,3 +299,17 @@ video.media-content { background: #030712; }
   .slide-info { padding: 18px; }
   .like-button { align-self: stretch; justify-content: center; }
 }
+
+/* Lightweight WhatsApp community action */
+#villageBot { position: fixed; right: 16px; bottom: 18px; z-index: 9999; display: inline-flex; align-items: center; gap: 10px; min-width: 174px; padding: 10px 13px; color: #fff; text-decoration: none; border: 1px solid rgba(255,255,255,.28); border-radius: 999px; background: linear-gradient(135deg, #19b957, #087e3e); box-shadow: 0 10px 24px rgba(0,80,40,.34); transition: transform .2s ease, box-shadow .2s ease, filter .2s ease; }
+#villageBot:hover { transform: translateY(-3px); filter: saturate(1.12); box-shadow: 0 15px 30px rgba(0,80,40,.42); }
+.whatsapp-mark { width: 30px; height: 30px; flex: 0 0 auto; }
+.whatsapp-copy { display: grid; gap: 1px; line-height: 1.15; }
+.whatsapp-copy strong { font-size: .82rem; }
+.whatsapp-copy small { font-size: .68rem; opacity: .82; }
+.bot-msg { display: none !important; }
+#ai { display: none !important; }
+body:has(.dashboard) .quick-section, body:has(.dashboard) .services, body:has(.dashboard) .main-footer { content-visibility: auto; contain-intrinsic-size: 420px; }
+body:has(.dashboard) .quick-section, body:has(.dashboard) .services { backdrop-filter: none; }
+@media (max-width: 600px) { #villageBot { right: 12px; bottom: 12px; min-width: 0; padding: 10px; } .whatsapp-copy { display: none; } .whatsapp-mark { width: 32px; height: 32px; } }
+@media (prefers-reduced-motion: reduce) { #villageBot { transition: none; } }
